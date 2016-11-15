@@ -1,0 +1,48 @@
+{# diy_project/diy/website/templates/layout.html #}
+{% extends 'base.html' %}
+
+{% load staticfiles website_helpers %}
+
+{% block meta %}
+    {{ block.super }}
+    <meta charset="UTF-8">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="address=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="">
+    <meta http-equiv="cleartype" content="on">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+{% endblock %}
+
+{% block open_graph %}
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image" content="{{ request|absolute_url }}{% static 'website/images/logo.png' %}">
+{% endblock %}
+
+{% block favicons %}
+    <meta name="msapplication-TileImage" content="{% static 'website/images/favicons/144x144.png' %}?reload">
+    <meta name="msapplication-TileColor" content="#333333">
+    <link rel="apple-touch-icon" href="{% static 'website/images/favicons/57x57.png' %}?reload">
+    <link rel="apple-touch-icon" href="{% static 'website/images/favicons/60x60.png' %}?reload">
+    <link rel="apple-touch-icon" href="{% static 'website/images/favicons/72x72.png' %}?reload">
+    <link rel="apple-touch-icon" href="{% static 'website/images/favicons/76x76.png' %}?reload">
+    <link rel="apple-touch-icon" href="{% static 'website/images/favicons/114x114.png' %}?reload">
+    <link rel="apple-touch-icon" href="{% static 'website/images/favicons/120x120.png' %}?reload">
+    <link rel="apple-touch-icon" href="{% static 'website/images/favicons/144x144.png' %}?reload">
+    <link rel="apple-touch-icon" href="{% static 'website/images/favicons/152x152.png' %}?reload">
+    <link rel="apple-touch-icon" href="{% static 'website/images/favicons/180x180.png' %}?reload">
+    <link rel="icon" type="image/png" href="{% static 'website/images/favicons/16x16.png' %}?reload">
+    <link rel="icon" type="image/png" href="{% static 'website/images/favicons/32x32.png' %}?reload">
+    <link rel="icon" type="image/png" href="{% static 'website/images/favicons/96x96.png' %}?reload">
+    <link rel="icon" type="image/png" href="{% static 'website/images/favicons/160x160.png' %}?reload">
+    <link rel="icon" type="image/png" href="{% static 'website/images/favicons/192x192.png' %}?reload">
+{% endblock %}
+
+{% block analytics %}
+{% endblock %}
