@@ -1,11 +1,12 @@
 {# diy_project/diy/templates/base.html #}
+<!DOCTYPE html>
+
 {% load i18n metadata_tags %}
 
 {% get_current_language as LANGUAGE_CODE %}
 
 {% provide_metadata as METADATA %}
 
-<!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
     <head>
         <title>
