@@ -52,7 +52,11 @@ class IntroContent(ContentBlock, metaclass=TransMeta):
 # Project
 
 class ProjectArea(models.Model, metaclass=TransMeta):
-    title = models.CharField('Назва', max_length=100)
+    title = models.CharField('Назва', max_length=100, unique=True)
+
+    @property
+    def projects_count(self):
+        return self.project_set.count()
 
     class Meta:
         db_table = get_table_name('projects', 'areas')
@@ -75,10 +79,10 @@ class Project(models.Model, metaclass=TransMeta):
     IMAGE_PATH = 'projects/images/'
 
     project_area = models.ForeignKey(
-        ProjectArea, null=True, blank=True, on_delete=models.SET_NULL,
+        ProjectArea, null=True, on_delete=models.SET_NULL,
     )
 
-    title = models.CharField('Назва', max_length=200)
+    title = models.CharField('Назва', max_length=200, unique=True)
     started_at = models.DateField('Дата початку', auto_now_add=True)
     short_description = models.CharField('Короткий опис', max_length=500)
 
@@ -120,7 +124,11 @@ class Project(models.Model, metaclass=TransMeta):
 # Event
 
 class EventCategory(models.Model, metaclass=TransMeta):
-    title = models.CharField('Назва', max_length=100)
+    title = models.CharField('Назва', max_length=100, unique=True)
+
+    @property
+    def events_count(self):
+        return self.event_set.count()
 
     class Meta:
         db_table = get_table_name('events', 'categories')
@@ -143,7 +151,7 @@ class Event(models.Model, metaclass=TransMeta):
     IMAGE_PATH = 'events/images/'
 
     event_category = models.ForeignKey(
-        EventCategory, null=True, blank=True, on_delete=models.SET_NULL,
+        EventCategory, null=True, on_delete=models.SET_NULL,
     )
     project = models.ForeignKey(
         Project, null=True, blank=True, on_delete=models.SET_NULL,
@@ -254,10 +262,10 @@ class City(models.Model, metaclass=TransMeta):
     PHOTO_PATH = 'cities/photos/'
 
     centre = models.OneToOneField(
-        Centre, null=True, blank=True, on_delete=models.SET_NULL,
+        Centre, null=True, on_delete=models.SET_NULL,
     )
 
-    name = models.CharField('Назва', max_length=100)
+    name = models.CharField('Назва', max_length=100, unique=True)
 
     photo = models.ImageField('Фотографія', upload_to=PHOTO_PATH)
 
