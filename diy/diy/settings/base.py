@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'nested_admin',
     'django_bleach',
+    'ckeditor',
     'metadata.apps.MetadataConfig',
     'website.apps.WebsiteConfig',
 ]
@@ -107,8 +108,6 @@ LANGUAGES = (
 
 TRANSMETA_DEFAULT_LANGUAGE = 'uk'
 
-# SOLID_I18N_USE_REDIRECTS = False
-
 TIME_ZONE = 'Europe/Kiev'
 
 USE_I18N = True
@@ -137,6 +136,36 @@ X_FRAME_OPTIONS = 'DENY'
 
 BLEACH_ALLOWED_TAGS = ['span']
 BLEACH_STRIP_TAGS = True
+
+# CKEditor
+
+CKEDITOR_CONFIGS = {
+    'article_toolbar': {
+        'toolbar_Article': [
+            {'name': 'basic', 'items': [
+                'Source', 'Maximize', 'RemoveFormat',
+            ]},
+            {'name': 'font_style', 'items': [
+                'Bold', 'Italic', 'Underline', 'Strike',
+                'Subscript', 'Superscript',
+            ]},
+            {'name': 'list', 'items': [
+                'NumberedList', 'BulletedList',
+            ]},
+            {'name': 'justify', 'items': [
+                'JustifyLeft', 'JustifyCenter', 'JustifyRight',
+            ]},
+            {'name': 'link', 'items': [
+                'Link', 'Unlink', 'Anchor',
+            ]},
+            {'name': 'insert', 'items': [
+                'Image',
+            ]},
+        ],
+        'toolbar': 'Article',
+        'tabSpaces': 4,
+    },
+}
 
 # Socials
 

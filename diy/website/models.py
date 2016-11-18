@@ -5,6 +5,7 @@ from django.utils.text import slugify
 
 from transmeta import TransMeta
 from transliterate import translit
+from ckeditor.fields import RichTextField
 
 """
 Hack to order models in Django Admin. Whitespaces assigned in nested Meta
@@ -36,14 +37,14 @@ class ContentBlock(models.Model):
 
 
 class IntroContent(ContentBlock, metaclass=TransMeta):
-    headline = models.CharField('Слоган', max_length=50)
+    headline = models.CharField('Вступна фраза', max_length=200)
 
     class Meta:
         db_table = get_table_name('content', 'intro')
 
-        order_prefix = ' ' * 9
+        order_prefix = ' ' * 10
 
-        verbose_name = 'Блок "Інтро"'
+        verbose_name = 'Інтро'
         verbose_name_plural = order_prefix + verbose_name
 
         translate = ('headline', )
@@ -54,14 +55,10 @@ class IntroContent(ContentBlock, metaclass=TransMeta):
 class ProjectArea(models.Model, metaclass=TransMeta):
     title = models.CharField('Назва', max_length=100, unique=True)
 
-    @property
-    def projects_count(self):
-        return self.project_set.count()
-
     class Meta:
         db_table = get_table_name('projects', 'areas')
 
-        order_prefix = ' ' * 8
+        order_prefix = ' ' * 9
 
         verbose_name = 'Напрямок проекту'
         verbose_name_plural = order_prefix + 'Напрямки проектів'
@@ -70,6 +67,10 @@ class ProjectArea(models.Model, metaclass=TransMeta):
 
     def __str__(self):
         return self.title or self.__name__
+
+    def get_projects_count(self):
+        return self.project_set.count()
+    get_projects_count.short_description = 'Кількість проектів'
 
     def get_projects(self):
         return self.project_set.all()
@@ -85,6 +86,7 @@ class Project(models.Model, metaclass=TransMeta):
     title = models.CharField('Назва', max_length=200, unique=True)
     started_at = models.DateField('Дата початку', auto_now_add=True)
     short_description = models.CharField('Короткий опис', max_length=500)
+    content = RichTextField('Контент', config_name='article_toolbar')
 
     # TODO: slug doesn't support i18n for now
     slug = models.SlugField(editable=False)
@@ -94,12 +96,12 @@ class Project(models.Model, metaclass=TransMeta):
     class Meta:
         db_table = get_table_name('projects')
 
-        order_prefix = ' ' * 7
+        order_prefix = ' ' * 8
 
         verbose_name = 'Проект'
         verbose_name_plural = order_prefix + 'Проекти'
 
-        translate = ('title', 'short_description', )
+        translate = ('title', 'short_description', 'content', )
 
     def __str__(self):
         return self.title or self.__name__
@@ -133,7 +135,7 @@ class EventCategory(models.Model, metaclass=TransMeta):
     class Meta:
         db_table = get_table_name('events', 'categories')
 
-        order_prefix = ' ' * 6
+        order_prefix = ' ' * 7
 
         verbose_name = 'Категорія події'
         verbose_name_plural = order_prefix + 'Категорії подій'
@@ -160,6 +162,7 @@ class Event(models.Model, metaclass=TransMeta):
     title = models.CharField('Назва', max_length=200)
     created_at = models.DateTimeField('Дата та час події', auto_now_add=True)
     short_description = models.CharField('Короткий опис', max_length=500)
+    content = RichTextField('Контент', config_name='article_toolbar')
 
     # TODO: slug doesn't support i18n for now
     slug = models.SlugField(editable=False)
@@ -169,12 +172,12 @@ class Event(models.Model, metaclass=TransMeta):
     class Meta:
         db_table = get_table_name('events')
 
-        order_prefix = ' ' * 5
+        order_prefix = ' ' * 6
 
         verbose_name = 'Подія'
         verbose_name_plural = order_prefix + 'Події'
 
-        translate = ('title', 'short_description', )
+        translate = ('title', 'short_description', 'content', )
 
     def __str__(self):
         return self.title or self.__name__
@@ -193,14 +196,45 @@ class Event(models.Model, metaclass=TransMeta):
     image_preview.short_description = 'Превʼю головного зображення'
 
 
+# City
+
+class City(models.Model, metaclass=TransMeta):
+    PHOTO_PATH = 'cities/photos/'
+
+    name = models.CharField('Назва', max_length=100, unique=True)
+
+    photo = models.ImageField('Фотографія', upload_to=PHOTO_PATH)
+
+    class Meta:
+        db_table = get_table_name('cities')
+
+        order_prefix = ' ' * 5
+
+        verbose_name = 'Місто'
+        verbose_name_plural = order_prefix + 'Міста'
+
+        translate = ('name', )
+
+    def __str__(self):
+        return self.name or self.__name__
+
+    def photo_preview(self):
+        return '<img src="%s" width="400">' % (self.photo.url)
+    photo_preview.allow_tags = True
+    photo_preview.short_description = 'Превʼю фотографії'
+
+
 # Centre
 
 class Centre(models.Model):
+    city = models.OneToOneField(
+        City, null=True, on_delete=models.SET_NULL,
+    )
     projects = models.ManyToManyField(
-        Project,
+        Project, blank=True,
     )
     events = models.ManyToManyField(
-        Event,
+        Event, blank=True,
     )
 
     @property
@@ -220,7 +254,8 @@ class Centre(models.Model):
         verbose_name_plural = order_prefix + 'Центри'
 
     def __str__(self):
-        return self.pk or self.__name__
+        return str(self.city.name) if self.city else self.__class__.__name__
+
 
     def get_projects(self):
         return self.projects.all()
@@ -254,38 +289,6 @@ class CentreSubpage(models.Model, metaclass=TransMeta):
 
     def __str__(self):
         return self.headline or self.__name__
-
-
-# City
-
-class City(models.Model, metaclass=TransMeta):
-    PHOTO_PATH = 'cities/photos/'
-
-    centre = models.OneToOneField(
-        Centre, null=True, on_delete=models.SET_NULL,
-    )
-
-    name = models.CharField('Назва', max_length=100, unique=True)
-
-    photo = models.ImageField('Фотографія', upload_to=PHOTO_PATH)
-
-    class Meta:
-        db_table = get_table_name('cities')
-
-        order_prefix = ' ' * 5
-
-        verbose_name = 'Місто'
-        verbose_name_plural = order_prefix + 'Міста'
-
-        translate = ('name', )
-
-    def __str__(self):
-        return self.name or self.__name__
-
-    def photo_preview(self):
-        return '<img src="%s" width="400">' % (self.photo.url)
-    photo_preview.allow_tags = True
-    photo_preview.short_description = 'Превʼю фотографії'
 
 
 # Participant

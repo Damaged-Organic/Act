@@ -45,7 +45,7 @@ class IntroContentAdmin(
 
 @admin.register(ProjectArea, site=admin_site)
 class ProjectAreaAdmin(DefaultOrderingModelAdmin):
-    list_display = ('id', 'title', 'projects_count', )
+    list_display = ('id', 'title', 'get_projects_count', )
     list_display_links = ('title', )
 
     fieldsets = (
@@ -65,7 +65,7 @@ class ProjectAdmin(DefaultOrderingModelAdmin):
             'fields': ('image', 'project_area', ),
         }),
         ('Локалізована інформація', {
-            'fields': ('title_uk', 'short_description_uk', ),
+            'fields': ('title_uk', 'short_description_uk', 'content_uk', ),
         }),
     )
 
@@ -112,7 +112,7 @@ class EventAdmin(DefaultOrderingModelAdmin):
             'fields': ('image', 'event_category', ),
         }),
         ('Локалізована інформація', {
-            'fields': ('title_uk', 'short_description_uk', ),
+            'fields': ('title_uk', 'short_description_uk', 'content_uk', ),
         }),
     )
 
@@ -139,12 +139,12 @@ class EventAdmin(DefaultOrderingModelAdmin):
 
 @admin.register(City, site=admin_site)
 class CityAdmin(DefaultOrderingModelAdmin):
-    list_display = ('id', 'name', 'centre', )
+    list_display = ('id', 'name', )
     list_display_links = ('name', )
 
     fieldsets = (
         (None, {
-            'fields': ('photo', 'centre', ),
+            'fields': ('photo', ),
         }),
         ('Локалізована інформація', {
             'fields': ('name_uk', ),
@@ -163,3 +163,14 @@ class CityAdmin(DefaultOrderingModelAdmin):
             })
 
         return field
+
+
+# Centre
+
+@admin.register(Centre, site=admin_site)
+class CentreAdmin(DefaultOrderingModelAdmin):
+    fieldsets = (
+        (None, {
+            'fields': ('city', 'projects', 'events', ),
+        }),
+    )
