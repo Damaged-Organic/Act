@@ -30,7 +30,7 @@ class ContentBlock(models.Model):
         abstract = True
 
     def __str__(self):
-        return self.name or self.__name__
+        return self.name or self.__class__.__name__
 
     def get_template_block_name(self):
         return self.name.replace(' ', '_').lower()
@@ -42,12 +42,59 @@ class IntroContent(ContentBlock, metaclass=TransMeta):
     class Meta:
         db_table = get_table_name('content', 'intro')
 
-        order_prefix = ' ' * 10
+        order_prefix = ' ' * 12
 
         verbose_name = 'Інтро'
         verbose_name_plural = order_prefix + verbose_name
 
         translate = ('headline', )
+
+
+# Links
+
+class Sponsor(models.Model, metaclass=TransMeta):
+    LOGO_PATH = 'sponsors/logos/'
+
+    title = models.CharField('Назва організації', max_length=100)
+    link = models.URLField('Посилання', max_length=300)
+
+    logo = models.ImageField('Логотип', upload_to=LOGO_PATH)
+
+    class Meta:
+        db_table = get_table_name('sponsors')
+
+        order_prefix = ' ' * 11
+
+        verbose_name = 'Донор'
+        verbose_name_plural = order_prefix + 'Донори'
+
+        translate = ('title', )
+
+    def __str__(self):
+        return self.title or self.__class__.__name__
+
+    def logo_preview(self):
+        return '<img src="%s">' % (self.logo.url)
+    logo_preview.allow_tags = True
+    logo_preview.short_description = 'Логотип'
+
+
+class Social(models.Model):
+    title = models.CharField('Назва мережі', max_length=50)
+    link = models.URLField('Посилання', max_length=300)
+
+    icon = models.CharField('Іконка', max_length=20)
+
+    class Meta:
+        db_table = get_table_name('socials')
+
+        order_prefix = ' ' * 10
+
+        verbose_name = 'Соціальна мережа'
+        verbose_name_plural = order_prefix + 'Соціальні мережі'
+
+    def __str__(self):
+        return self.title or self.__class__.__name__
 
 
 # Project
@@ -66,27 +113,38 @@ class ProjectArea(models.Model, metaclass=TransMeta):
         translate = ('title', )
 
     def __str__(self):
-        return self.title or self.__name__
+        return self.title or self.__class__.__name__
 
-    def get_projects_count(self):
-        return self.project_set.count()
-    get_projects_count.short_description = 'Кількість проектів'
+    '''Projects shortcut methods'''
 
     def get_projects(self):
-        return self.project_set.all()
+        return self.projects.all()
+
+    def get_projects_count(self):
+        return self.projects.count()
+    get_projects_count.short_description = 'Кількість проектів'
 
 
 class Project(models.Model, metaclass=TransMeta):
     IMAGE_PATH = 'projects/images/'
 
     project_area = models.ForeignKey(
-        ProjectArea, null=True, on_delete=models.SET_NULL,
+        ProjectArea,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='projects',
     )
+    project_area.verbose_name = ProjectArea._meta.verbose_name
 
     title = models.CharField('Назва', max_length=200, unique=True)
     started_at = models.DateField('Дата початку', auto_now_add=True)
     short_description = models.CharField('Короткий опис', max_length=500)
-    content = RichTextField('Контент', config_name='article_toolbar')
+    content = RichTextField(
+        'Контент', config_name='article_toolbar',
+    )
+    is_active = models.BooleanField(
+        'Відображається', blank=True, default=True,
+    )
 
     # TODO: slug doesn't support i18n for now
     slug = models.SlugField(editable=False)
@@ -101,10 +159,12 @@ class Project(models.Model, metaclass=TransMeta):
         verbose_name = 'Проект'
         verbose_name_plural = order_prefix + 'Проекти'
 
+        ordering = ('started_at', )
+
         translate = ('title', 'short_description', 'content', )
 
     def __str__(self):
-        return self.title or self.__name__
+        return self.title or self.__class__.__name__
 
     def save(self, *args, **kwargs):
         if self.title:
@@ -115,22 +175,24 @@ class Project(models.Model, metaclass=TransMeta):
         super(Project, self).save(*args, **kwargs)
 
     def image_preview(self):
-        return '<img src="%s" width="400">' % (self.image.url)
+        return '<img src="%s" max-width="400">' % (self.image.url)
     image_preview.allow_tags = True
     image_preview.short_description = 'Превʼю головного зображення'
 
+    '''Events shortcut methods'''
+
     def get_events(self):
-        return self.event_set.all()
+        return self.events.all()
+
+    def get_events_count(self):
+        return self.events.count()
+    get_events_count.short_description = 'Кількість подій'
 
 
 # Event
 
 class EventCategory(models.Model, metaclass=TransMeta):
     title = models.CharField('Назва', max_length=100, unique=True)
-
-    @property
-    def events_count(self):
-        return self.event_set.count()
 
     class Meta:
         db_table = get_table_name('events', 'categories')
@@ -143,26 +205,46 @@ class EventCategory(models.Model, metaclass=TransMeta):
         translate = ('title', )
 
     def __str__(self):
-        return self.title or self.__name__
+        return self.title or self.__class__.__name__
+
+    '''Events shortcut methods'''
 
     def get_events(self):
-        return self.event_set.all()
+        return self.events.all()
+
+    def get_events_count(self):
+        return self.events.count()
+    get_events_count.short_description = 'Кількість подій'
 
 
 class Event(models.Model, metaclass=TransMeta):
     IMAGE_PATH = 'events/images/'
 
     event_category = models.ForeignKey(
-        EventCategory, null=True, on_delete=models.SET_NULL,
+        EventCategory,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='events',
     )
+    event_category.verbose_name = EventCategory._meta.verbose_name
+
     project = models.ForeignKey(
-        Project, null=True, blank=True, on_delete=models.SET_NULL,
+        Project,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='events',
     )
 
     title = models.CharField('Назва', max_length=200)
     created_at = models.DateTimeField('Дата та час події', auto_now_add=True)
     short_description = models.CharField('Короткий опис', max_length=500)
-    content = RichTextField('Контент', config_name='article_toolbar')
+    content = RichTextField(
+        'Контент', config_name='article_toolbar',
+    )
+    is_active = models.BooleanField(
+        'Відображається', blank=True, default=True,
+    )
 
     # TODO: slug doesn't support i18n for now
     slug = models.SlugField(editable=False)
@@ -177,10 +259,12 @@ class Event(models.Model, metaclass=TransMeta):
         verbose_name = 'Подія'
         verbose_name_plural = order_prefix + 'Події'
 
+        ordering = ('created_at', )
+
         translate = ('title', 'short_description', 'content', )
 
     def __str__(self):
-        return self.title or self.__name__
+        return self.title or self.__class__.__name__
 
     def save(self, *args, **kwargs):
         if self.title:
@@ -191,7 +275,7 @@ class Event(models.Model, metaclass=TransMeta):
         super(Event, self).save(*args, **kwargs)
 
     def image_preview(self):
-        return '<img src="%s" width="400">' % (self.image.url)
+        return '<img src="%s" max-width="400">' % (self.image.url)
     image_preview.allow_tags = True
     image_preview.short_description = 'Превʼю головного зображення'
 
@@ -216,10 +300,10 @@ class City(models.Model, metaclass=TransMeta):
         translate = ('name', )
 
     def __str__(self):
-        return self.name or self.__name__
+        return self.name or self.__class__.__name__
 
     def photo_preview(self):
-        return '<img src="%s" width="400">' % (self.photo.url)
+        return '<img src="%s" max-width="400">' % (self.photo.url)
     photo_preview.allow_tags = True
     photo_preview.short_description = 'Превʼю фотографії'
 
@@ -237,14 +321,6 @@ class Centre(models.Model):
         Event, blank=True,
     )
 
-    @property
-    def projects_count(self):
-        return self.projects.count()
-
-    @property
-    def events_count(self):
-        return self.events.count()
-
     class Meta:
         db_table = get_table_name('centres')
 
@@ -256,23 +332,42 @@ class Centre(models.Model):
     def __str__(self):
         return str(self.city.name) if self.city else self.__class__.__name__
 
+    '''Projects shortcut methods'''
 
     def get_projects(self):
         return self.projects.all()
 
+    def get_projects_count(self):
+        return self.projects.count()
+    get_projects_count.short_description = 'Кількість проектів'
+
+    '''Events shortcut methods'''
+
     def get_events(self):
         return self.events.all()
 
-    def get_subpages(self):
-        return self.centresubpage_set.all()
+    def get_events_count(self):
+        return self.events.count()
+    get_events_count.short_description = 'Кількість подій'
+
+    '''Participants shortcut methods'''
 
     def get_participants(self):
-        return self.participant_set.all()
+        return self.participants.all()
+
+    def get_participants_count(self):
+        return self.participants.count()
+    get_participants_count.short_description = 'Кількість співробітників'
+
+    '''Subpages shortcut methods'''
+
+    def get_subpages(self):
+        return self.centres_subpages.all()
 
 
 class CentreSubpage(models.Model, metaclass=TransMeta):
     centre = models.ForeignKey(
-        Centre, on_delete=models.CASCADE,
+        Centre, on_delete=models.CASCADE, related_name='centres_subpages',
     )
 
     headline = models.CharField('Назва сторінки', max_length=100)
@@ -288,7 +383,7 @@ class CentreSubpage(models.Model, metaclass=TransMeta):
         translate = ('headline', )
 
     def __str__(self):
-        return self.headline or self.__name__
+        return self.headline or self.__class__.__name__
 
 
 # Participant
@@ -297,7 +392,11 @@ class Participant(models.Model, metaclass=TransMeta):
     PHOTO_PATH = 'participants/photos/'
 
     centre = models.ForeignKey(
-        Centre, null=True, blank=True, on_delete=models.SET_NULL,
+        Centre,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='participants',
     )
 
     position = models.CharField('Посада', max_length=100)
@@ -324,7 +423,7 @@ class Participant(models.Model, metaclass=TransMeta):
         translate = ('position', 'name', 'surname', )
 
     def __str__(self):
-        return self.full_name or self.__name__
+        return self.full_name or self.__class__.__name__
 
 
 # Contact
@@ -347,4 +446,4 @@ class Contact(models.Model, metaclass=TransMeta):
         translate = ('address', )
 
     def __str__(self):
-        return self._meta.verbose_name or self.__name__
+        return self._meta.verbose_name or self.__class__.__name__
