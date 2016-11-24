@@ -1,146 +1,207 @@
 # diy_project/diy/website/views_api.py
 from django.http import Http404
+
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.generics import (
+    GenericAPIView, ListAPIView, RetrieveAPIView,
+)
+from rest_framework.pagination import (
+    LimitOffsetPagination, PageNumberPagination,
+)
 from rest_framework.decorators import api_view
 from rest_framework.reverse import reverse
 
+from django_filters import rest_framework as django_filters
+
 from .models import (
+    IntroContent,
     Sponsor, Social,
     ProjectArea, Project,
+    EventCategory, Event,
 )
 from .serializers import (
+    IntroContentSerializer,
     SponsorSerializer, SocialSerializer,
     ProjectAreaSerializer, ProjectSerializer,
+    EventCategorySerializer, EventSerializer,
 )
 
 
 @api_view(['GET'])
 def api_root(request, format=None):
     return Response({
+        'intro_content': reverse(
+            'intro_content_singular', request=request, format=format
+        ),
         'sponsors': reverse('sponsors_list', request=request, format=format),
         'socials': reverse('socials_list', request=request, format=format),
         'projects_areas': reverse(
             'projects_areas_list', request=request, format=format
         ),
         'projects': reverse('projects_list', request=request, format=format),
+        'events_categories': reverse(
+            'events_categories_list', request=request, format=format
+        ),
+        'events': reverse('events_list', request=request, format=format),
     })
 
 
-class SponsorList(APIView):
-    def get(self, request, format=None):
-        sponsors = Sponsor.objects.all()
-        serializer = SponsorSerializer(sponsors, many=True)
+# IntroContent
 
-        return Response(serializer.data)
+class IntroContentSingular(GenericAPIView):
+    '''
+    This view is tricky, as it overrides common behavior of `get_object()`
+    method. It does not require positional `pk` argument, because it's
+    intention is to return first & only one object of a given queryset
+    '''
+    queryset = IntroContent.objects.all()
+    serializer_class = IntroContentSerializer
 
+    def get_object(self):
+        instance = self.get_queryset().first()
+        return instance
 
-class SponsorDetail(APIView):
-    def get_object(self, pk):
-        try:
-            return Sponsor.objects.get(pk=pk)
-        except Sponsor.DoesNotExist:
+    def get(self, request):
+        intro_content = self.get_object()
+
+        if not intro_content:
             raise Http404
 
-    def get(self, request, pk, format=None):
-        sponsor = self.get_object(pk)
-        serializer = SponsorSerializer(sponsor)
-
+        serializer = IntroContentSerializer(intro_content)
         return Response(serializer.data)
 
 
-class SocialList(APIView):
-    def get(self, request, format=None):
-        socials = Social.objects.all()
-        serializer = SocialSerializer(socials, many=True)
+# Sponsor
 
-        return Response(serializer.data)
-
-
-class SocialDetail(APIView):
-    def get_object(self, pk):
-        try:
-            return Social.objects.get(pk=pk)
-        except Social.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk, format=None):
-        social = self.get_object(pk)
-        serializer = SocialSerializer(social)
-
-        return Response(serializer.data)
-
-
-class ProjectAreaList(APIView):
-    def get(self, request, format=None):
-        projects_areas = ProjectArea.objects.all()
-        serializer = ProjectAreaSerializer(projects_areas, many=True)
-
-        return Response(serializer.data)
-
-
-class ProjectAreaDetail(APIView):
-    def get_object(self, pk):
-        try:
-            return ProjectArea.objects.get(pk=pk)
-        except ProjectArea.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk, format=None):
-        project_area = self.get_object(pk)
-        serializer = ProjectAreaSerializer(project_area)
-
-        return Response(serializer.data)
-
-
-class ProjectList(APIView):
-    def get(self, request, format=None):
-        projects = Project.objects.all()
-        serializer = ProjectSerializer(projects, many=True)
-
-        return Response(serializer.data)
-
-
-class ProjectDetail(APIView):
-    def get_object(self, pk):
-        try:
-            return Project.objects.get(pk=pk)
-        except Project.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk, format=None):
-        project = self.get_object(pk)
-        serializer = ProjectSerializer(project)
-
-        return Response(serializer.data)
-
-'''
-from rest_framework import mixins
-from rest_framework import generics
-
-class SponsorList(mixins.ListModelMixin, generics.GenericAPIView):
-    queryset = Sponsor.objects.all()
+class SponsorList(ListAPIView):
     serializer_class = SponsorSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-
-class SponsorDetail(mixins.RetrieveModelMixin, generics.GenericAPIView):
     queryset = Sponsor.objects.all()
+
+
+class SponsorDetail(RetrieveAPIView):
     serializer_class = SponsorSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
--OR-
-
-class SponsorList(generics.ListAPIView):
     queryset = Sponsor.objects.all()
-    serializer_class = SponsorSerializer
 
 
-class SponsorDetail(generics.RetrieveAPIView):
-    queryset = Sponsor.objects.all()
-    serializer_class = SponsorSerializer
-'''
+# Social
+
+class SocialList(ListAPIView):
+    serializer_class = SocialSerializer
+    queryset = Social.objects.all()
+
+
+class SocialDetail(RetrieveAPIView):
+    serializer_class = SocialSerializer
+    queryset = Social.objects.all()
+
+
+# ProjectArea
+
+class ProjectAreaList(ListAPIView):
+    serializer_class = ProjectAreaSerializer
+    queryset = ProjectArea.objects.all()
+
+
+class ProjectAreaDetail(RetrieveAPIView):
+    serializer_class = ProjectAreaSerializer
+    queryset = ProjectArea.objects.all()
+
+
+# Project
+
+class ProjectLimitOffsetPagination(LimitOffsetPagination):
+    default_limit = 3
+    limit_query_param = 'limit'
+    max_limit = 100
+
+
+class ProjectPageNumberPagination(PageNumberPagination):
+    page_size = 2
+    page_query_param = 'page'
+    max_page_size = 100
+
+
+class ProjectFilter(django_filters.FilterSet):
+    class Meta:
+        model = Project
+        fields = ['project_area']
+
+
+class ProjectList(ListAPIView):
+    serializer_class = ProjectSerializer
+
+    pagination_class = ProjectPageNumberPagination
+
+    filter_backends = (django_filters.DjangoFilterBackend,)
+    filter_class = ProjectFilter
+
+    def get_queryset(self):
+        queryset = Project.objects.order_by('-started_at')
+
+        limit = self.request.query_params.get('limit', None)
+
+        if limit is not None:
+            self.pagination_class = ProjectLimitOffsetPagination
+
+        return queryset
+
+
+class ProjectDetail(RetrieveAPIView):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+
+
+# EventCategory
+
+class EventCategoryList(ListAPIView):
+    serializer_class = EventCategorySerializer
+    queryset = EventCategory.objects.all()
+
+
+class EventCategoryDetail(RetrieveAPIView):
+    serializer_class = EventCategorySerializer
+    queryset = EventCategory.objects.all()
+
+
+# Event
+
+class EventLimitOffsetPagination(LimitOffsetPagination):
+    default_limit = 3
+    limit_query_param = 'limit'
+    max_limit = 100
+
+
+class EventPageNumberPagination(PageNumberPagination):
+    page_size = 2
+    page_query_param = 'page'
+    max_page_size = 100
+
+
+class EventFilter(django_filters.FilterSet):
+    class Meta:
+        model = Event
+        fields = ['event_category', 'project']
+
+
+class EventList(ListAPIView):
+    serializer_class = EventSerializer
+
+    pagination_class = EventPageNumberPagination
+
+    filter_backends = (django_filters.DjangoFilterBackend,)
+    filter_class = EventFilter
+
+    def get_queryset(self):
+        queryset = Event.objects.order_by('-created_at')
+
+        limit = self.request.query_params.get('limit', None)
+
+        if limit is not None:
+            self.pagination_class = EventLimitOffsetPagination
+
+        return queryset
+
+
+class EventDetail(RetrieveAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer

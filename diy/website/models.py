@@ -236,8 +236,9 @@ class Event(models.Model, metaclass=TransMeta):
         related_name='events',
     )
 
-    title = models.CharField('Назва', max_length=200)
     created_at = models.DateTimeField('Дата та час події', auto_now_add=True)
+    image = models.ImageField('Головне зображення', upload_to=IMAGE_PATH)
+    title = models.CharField('Назва', max_length=200)
     short_description = models.CharField('Короткий опис', max_length=500)
     content = RichTextField(
         'Контент', config_name='article_toolbar',
@@ -248,8 +249,6 @@ class Event(models.Model, metaclass=TransMeta):
 
     # TODO: slug doesn't support i18n for now
     slug = models.SlugField(editable=False)
-
-    image = models.ImageField('Головне зображення', upload_to=IMAGE_PATH)
 
     class Meta:
         db_table = get_table_name('events')
