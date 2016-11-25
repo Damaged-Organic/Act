@@ -17,7 +17,7 @@ from website.views_api import (
 
 urlpatterns = [
     # Root
-    url(r'^$', api_root),
+    url(r'^root$', api_root),
     # IntroContent
     url(
         r'^intro_content$',

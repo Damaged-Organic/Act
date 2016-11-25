@@ -4,7 +4,8 @@ from django.db import models
 from django.contrib import admin
 from django.utils.html import escape
 
-from transmeta import canonical_fieldname
+# Notice overridden transmeta import!
+from .services.transmeta import canonical_fieldname
 
 from diy.admin import (
     admin_site, DefaultOrderingModelAdmin,
@@ -30,6 +31,9 @@ class IntroContentAdmin(
     list_display = ('headline_uk', )
 
     fieldsets = (
+        (None, {
+            'fields': ('logo_preview', ),
+        }),
         ('Локалізована інформація', {
             'fields': ('headline_uk', ),
         }),
@@ -187,40 +191,88 @@ class EventAdmin(DefaultOrderingModelAdmin):
 
 # City
 
-@admin.register(City, site=admin_site)
-class CityAdmin(DefaultOrderingModelAdmin):
-    list_display = ('id', 'name_uk', )
-    list_display_links = ('name_uk', )
+# @admin.register(City, site=admin_site)
+# class CityAdmin(DefaultOrderingModelAdmin):
+#     list_display = ('id', 'name_uk', )
+#     list_display_links = ('name_uk', )
+#
+#     fieldsets = (
+#         (None, {
+#             'fields': ('photo', ),
+#         }),
+#         ('Локалізована інформація', {
+#             'fields': ('name_uk', ),
+#         }),
+#     )
+#
+#     def formfield_for_dbfield(self, db_field, **kwargs):
+#         field = super(CityAdmin, self).formfield_for_dbfield(
+#             db_field, **kwargs
+#         )
+#         db_fieldname = canonical_fieldname(db_field)
+#
+#         if db_fieldname == 'name':
+#             field.widget = forms.TextInput(attrs={
+#                 'style': 'width:50%; max-width:50%;'
+#             })
+#
+#         return field
+
+
+# Participant
+
+class ParticipantInline(admin.TabularInline):
+    model = Participant
+    fields = ('name_uk', 'surname_uk', 'position_uk', )
+    extra = 0
+    show_change_link = True
+
+    '''
+    Custom template to display enumerated tabular inline
+    '''
+    template = "admin/inlines/tabular.html"
+
+
+@admin.register(Participant, site=admin_site)
+class ParticipantAdmin(DefaultOrderingModelAdmin):
+    readonly_fields = ('photo_preview', )
+
+    list_display = ('id', 'get_full_name', 'position_uk', 'centre', )
+    list_display_links = ('get_full_name', )
 
     fieldsets = (
         (None, {
-            'fields': ('photo', ),
+            'fields': ('photo_preview', 'photo', 'centre', ),
         }),
         ('Локалізована інформація', {
-            'fields': ('name_uk', ),
+            'fields': ('name_uk', 'surname_uk', 'position_uk', ),
         }),
     )
-
-    def formfield_for_dbfield(self, db_field, **kwargs):
-        field = super(CityAdmin, self).formfield_for_dbfield(
-            db_field, **kwargs
-        )
-        db_fieldname = canonical_fieldname(db_field)
-
-        if db_fieldname == 'name':
-            field.widget = forms.TextInput(attrs={
-                'style': 'width:50%; max-width:50%;'
-            })
-
-        return field
 
 
 # Centre
 
 @admin.register(Centre, site=admin_site)
-class CentreAdmin(DefaultOrderingModelAdmin):
+class CentreAdmin(
+    ForbidAddMixin, ForbidDeleteMixin, DefaultOrderingModelAdmin
+):
+    readonly_fields = (
+        'get_projects_count', 'get_events_count', 'get_participants_count',
+    )
+    list_display = (
+        'city',
+        'get_projects_count', 'get_events_count', 'get_participants_count',
+    )
+    list_display_links = ('city', )
+
+    filter_horizontal = ('projects', 'events', )
+
     fieldsets = (
         (None, {
             'fields': ('city', 'projects', 'events', ),
         }),
     )
+
+    inlines = [
+        ParticipantInline,
+    ]

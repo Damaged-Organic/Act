@@ -17,8 +17,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
     'django_filters',
-    'nested_admin',
     'django_bleach',
     'ckeditor',
     'metadata.apps.MetadataConfig',
@@ -28,6 +28,7 @@ INSTALLED_APPS = [
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -48,6 +49,7 @@ TEMPLATES = [
             os.path.join(BASE_DIR, 'templates'),
             os.path.join(BASE_DIR, 'website/templates'),
         ],
+        'APP_DIRS': True,  # To be commented
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -55,12 +57,12 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-            'loaders': [
-                ('django.template.loaders.cached.Loader', [
-                    'django.template.loaders.filesystem.Loader',
-                    'django.template.loaders.app_directories.Loader',
-                ]),
-            ],
+            # 'loaders': [
+            #     ('django.template.loaders.cached.Loader', [
+            #         'django.template.loaders.filesystem.Loader',
+            #         'django.template.loaders.app_directories.Loader',
+            #     ]),
+            # ],
         },
     },
 ]
@@ -103,12 +105,14 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 
 LANGUAGE_CODE = 'uk'
-
 LANGUAGES = (
     ('uk', 'UK'),
 )
 
 TRANSMETA_DEFAULT_LANGUAGE = 'uk'
+TRANSMETA_LANGUAGES = (
+    ('uk', 'UK'),
+)
 
 TIME_ZONE = 'Europe/Kiev'
 
@@ -169,11 +173,12 @@ CKEDITOR_CONFIGS = {
     },
 }
 
-# Socials
+# CORS
 
-SOCIALS = {
-    'facebook': '',
-    'vkontakte': '',
-    'twitter': '',
-    'youtube': '',
-}
+CORS_ORIGIN_WHITELIST = (
+    'act.org.ua',
+    'localhost:3333',
+    '127.0.0.1:3333',
+    'localhost:8000',
+    '127.0.0.1:8000',
+)
