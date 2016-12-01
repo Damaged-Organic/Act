@@ -15,15 +15,20 @@ from django_filters import rest_framework as django_filters
 
 from .models import (
     IntroContent,
-    Sponsor, Social,
+    Sponsor, Social, Activity,
     ProjectArea, Project,
     EventCategory, Event,
+    City, Participant, Contact,
+    Centre,
 )
 from .serializers import (
     IntroContentSerializer,
-    SponsorSerializer, SocialSerializer,
+    SponsorSerializer, SocialSerializer, ActivitySerializer,
     ProjectAreaSerializer, ProjectSerializer,
     EventCategorySerializer, EventSerializer,
+    CitySerializer, ParticipantSerializer, ContactSerializer,
+    CentreListSerializer, CentreDetailSerializer,
+    CentreCitySerializer, CentreProjectsSerializer, CentreEventsSerializer,
 )
 
 
@@ -35,6 +40,9 @@ def api_root(request, format=None):
         ),
         'sponsors': reverse('sponsors_list', request=request, format=format),
         'socials': reverse('socials_list', request=request, format=format),
+        'activities': reverse(
+            'activities_list', request=request, format=format
+        ),
         'projects_areas': reverse(
             'projects_areas_list', request=request, format=format
         ),
@@ -43,6 +51,12 @@ def api_root(request, format=None):
             'events_categories_list', request=request, format=format
         ),
         'events': reverse('events_list', request=request, format=format),
+        'cities': reverse('cities_list', request=request, format=format),
+        'participants': reverse(
+            'participants_list', request=request, format=format
+        ),
+        'contacts': reverse('contacts_list', request=request, format=format),
+        'centres': reverse('centres_list', request=request, format=format),
     })
 
 
@@ -95,6 +109,18 @@ class SocialDetail(RetrieveAPIView):
     queryset = Social.objects.all()
 
 
+# Social
+
+class ActivityList(ListAPIView):
+    serializer_class = ActivitySerializer
+    queryset = Activity.objects.all()
+
+
+class ActivityDetail(RetrieveAPIView):
+    serializer_class = ActivitySerializer
+    queryset = Activity.objects.all()
+
+
 # ProjectArea
 
 class ProjectAreaList(ListAPIView):
@@ -110,15 +136,17 @@ class ProjectAreaDetail(RetrieveAPIView):
 # Project
 
 class ProjectLimitOffsetPagination(LimitOffsetPagination):
-    default_limit = 3
+    default_limit = Project.LIMIT['default']
+    max_limit = Project.LIMIT['max']
+
     limit_query_param = 'limit'
-    max_limit = 100
 
 
 class ProjectPageNumberPagination(PageNumberPagination):
-    page_size = 2
+    page_size = Project.PAGE_SIZE['default']
+    max_page_size = Project.PAGE_SIZE['max']
+
     page_query_param = 'page'
-    max_page_size = 100
 
 
 class ProjectFilter(django_filters.FilterSet):
@@ -147,8 +175,8 @@ class ProjectList(ListAPIView):
 
 
 class ProjectDetail(RetrieveAPIView):
-    queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+    queryset = Project.objects.all()
 
 
 # EventCategory
@@ -203,5 +231,64 @@ class EventList(ListAPIView):
 
 
 class EventDetail(RetrieveAPIView):
-    queryset = Event.objects.all()
     serializer_class = EventSerializer
+    queryset = Event.objects.all()
+
+
+# City
+
+class CityList(ListAPIView):
+    serializer_class = CitySerializer
+    queryset = City.objects.all()
+
+
+# Participant
+
+class ParticipantList(ListAPIView):
+    serializer_class = ParticipantSerializer
+    queryset = Participant.objects.all()
+
+
+# Contact
+
+class ContactList(ListAPIView):
+    serializer_class = ContactSerializer
+    queryset = Contact.objects.all()
+
+
+class ContactDetail(RetrieveAPIView):
+    serializer_class = ContactSerializer
+    queryset = Contact.objects.all()
+
+
+# Centre
+
+class CentreList(ListAPIView):
+    '''
+    You can use `related` quary parameter to specify singular relation that
+    should be included in serialized objects list. Available options are:
+
+    1. 'related=city', to include only nested city object
+    2. 'related=projects', to include projects as well as city
+    3. 'related=events', to include events as well as city
+    '''
+    serializer_class = CentreListSerializer
+
+    def get_queryset(self):
+        queryset = Centre.objects.all()
+
+        related = self.request.query_params.get('related')
+
+        if related == 'city':
+            self.serializer_class = CentreCitySerializer
+        elif related == 'projects':
+            self.serializer_class = CentreProjectsSerializer
+        elif related == 'events':
+            self.serializer_class = CentreEventsSerializer
+
+        return queryset
+
+
+class CentreDetail(RetrieveAPIView):
+    serializer_class = CentreDetailSerializer
+    queryset = Centre.objects.all()

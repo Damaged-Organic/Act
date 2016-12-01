@@ -44,7 +44,7 @@ class IntroContent(ContentBlock, metaclass=TransMeta):
     class Meta:
         db_table = get_table_name('content', 'intro')
 
-        order_prefix = ' ' * 12
+        order_prefix = ' ' * 13
 
         verbose_name = 'Інтро'
         verbose_name_plural = order_prefix + verbose_name
@@ -65,7 +65,7 @@ class Sponsor(models.Model, metaclass=TransMeta):
     class Meta:
         db_table = get_table_name('sponsors')
 
-        order_prefix = ' ' * 11
+        order_prefix = ' ' * 12
 
         verbose_name = 'Донор'
         verbose_name_plural = order_prefix + 'Донори'
@@ -84,15 +84,35 @@ class Sponsor(models.Model, metaclass=TransMeta):
 class Social(models.Model):
     title = models.CharField('Назва мережі', max_length=50)
     link = models.URLField('Посилання', max_length=300)
-    icon = models.CharField('Іконка', max_length=20)
+    icon = models.CharField('Іконка', max_length=30)
 
     class Meta:
         db_table = get_table_name('socials')
 
-        order_prefix = ' ' * 10
+        order_prefix = ' ' * 11
 
         verbose_name = 'Соціальна мережа'
         verbose_name_plural = order_prefix + 'Соціальні мережі'
+
+    def __str__(self):
+        return self.title or self.__class__.__name__
+
+
+# Activity
+
+class Activity(models.Model, metaclass=TransMeta):
+    title = models.CharField('Назва діяльності', max_length=100)
+    icon = models.CharField('Іконка', max_length=30)
+
+    class Meta:
+        db_table = get_table_name('activities')
+
+        order_prefix = ' ' * 10
+
+        verbose_name = 'Вид діяльності'
+        verbose_name_plural = order_prefix + 'Види діяльності'
+
+        translate = ('title', )
 
     def __str__(self):
         return self.title or self.__class__.__name__
@@ -127,6 +147,9 @@ class ProjectArea(models.Model, metaclass=TransMeta):
 
 
 class Project(models.Model, metaclass=TransMeta):
+    LIMIT = {'default': 3, 'max': 100}
+    PAGE_SIZE = {'default': 10, 'max': 100}
+
     IMAGE_PATH = 'projects/images/'
 
     image = models.ImageField('Головне зображення', upload_to=IMAGE_PATH)
@@ -176,7 +199,7 @@ class Project(models.Model, metaclass=TransMeta):
         super(Project, self).save(*args, **kwargs)
 
     def image_preview(self):
-        return '<img src="%s" width="400" max-width="400">' % (self.image.url)
+        return '<img src="%s" width="300" max-width="300">' % (self.image.url)
     image_preview.allow_tags = True
     image_preview.short_description = 'Превʼю головного зображення'
 
@@ -219,6 +242,9 @@ class EventCategory(models.Model, metaclass=TransMeta):
 
 
 class Event(models.Model, metaclass=TransMeta):
+    LIMIT = {'default': 6, 'max': 100}
+    PAGE_SIZE = {'default': 10, 'max': 100}
+
     IMAGE_PATH = 'events/images/'
 
     image = models.ImageField('Головне зображення', upload_to=IMAGE_PATH)
@@ -276,7 +302,7 @@ class Event(models.Model, metaclass=TransMeta):
         super(Event, self).save(*args, **kwargs)
 
     def image_preview(self):
-        return '<img src="%s" width="400" max-width="400">' % (self.image.url)
+        return '<img src="%s" width="300" max-width="300">' % (self.image.url)
     image_preview.allow_tags = True
     image_preview.short_description = 'Превʼю головного зображення'
 
@@ -285,8 +311,12 @@ class Event(models.Model, metaclass=TransMeta):
 
 class City(models.Model, metaclass=TransMeta):
     PHOTO_PATH = 'cities/photos/'
+    PHOTO_PATH_THUMB = 'cities/photos/thumbs/'
 
     photo = models.ImageField('Фотографія', upload_to=PHOTO_PATH)
+    photo_thumb = models.ImageField(
+        'Фотографія', upload_to=PHOTO_PATH_THUMB, null=True
+    )
     name = models.CharField('Назва', max_length=100, unique=True)
 
     class Meta:
@@ -310,6 +340,7 @@ class City(models.Model, metaclass=TransMeta):
 
 # Centre
 
+
 class Centre(models.Model):
     city = models.OneToOneField(
         City, null=True, on_delete=models.SET_NULL,
@@ -317,12 +348,12 @@ class Centre(models.Model):
     city.verbose_name = City._meta.verbose_name
 
     projects = models.ManyToManyField(
-        Project, blank=True,
+        Project, blank=True, related_name='centres',
     )
     projects.verbose_name = Project._meta.verbose_name_plural
 
     events = models.ManyToManyField(
-        Event, blank=True,
+        Event, blank=True, related_name='centres',
     )
     events.verbose_name = Event._meta.verbose_name_plural
 
@@ -335,7 +366,7 @@ class Centre(models.Model):
         verbose_name_plural = order_prefix + 'Центри'
 
     def __str__(self):
-        return str(self.city.name) if self.city else self.__class__.__name__
+        return str(self.city) if self.city else self.__class__.__name__
 
     '''Projects shortcut methods'''
 
@@ -395,8 +426,12 @@ class CentreSubpage(models.Model, metaclass=TransMeta):
 
 class Participant(models.Model, metaclass=TransMeta):
     PHOTO_PATH = 'participants/photos/'
+    PHOTO_PATH_THUMB = 'participants/photos/thumbs/'
 
     photo = models.ImageField('Фотографія', upload_to=PHOTO_PATH)
+    photo_thumb = models.ImageField(
+        'Фотографія', upload_to=PHOTO_PATH_THUMB, null=True,
+    )
 
     centre = models.ForeignKey(
         Centre,
@@ -440,16 +475,21 @@ class Participant(models.Model, metaclass=TransMeta):
 # Contact
 
 class Contact(models.Model, metaclass=TransMeta):
-    centre = models.OneToOneField(Centre, on_delete=models.CASCADE)
+    centre = models.OneToOneField(
+        Centre, null=True, blank=True, on_delete=models.CASCADE,
+    )
+    centre.verbose_name = Centre._meta.verbose_name
 
-    email = models.CharField('E-mail', max_length=254)
+    email = models.EmailField('E-mail', max_length=254)
     phone = models.CharField('Телефон', max_length=19)
-    address = models.CharField('Адреса', max_length=300, null=True, blank=True)
+    address = models.CharField(
+        'Адреса', max_length=300, null=True, blank=True,
+    )
 
     class Meta:
         db_table = get_table_name('contacts')
 
-        order_prefix = ' ' * 1
+        order_prefix = ' ' * 6
 
         verbose_name = 'Контакт'
         verbose_name_plural = order_prefix + 'Контакти'
@@ -457,4 +497,4 @@ class Contact(models.Model, metaclass=TransMeta):
         translate = ('address', )
 
     def __str__(self):
-        return self._meta.verbose_name or self.__class__.__name__
+        return str(self.centre) if self.centre else self.__class__.__name__

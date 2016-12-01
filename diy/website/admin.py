@@ -14,7 +14,7 @@ from diy.admin import (
 
 from .models import (
     IntroContent,
-    Sponsor, Social,
+    Sponsor, Social, Activity,
     ProjectArea, Project,
     EventCategory, Event,
     City,
@@ -91,6 +91,28 @@ class SocialAdmin(
     }
 
 
+# Activity
+
+@admin.register(Activity, site=admin_site)
+class ActivityAdmin(
+    ForbidAddMixin, ForbidDeleteMixin, DefaultOrderingModelAdmin
+):
+    readonly_fields = ('icon', )
+    list_display = ('title_uk', )
+
+    fieldsets = (
+        ('Локалізована інформація', {
+            'fields': ('title_uk', ),
+        }),
+    )
+
+    formfield_overrides = {
+        models.CharField: {'widget': forms.TextInput(attrs={
+            'style': 'width:25%; max-width:25%;'
+        })},
+    }
+
+
 # Project
 
 @admin.register(ProjectArea, site=admin_site)
@@ -105,8 +127,22 @@ class ProjectAreaAdmin(DefaultOrderingModelAdmin):
     )
 
 
+class ProjectCentresInline(admin.TabularInline):
+    model = Centre.projects.through
+    extra = 1
+
+    '''
+    def to_string(self):
+        return self.centre.city.name
+
+    Centre.projects.through.__str__ = to_string
+    Centre.projects.through._meta.verbose_name_plural = "Належність до центрів"
+    '''
+
+
 @admin.register(Project, site=admin_site)
 class ProjectAdmin(DefaultOrderingModelAdmin):
+    readonly_fields = ('image_preview', )
     list_display = (
         'id', 'title_uk', 'started_at', 'project_area', 'is_active',
     )
@@ -114,12 +150,18 @@ class ProjectAdmin(DefaultOrderingModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ('image', 'project_area', 'is_active', ),
+            'fields': (
+                'image_preview', 'image', 'project_area', 'is_active',
+            ),
         }),
         ('Локалізована інформація', {
             'fields': ('title_uk', 'short_description_uk', 'content_uk', ),
         }),
     )
+
+    inlines = [
+        ProjectCentresInline,
+    ]
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         field = super(ProjectAdmin, self).formfield_for_dbfield(
@@ -154,8 +196,14 @@ class EventCategoryAdmin(DefaultOrderingModelAdmin):
     )
 
 
+class EventCentresInline(admin.TabularInline):
+    model = Centre.events.through
+    extra = 1
+
+
 @admin.register(Event, site=admin_site)
 class EventAdmin(DefaultOrderingModelAdmin):
+    readonly_fields = ('image_preview', )
     list_display = (
         'id', 'title_uk', 'created_at', 'event_category', 'is_active',
     )
@@ -163,12 +211,18 @@ class EventAdmin(DefaultOrderingModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ('image', 'event_category', 'is_active', ),
+            'fields': (
+                'image_preview', 'image', 'event_category', 'is_active',
+            ),
         }),
         ('Локалізована інформація', {
             'fields': ('title_uk', 'short_description_uk', 'content_uk', ),
         }),
     )
+
+    inlines = [
+        EventCentresInline,
+    ]
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         field = super(EventAdmin, self).formfield_for_dbfield(
@@ -191,32 +245,35 @@ class EventAdmin(DefaultOrderingModelAdmin):
 
 # City
 
-# @admin.register(City, site=admin_site)
-# class CityAdmin(DefaultOrderingModelAdmin):
-#     list_display = ('id', 'name_uk', )
-#     list_display_links = ('name_uk', )
-#
-#     fieldsets = (
-#         (None, {
-#             'fields': ('photo', ),
-#         }),
-#         ('Локалізована інформація', {
-#             'fields': ('name_uk', ),
-#         }),
-#     )
-#
-#     def formfield_for_dbfield(self, db_field, **kwargs):
-#         field = super(CityAdmin, self).formfield_for_dbfield(
-#             db_field, **kwargs
-#         )
-#         db_fieldname = canonical_fieldname(db_field)
-#
-#         if db_fieldname == 'name':
-#             field.widget = forms.TextInput(attrs={
-#                 'style': 'width:50%; max-width:50%;'
-#             })
-#
-#         return field
+@admin.register(City, site=admin_site)
+class CityAdmin(
+    ForbidAddMixin, ForbidDeleteMixin, DefaultOrderingModelAdmin
+):
+    readonly_fields = ('name_uk', 'photo_preview', )
+    list_display = ('id', 'name_uk', )
+    list_display_links = ('name_uk', )
+
+    fieldsets = (
+        (None, {
+            'fields': ('photo_preview', ),
+        }),
+        ('Локалізована інформація', {
+            'fields': ('name_uk', ),
+        }),
+    )
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        field = super(CityAdmin, self).formfield_for_dbfield(
+            db_field, **kwargs
+        )
+        db_fieldname = canonical_fieldname(db_field)
+
+        if db_fieldname == 'name':
+            field.widget = forms.TextInput(attrs={
+                'style': 'width:50%; max-width:50%;'
+            })
+
+        return field
 
 
 # Participant
@@ -230,13 +287,12 @@ class ParticipantInline(admin.TabularInline):
     '''
     Custom template to display enumerated tabular inline
     '''
-    template = "admin/inlines/tabular.html"
+    template = "admin/inlines/tabular_enumerated.html"
 
 
 @admin.register(Participant, site=admin_site)
 class ParticipantAdmin(DefaultOrderingModelAdmin):
     readonly_fields = ('photo_preview', )
-
     list_display = ('id', 'get_full_name', 'position_uk', 'centre', )
     list_display_links = ('get_full_name', )
 
@@ -248,6 +304,63 @@ class ParticipantAdmin(DefaultOrderingModelAdmin):
             'fields': ('name_uk', 'surname_uk', 'position_uk', ),
         }),
     )
+
+
+# Contact
+
+class ContactInline(admin.StackedInline):
+    model = Contact
+    fields = (('email', 'phone', 'address_uk',), )
+    can_delete = False
+
+
+class ContactForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ContactForm, self).__init__(*args, **kwargs)
+        self.fields['centre'].empty_label = 'Центральний офіс'
+
+
+@admin.register(Contact, site=admin_site)
+class ContactAdmin(
+    ForbidAddMixin, ForbidDeleteMixin, DefaultOrderingModelAdmin
+):
+    form = ContactForm
+
+    list_display = ('centre_view', 'email', 'phone', 'address_uk', )
+    list_display_links = ('centre_view', )
+
+    fieldsets = (
+        (None, {
+            'fields': ('centre', 'email', 'phone', ),
+        }),
+        ('Локалізована інформація', {
+            'fields': ('address_uk', ),
+        }),
+    )
+
+    '''
+    This is the only option to make field `readonly` while
+    overriding it's attributes inside form class
+    '''
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        field = super(ContactAdmin, self).formfield_for_dbfield(
+            db_field, **kwargs
+        )
+        db_fieldname = canonical_fieldname(db_field)
+
+        if db_fieldname == 'centre':
+            field.widget = forms.Select(attrs={
+                'readonly': True, 'disabled': 'disabled',
+            })
+
+        return field
+
+    '''
+    This is used to specify empty value for an admin list view
+    '''
+    def centre_view(self, instance):
+        return instance.centre
+    centre_view.empty_value_display = 'Центральний офіс'
 
 
 # Centre
@@ -274,5 +387,5 @@ class CentreAdmin(
     )
 
     inlines = [
-        ParticipantInline,
+        ContactInline, ParticipantInline,
     ]

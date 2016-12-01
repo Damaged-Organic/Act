@@ -9,15 +9,18 @@ from website.views_api import (
     IntroContentSingular,
     SponsorList, SponsorDetail,
     SocialList, SocialDetail,
+    ActivityList, ActivityDetail,
     ProjectAreaList, ProjectAreaDetail,
     ProjectList, ProjectDetail,
     EventCategoryList, EventCategoryDetail,
     EventList, EventDetail,
+    CityList, ParticipantList, ContactList, ContactDetail,
+    CentreList, CentreDetail,
 )
 
 urlpatterns = [
     # Root
-    url(r'^root$', api_root),
+    url(r'^$', api_root),
     # IntroContent
     url(
         r'^intro_content$',
@@ -37,6 +40,13 @@ urlpatterns = [
         r'^socials/(?P<pk>[0-9]+)$',
         SocialDetail.as_view(),
         name='socials_detail',
+    ),
+    # Activity
+    url(r'^activities$', ActivityList.as_view(), name='activities_list'),
+    url(
+        r'^activities/(?P<pk>[0-9]+)$',
+        ActivityDetail.as_view(),
+        name='activities_detail',
     ),
     # ProjectArea
     url(
@@ -73,6 +83,30 @@ urlpatterns = [
         r'^events/(?P<pk>[0-9]+)$',
         EventDetail.as_view(),
         name='events_detail',
+    ),
+    # City
+    url(
+        r'^cities$', CityList.as_view(), name='cities_list',
+    ),
+    # Participant
+    url(
+        r'^participants$', ParticipantList.as_view(), name='participants_list',
+    ),
+    # Contact
+    url(r'^contacts$', ContactList.as_view(), name='contacts_list'),
+    url(
+        r'^contacts/(?P<pk>[0-9]+)$',
+        ContactDetail.as_view(),
+        name='contacts_detail',
+    ),
+    # Centre
+    url(
+        r'^centres$', CentreList.as_view(), name='centres_list',
+    ),
+    url(
+        r'^centres/(?P<pk>[0-9]+)$',
+        CentreDetail.as_view(),
+        name='centres_detail',
     ),
 ]
 
