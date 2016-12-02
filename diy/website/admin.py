@@ -155,7 +155,7 @@ class ProjectAdmin(DefaultOrderingModelAdmin):
             ),
         }),
         ('Локалізована інформація', {
-            'fields': ('title_uk', 'short_description_uk', 'content_uk', ),
+            'fields': ('title_uk', 'content_uk', ),
         }),
     )
 
@@ -172,11 +172,6 @@ class ProjectAdmin(DefaultOrderingModelAdmin):
         if db_fieldname == 'title':
             field.widget = forms.TextInput(attrs={
                 'style': 'width:50%; max-width:50%;'
-            })
-
-        if db_fieldname == 'short_description':
-            field.widget = forms.Textarea(attrs={
-                'style': 'resize:none', 'cols': '100', 'rows': '5'
             })
 
         return field
@@ -208,15 +203,17 @@ class EventAdmin(DefaultOrderingModelAdmin):
         'id', 'title_uk', 'created_at', 'event_category', 'is_active',
     )
     list_display_links = ('title_uk', )
+    raw_id_fields = ('project', )
 
     fieldsets = (
         (None, {
             'fields': (
-                'image_preview', 'image', 'event_category', 'is_active',
+                'image_preview', 'image',
+                'event_category', 'project', 'is_active',
             ),
         }),
         ('Локалізована інформація', {
-            'fields': ('title_uk', 'short_description_uk', 'content_uk', ),
+            'fields': ('title_uk', 'content_uk', ),
         }),
     )
 
@@ -382,10 +379,23 @@ class CentreAdmin(
 
     fieldsets = (
         (None, {
-            'fields': ('city', 'projects', 'events', ),
+            'fields': ('city', 'short_description_uk', 'projects', 'events', ),
         }),
     )
 
     inlines = [
         ContactInline, ParticipantInline,
     ]
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        field = super(CentreAdmin, self).formfield_for_dbfield(
+            db_field, **kwargs
+        )
+        db_fieldname = canonical_fieldname(db_field)
+
+        if db_fieldname == 'short_description':
+            field.widget = forms.Textarea(attrs={
+                'style': 'resize:none', 'cols': '95', 'rows': '10'
+            })
+
+        return field

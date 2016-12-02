@@ -164,7 +164,6 @@ class Project(models.Model, metaclass=TransMeta):
 
     title = models.CharField('Назва', max_length=200, unique=True)
     started_at = models.DateField('Дата початку', auto_now_add=True)
-    short_description = models.CharField('Короткий опис', max_length=500)
     content = RichTextField(
         'Контент', config_name='article_toolbar',
     )
@@ -185,7 +184,7 @@ class Project(models.Model, metaclass=TransMeta):
 
         ordering = ('started_at', )
 
-        translate = ('title', 'short_description', 'content', )
+        translate = ('title', 'content', )
 
     def __str__(self):
         return self.title or self.__class__.__name__
@@ -264,10 +263,10 @@ class Event(models.Model, metaclass=TransMeta):
         on_delete=models.SET_NULL,
         related_name='events',
     )
+    project.verbose_name = Project._meta.verbose_name
 
     created_at = models.DateTimeField('Дата та час події', auto_now_add=True)
     title = models.CharField('Назва', max_length=200)
-    short_description = models.CharField('Короткий опис', max_length=500)
     content = RichTextField(
         'Контент', config_name='article_toolbar',
     )
@@ -288,7 +287,7 @@ class Event(models.Model, metaclass=TransMeta):
 
         ordering = ('created_at', )
 
-        translate = ('title', 'short_description', 'content', )
+        translate = ('title', 'content', )
 
     def __str__(self):
         return self.title or self.__class__.__name__
@@ -341,7 +340,7 @@ class City(models.Model, metaclass=TransMeta):
 # Centre
 
 
-class Centre(models.Model):
+class Centre(models.Model, metaclass=TransMeta):
     city = models.OneToOneField(
         City, null=True, on_delete=models.SET_NULL,
     )
@@ -357,6 +356,8 @@ class Centre(models.Model):
     )
     events.verbose_name = Event._meta.verbose_name_plural
 
+    short_description = models.CharField('Короткий опис', max_length=500)
+
     class Meta:
         db_table = get_table_name('centres')
 
@@ -364,6 +365,8 @@ class Centre(models.Model):
 
         verbose_name = 'Центр'
         verbose_name_plural = order_prefix + 'Центри'
+
+        translate = ('short_description', )
 
     def __str__(self):
         return str(self.city) if self.city else self.__class__.__name__

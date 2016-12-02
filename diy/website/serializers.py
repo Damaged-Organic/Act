@@ -109,8 +109,7 @@ class ProjectSerializer(ExcludableModelSerializer):
         model = Project
         fields = (
             'id', 'project_area', 'centres',
-            'started_at',  'image', 'title', 'short_description', 'content',
-            'is_active', 'slug',
+            'started_at',  'image', 'title', 'content', 'is_active', 'slug',
         )
 
 
@@ -131,8 +130,7 @@ class EventSerializer(ExcludableModelSerializer):
         model = Event
         fields = (
             'id', 'event_category', 'centres', 'project',
-            'created_at', 'image', 'title', 'short_description', 'content',
-            'is_active', 'slug',
+            'created_at', 'image', 'title', 'content', 'is_active', 'slug',
         )
 
 
@@ -189,4 +187,5 @@ class CentreDetailSerializer(serializers.ModelSerializer):
         model = Centre
         fields = (
             'id', 'city', 'contact', 'participants', 'projects', 'events',
+            'short_description',
         )

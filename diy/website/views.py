@@ -8,3 +8,7 @@ def index(request):
 
 def handler404(request):
     return JsonResponse({'detail': "Не знайдено."}, status=404)
+
+
+def handler500(request):
+    return JsonResponse({'detail': "Internal Server Error."}, status=500)

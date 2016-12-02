@@ -16,8 +16,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
     'corsheaders',
+    'rest_framework',
     'django_filters',
     'django_bleach',
     'ckeditor',
@@ -28,6 +28,7 @@ INSTALLED_APPS = [
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # CORS
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -35,8 +36,10 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # HTML min
     'htmlmin.middleware.HtmlMinifyMiddleware',
     'htmlmin.middleware.MarkRequestMiddleware',
+    # Website
     'website.middleware.security_headers_middleware.SecurityHeadersMiddleware',
 ]
 
@@ -49,7 +52,6 @@ TEMPLATES = [
             os.path.join(BASE_DIR, 'templates'),
             os.path.join(BASE_DIR, 'website/templates'),
         ],
-        'APP_DIRS': True,  # To be commented
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -57,12 +59,12 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-            # 'loaders': [
-            #     ('django.template.loaders.cached.Loader', [
-            #         'django.template.loaders.filesystem.Loader',
-            #         'django.template.loaders.app_directories.Loader',
-            #     ]),
-            # ],
+            'loaders': [
+                ('django.template.loaders.cached.Loader', [
+                    'django.template.loaders.filesystem.Loader',
+                    'django.template.loaders.app_directories.Loader',
+                ]),
+            ],
         },
     },
 ]
@@ -109,11 +111,6 @@ LANGUAGES = (
     ('uk', 'UK'),
 )
 
-TRANSMETA_DEFAULT_LANGUAGE = 'uk'
-TRANSMETA_LANGUAGES = (
-    ('uk', 'UK'),
-)
-
 TIME_ZONE = 'Europe/Kiev'
 
 USE_I18N = True
@@ -138,47 +135,6 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
 X_FRAME_OPTIONS = 'DENY'
 
-# Bleach
+# Packages
 
-BLEACH_ALLOWED_TAGS = ['span']
-BLEACH_STRIP_TAGS = True
-
-# CKEditor
-
-CKEDITOR_CONFIGS = {
-    'article_toolbar': {
-        'toolbar_Article': [
-            {'name': 'basic', 'items': [
-                'Source', 'Maximize', 'RemoveFormat',
-            ]},
-            {'name': 'font_style', 'items': [
-                'Bold', 'Italic', 'Underline', 'Strike',
-                'Subscript', 'Superscript',
-            ]},
-            {'name': 'list', 'items': [
-                'NumberedList', 'BulletedList',
-            ]},
-            {'name': 'justify', 'items': [
-                'JustifyLeft', 'JustifyCenter', 'JustifyRight',
-            ]},
-            {'name': 'link', 'items': [
-                'Link', 'Unlink', 'Anchor',
-            ]},
-            {'name': 'insert', 'items': [
-                'Image',
-            ]},
-        ],
-        'toolbar': 'Article',
-        'tabSpaces': 4,
-    },
-}
-
-# CORS
-
-CORS_ORIGIN_WHITELIST = (
-    'act.org.ua',
-    'localhost:3333',
-    '127.0.0.1:3333',
-    'localhost:8000',
-    '127.0.0.1:8000',
-)
+from .packages import *
