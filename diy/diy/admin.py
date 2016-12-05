@@ -1,10 +1,39 @@
 # diy_project/diy/diy/admin.py
+from django import forms
+from django.http import HttpResponseForbidden
 from django.contrib import admin
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.admin import GroupAdmin, UserAdmin
+from django.utils.translation import ugettext as _
 
 
 # Common admin mixins
+
+class ForbidAddMixin():
+    def has_add_permission(self, request):
+        return False
+
+
+class ForbidChangeMixin():
+    '''
+    Custom template to supress change functionality
+    '''
+    template = "admin/change_form.html"
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        obj = Group.objects.get(pk=object_id)
+
+        # Set variable that contorls editable behavior
+        not_editable = True
+
+        if request.method == 'POST':
+            return HttpResponseForbidden("Cannot change an inactive Group")
+
+        more_context = {'not_editable': not_editable}
+        more_context.update(extra_context or {})
+
+        return super().change_view(request, object_id, form_url, more_context)
+
 
 class ForbidDeleteMixin():
     def get_actions(self, request):
@@ -13,11 +42,6 @@ class ForbidDeleteMixin():
         return actions
 
     def has_delete_permission(self, request, obj=None):
-        return False
-
-
-class ForbidAddMixin():
-    def has_add_permission(self, request):
         return False
 
 
@@ -40,10 +64,48 @@ admin_site = DiyAdminSite(name='deus_ex_machina')
 
 
 @admin.register(Group, site=admin_site)
-class GroupAdmin(GroupAdmin):
-    pass
+class GroupAdmin(
+    ForbidAddMixin, ForbidChangeMixin, ForbidDeleteMixin, GroupAdmin
+):
+    readonly_fields = ('name', 'permissions', )
 
 
 @admin.register(User, site=admin_site)
 class UserAdmin(UserAdmin):
-    pass
+    readonly_fields = ('last_login', 'date_joined')
+    list_display = ('username', 'custom_group', 'email', 'first_name', 'last_name', 'is_active', )
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        (_('Група'), {'fields': ('groups',)}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
+        (_('Permissions'), {'fields': ('is_active', )}),
+        (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
+    )
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'password1', 'password2', 'groups', )
+        }),
+    )
+
+    def custom_group(self, obj):
+        """
+        get group, separate by comma, and display empty string if user has no group
+        """
+        return ', '.join([g.name for g in obj.groups.all()]) if obj.groups.count() else 'Суперадміністратор'
+    custom_group.short_description = 'Групи'
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        field = super(UserAdmin, self).formfield_for_dbfield(
+            db_field, **kwargs
+        )
+
+        if db_field.name == 'groups':
+            field.widget = forms.SelectMultiple()
+
+        return field
+
+    def save_model(self, request, obj, form, change):
+        obj.is_staff = True
+        obj.is_superuser = False
+        obj.save()
