@@ -72,8 +72,11 @@ class GroupAdmin(
 
 @admin.register(User, site=admin_site)
 class UserAdmin(UserAdmin):
-    readonly_fields = ('last_login', 'date_joined')
-    list_display = ('username', 'custom_group', 'email', 'first_name', 'last_name', 'is_active', )
+    readonly_fields = ('last_login', 'date_joined', )
+    list_display = (
+        'custom_group',
+        'username', 'email', 'first_name', 'last_name', 'is_active',
+    )
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         (_('Група'), {'fields': ('groups',)}),
@@ -89,11 +92,46 @@ class UserAdmin(UserAdmin):
     )
 
     def custom_group(self, obj):
-        """
-        get group, separate by comma, and display empty string if user has no group
-        """
-        return ', '.join([g.name for g in obj.groups.all()]) if obj.groups.count() else 'Суперадміністратор'
+        '''
+        Stringify groups for list view
+        '''
+        return ', '.join([
+            g.name for g in obj.groups.all()
+        ]) if obj.groups.count() else 'Суперадміністратор'
     custom_group.short_description = 'Групи'
+
+    def get_fieldsets(self, request, obj=None):
+        '''
+        Set custom fieldsets for superuser
+        '''
+        if obj is not None and obj.is_superuser:
+            fieldsets = (
+                (None, {'fields': ('username', )}),
+                (_('Personal info'), {
+                    'fields': ('first_name', 'last_name', 'email')
+                }),
+            )
+        else:
+            fieldsets = super(UserAdmin, self).get_fieldsets(
+                request, obj
+            )
+
+        return fieldsets
+
+    def get_readonly_fields(self, request, obj=None):
+        '''
+        Set custom readonly fields for superuser
+        '''
+        if obj is not None and obj.is_superuser:
+            readonly_fields = (
+                'username', 'password',
+            )
+        else:
+            readonly_fields = super(UserAdmin, self).get_readonly_fields(
+                request, obj
+            )
+
+        return readonly_fields
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         field = super(UserAdmin, self).formfield_for_dbfield(
@@ -106,6 +144,8 @@ class UserAdmin(UserAdmin):
         return field
 
     def save_model(self, request, obj, form, change):
+        '''
+        Set default user permissions
+        '''
         obj.is_staff = True
-        obj.is_superuser = False
         obj.save()
