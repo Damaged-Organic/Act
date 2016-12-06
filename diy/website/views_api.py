@@ -152,7 +152,7 @@ class ProjectPageNumberPagination(PageNumberPagination):
 class ProjectFilter(django_filters.FilterSet):
     class Meta:
         model = Project
-        fields = ['project_area']
+        fields = ['project_area', 'centres']
 
 
 class ProjectList(ListAPIView):
@@ -208,7 +208,7 @@ class EventPageNumberPagination(PageNumberPagination):
 class EventFilter(django_filters.FilterSet):
     class Meta:
         model = Event
-        fields = ['event_category', 'project']
+        fields = ['event_category', 'project', 'centres']
 
 
 class EventList(ListAPIView):

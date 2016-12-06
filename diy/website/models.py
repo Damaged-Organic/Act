@@ -148,7 +148,7 @@ class ProjectArea(models.Model, metaclass=TransMeta):
 
 class Project(models.Model, metaclass=TransMeta):
     LIMIT = {'default': 3, 'max': 100}
-    PAGE_SIZE = {'default': 10, 'max': 100}
+    PAGE_SIZE = {'default': 4, 'max': 100}
 
     IMAGE_PATH = 'projects/images/'
 
@@ -242,7 +242,7 @@ class EventCategory(models.Model, metaclass=TransMeta):
 
 class Event(models.Model, metaclass=TransMeta):
     LIMIT = {'default': 6, 'max': 100}
-    PAGE_SIZE = {'default': 10, 'max': 100}
+    PAGE_SIZE = {'default': 4, 'max': 100}
 
     IMAGE_PATH = 'events/images/'
 

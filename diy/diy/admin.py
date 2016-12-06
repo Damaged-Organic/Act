@@ -67,7 +67,19 @@ admin_site = DiyAdminSite(name='deus_ex_machina')
 class GroupAdmin(
     ForbidAddMixin, ForbidChangeMixin, ForbidDeleteMixin, GroupAdmin
 ):
-    readonly_fields = ('name', 'permissions', )
+    readonly_fields = ('name', 'custom_permissions', )
+    fields = ('name', 'custom_permissions', )
+
+    def custom_permissions(self, obj):
+        '''
+        Custom field to properly format read only permissions
+        '''
+        return '\n'.join([
+            # Careful - splitted list unpacking used here!
+            '{1} : {2}'.format(*str(permission).split('|'))
+            for permission in obj.permissions.all()
+        ])
+    custom_permissions.short_description = 'Дозволи'
 
 
 @admin.register(User, site=admin_site)
@@ -96,7 +108,7 @@ class UserAdmin(UserAdmin):
         Stringify groups for list view
         '''
         return ', '.join([
-            g.name for g in obj.groups.all()
+            group.name for group in obj.groups.all()
         ]) if obj.groups.count() else 'Суперадміністратор'
     custom_group.short_description = 'Групи'
 
