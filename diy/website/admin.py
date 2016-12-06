@@ -19,6 +19,7 @@ from .models import (
     EventCategory, Event,
     City,
     Centre, CentreSubpage, Participant, Contact,
+    Worksheet,
 )
 
 
@@ -399,3 +400,10 @@ class CentreAdmin(
             })
 
         return field
+
+
+# Worksheet
+
+@admin.register(Worksheet, site=admin_site)
+class WorksheetAdmin(DefaultOrderingModelAdmin):
+    pass

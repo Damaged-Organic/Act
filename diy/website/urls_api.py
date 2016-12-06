@@ -16,6 +16,7 @@ from website.views_api import (
     EventList, EventDetail,
     CityList, ParticipantList, ContactList, ContactDetail,
     CentreList, CentreDetail,
+    WorksheetCreate,
 )
 
 urlpatterns = [
@@ -107,6 +108,12 @@ urlpatterns = [
         r'^centres/(?P<pk>[0-9]+)$',
         CentreDetail.as_view(),
         name='centres_detail',
+    ),
+    # Worksheet
+    url(
+        r'^worksheets/create$',
+        WorksheetCreate.as_view(),
+        name='worksheets_create',
     ),
 ]
 

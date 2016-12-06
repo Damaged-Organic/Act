@@ -1,5 +1,6 @@
 # diy_project/diy/website/models.py
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.text import slugify
 
@@ -501,3 +502,62 @@ class Contact(models.Model, metaclass=TransMeta):
 
     def __str__(self):
         return str(self.centre) if self.centre else self.__class__.__name__
+
+
+# Worksheet
+
+class Worksheet(models.Model):
+    CHOICES_BOOLEAN = [(0, 'Так'), (1, 'Ні')]
+
+    full_name = models.CharField('ПІБ',  max_length=300)
+    residence = models.CharField('Місце проживання', max_length=500)
+    email = models.EmailField('E-mail', max_length=254)
+    phone = models.CharField('Телефон', max_length=19)
+    personal_link = models.URLField(
+        'Персональна сторінка', max_length=200, null=True, blank=True,
+    )
+    problem = models.BooleanField('Бажаєте повідомити про проблему?')
+    problem_description = models.CharField(
+        'Із якою проблемою Вам довелося зіштовхнутися?',
+        max_length=1000,
+        null=True,
+        blank=True,
+    )
+    activity = models.BooleanField('Чи бажаєте Ви долучитись до «ДІЙ!»?')
+    activity_description = models.CharField(
+        'У якій діяльності в рамках «ДІЙ!» ви би хотіли взяти участь?',
+        max_length=1000,
+        null=True,
+        blank=True,
+    )
+
+    class Meta:
+        db_table = get_table_name('worksheet')
+
+        order_prefix = ' ' * 6
+
+        verbose_name = 'Анкета'
+        verbose_name_plural = order_prefix + 'Анкети'
+
+    def __str__(self):
+        return str(self.pk) or self.__class__.__name__
+
+    def clean(self, *args, **kwargs):
+        '''
+        Clean method makes sure that description fields linked
+        to a corresponding boolean fields would raise errors,
+        if booleans set to `True` and descriptions are blank.
+        Validation errors are raised in bunch, so user could
+        see them all at once - not one by one on each error
+        '''
+        errors = {}
+
+        if self.problem and not self.problem_description:
+            errors['problem_description'] = ["Будь ласка, опишіть проблему"]
+        if self.activity and not self.activity_description:
+            errors['activity_description'] = ["Будь ласка, опишіть діяльність"]
+
+        if errors:
+            raise ValidationError(errors)
+
+        super(Worksheet, self).clean(*args, **kwargs)

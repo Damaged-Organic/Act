@@ -3,7 +3,7 @@ from django.http import Http404
 
 from rest_framework.response import Response
 from rest_framework.generics import (
-    GenericAPIView, ListAPIView, RetrieveAPIView,
+    GenericAPIView, ListAPIView, RetrieveAPIView, CreateAPIView,
 )
 from rest_framework.pagination import (
     LimitOffsetPagination, PageNumberPagination,
@@ -20,6 +20,7 @@ from .models import (
     EventCategory, Event,
     City, Participant, Contact,
     Centre,
+    Worksheet,
 )
 from .serializers import (
     IntroContentSerializer,
@@ -29,6 +30,7 @@ from .serializers import (
     CitySerializer, ParticipantSerializer, ContactSerializer,
     CentreListSerializer, CentreDetailSerializer,
     CentreCitySerializer, CentreProjectsSerializer, CentreEventsSerializer,
+    WorksheetSerializer,
 )
 
 
@@ -57,6 +59,9 @@ def api_root(request, format=None):
         ),
         'contacts': reverse('contacts_list', request=request, format=format),
         'centres': reverse('centres_list', request=request, format=format),
+        'worksheets': reverse(
+            'worksheets_create', request=request, format=format
+        ),
     })
 
 
@@ -292,3 +297,10 @@ class CentreList(ListAPIView):
 class CentreDetail(RetrieveAPIView):
     serializer_class = CentreDetailSerializer
     queryset = Centre.objects.all()
+
+
+# Worksheet
+
+class WorksheetCreate(CreateAPIView):
+    serializer_class = WorksheetSerializer
+    queryset = Worksheet.objects.all()

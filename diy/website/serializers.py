@@ -9,6 +9,7 @@ from .models import (
     EventCategory, Event,
     City, Participant, Contact,
     Centre,
+    Worksheet,
 )
 
 
@@ -188,4 +189,16 @@ class CentreDetailSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'city', 'contact', 'participants', 'projects', 'events',
             'short_description',
+        )
+
+
+# Worksheet
+
+class WorksheetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Worksheet
+        fields = (
+            'full_name', 'residence', 'email', 'phone', 'personal_link',
+            'problem', 'problem_description',
+            'activity', 'activity_description',
         )
