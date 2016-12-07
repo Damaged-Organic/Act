@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'django_bleach',
     'ckeditor',
     'metadata.apps.MetadataConfig',
+    'subscription.apps.SubscriptionConfig',
     'website.apps.WebsiteConfig',
 ]
 

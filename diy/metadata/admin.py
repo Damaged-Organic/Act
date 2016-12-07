@@ -1,7 +1,6 @@
 # diy_project/diy/metadata/admin.py
 from django import forms
 from django.contrib import admin
-from django.conf import settings
 
 from transmeta import canonical_fieldname
 
@@ -17,7 +16,7 @@ class MetadataAdmin(DefaultOrderingModelAdmin):
     readonly_fields = ('url_name',)
     fieldsets = (
         (None, {
-            'fields': ('url_name', 'robots',)
+            'fields': ('url_name', 'robots', )
         }),
         ('Локалізована інформація', {
             'fields': ('title_uk', 'description_uk',)

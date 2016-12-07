@@ -31,6 +31,12 @@ urlpatterns += [
     url(r'^api/', include('website.urls_api')),
 ]
 
+''' Subscription application API '''
+
+urlpatterns += [
+    url(r'^api/', include('subscription.urls_api')),
+]
+
 if settings.DEBUG:
     from django.conf.urls.static import static
 

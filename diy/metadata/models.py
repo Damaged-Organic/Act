@@ -17,4 +17,4 @@ class Metadata(models.Model, metaclass=TransMeta):
         translate = ('title', 'description',)
 
     def __str__(self):
-        return self.title
+        return str(self.title) or self.__class__.__name__
