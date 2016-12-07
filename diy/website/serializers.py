@@ -1,6 +1,7 @@
 # diy_project/diy/website/serializers.py
 from django.conf import settings
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
 from .models import (
     IntroContent,
@@ -10,6 +11,8 @@ from .models import (
     City, Participant, Contact,
     Centre,
     Worksheet,
+    problem_description_validator,
+    activity_description_validator,
 )
 
 
@@ -195,6 +198,36 @@ class CentreDetailSerializer(serializers.ModelSerializer):
 # Worksheet
 
 class WorksheetSerializer(serializers.ModelSerializer):
+    def validate_problem_description(self, value):
+        '''
+        Defining validators on field level to stack them with default ones
+        '''
+
+        problem = 'problem' in self.initial_data and bool(
+            self.initial_data['problem']) or False
+
+        error_problem_description = problem_description_validator(
+            problem, value)
+        if error_problem_description:
+            raise ValidationError(error_problem_description)
+
+        return value
+
+    def validate_activity_description(self, value):
+        '''
+        Defining validators on field level to stack them with default ones
+        '''
+
+        activity = 'activity' in self.initial_data and bool(
+            self.initial_data['activity']) or False
+
+        error_activity_description = activity_description_validator(
+            activity, value)
+        if error_activity_description:
+            raise ValidationError(error_activity_description)
+
+        return value
+
     class Meta:
         model = Worksheet
         fields = (

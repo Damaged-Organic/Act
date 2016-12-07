@@ -111,7 +111,7 @@ urlpatterns = [
     ),
     # Worksheet
     url(
-        r'^worksheets/create$',
+        r'^worksheets$',
         WorksheetCreate.as_view(),
         name='worksheets_create',
     ),

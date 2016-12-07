@@ -506,9 +506,21 @@ class Contact(models.Model, metaclass=TransMeta):
 
 # Worksheet
 
-class Worksheet(models.Model):
-    CHOICES_BOOLEAN = [(0, 'Так'), (1, 'Ні')]
+def problem_description_validator(problem, problem_description):
+    if problem and not problem_description:
+        return "Будь ласка, опишіть проблему."
 
+    return False
+
+
+def activity_description_validator(activity, activity_description):
+    if activity and not activity_description:
+        return "Будь ласка, опишіть діяльність."
+
+    return False
+
+
+class Worksheet(models.Model):
     full_name = models.CharField('ПІБ',  max_length=300)
     residence = models.CharField('Місце проживання', max_length=500)
     email = models.EmailField('E-mail', max_length=254)
@@ -552,10 +564,15 @@ class Worksheet(models.Model):
         '''
         errors = {}
 
-        if self.problem and not self.problem_description:
-            errors['problem_description'] = ["Будь ласка, опишіть проблему"]
-        if self.activity and not self.activity_description:
-            errors['activity_description'] = ["Будь ласка, опишіть діяльність"]
+        error_problem_description = problem_description_validator(
+            self.problem, self.problem_description)
+        if error_problem_description:
+            errors['problem_description'] = [error_problem_description]
+
+        error_activity_description = activity_description_validator(
+            self.activity, self.activity_description)
+        if error_activity_description:
+            errors['activity_description'] = [error_activity_description]
 
         if errors:
             raise ValidationError(errors)
