@@ -1,0 +1,11 @@
+{# diy_project/diy/website/templates/website/emails/subscribe.html #}
+<h1>Підписка на новини мережі ДІЙ!</h1>
+<h4>
+    Дані користувача:
+</h4>
+<p>
+    {{ email }}
+</p>
+<small>
+    Повідомлення було надіслано {{ sent_at|date:'Y-m-d' }}, у {{ sent_at|date:'H:i' }}
+</small>

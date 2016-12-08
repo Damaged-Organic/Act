@@ -5,9 +5,13 @@ import hashlib
 
 
 class CheckoutHash():
+    HASH_ALGORITHM = hashlib.sha1
+
     def generate(self):
-        h = hmac.new(uuid.uuid4().hex.encode(), None, hashlib.sha1)
-        return h.hexdigest()
+        salt = uuid.uuid4().hex
+        checkout_hash = hmac.new(salt.encode(), None, self.HASH_ALGORITHM)
+
+        return checkout_hash.hexdigest()
 
     def compare(self, x, y):
         return hmac.compare_digest(x, y)

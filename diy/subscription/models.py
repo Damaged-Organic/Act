@@ -9,15 +9,12 @@ class Subscriber(models.Model):
     email = models.EmailField('E-mail', max_length=254)
     is_active = models.BooleanField('Активний', default=False)
     subscribed_at = models.DateTimeField(
-        'Дата та час підписки', auto_now_add=True,
-    )
+        'Дата та час підписки', auto_now_add=True)
 
     checkout_hash_in = models.CharField(
-        max_length=40, null=True, blank=True, default=None,
-    )
+        max_length=40, null=True, blank=True, default=None)
     checkout_hash_out = models.CharField(
-        max_length=40, null=True, blank=True, default=None,
-    )
+        max_length=40, null=True, blank=True, default=None)
 
     class Meta:
         verbose_name = 'Підписник'

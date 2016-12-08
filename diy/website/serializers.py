@@ -1,7 +1,11 @@
 # diy_project/diy/website/serializers.py
+import datetime
+
 from django.conf import settings
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+
+from diy.services.mailer import MailerMixin
 
 from .models import (
     IntroContent,
@@ -197,7 +201,17 @@ class CentreDetailSerializer(serializers.ModelSerializer):
 
 # Worksheet
 
-class WorksheetSerializer(serializers.ModelSerializer):
+class WorksheetSerializer(MailerMixin, serializers.ModelSerializer):
+    DATETIME_FORMAT = '%d-%m-%Y %H:%M'
+
+    class Meta:
+        model = Worksheet
+        fields = (
+            'full_name', 'residence', 'email', 'phone', 'personal_link',
+            'problem', 'problem_description',
+            'activity', 'activity_description',
+        )
+
     def validate_problem_description(self, value):
         '''
         Defining validators on field level to stack them with default ones
@@ -228,10 +242,25 @@ class WorksheetSerializer(serializers.ModelSerializer):
 
         return value
 
-    class Meta:
-        model = Worksheet
-        fields = (
-            'full_name', 'residence', 'email', 'phone', 'personal_link',
-            'problem', 'problem_description',
-            'activity', 'activity_description',
+    def send_email(self):
+        sent_at = datetime.datetime.now()
+
+        subject = (
+            'Нова анкета з сайту ДІЙ!, ' +
+            sent_at.strftime(self.DATETIME_FORMAT)
         )
+        template = 'website/emails/worksheet.html'
+        context = {
+            'full_name': self.validated_data['full_name'],
+            'residence': self.validated_data['residence'],
+            'email': self.validated_data['email'],
+            'phone': self.validated_data['phone'],
+            'personal_link': self.validated_data['personal_link'],
+            'problem_description':
+                self.validated_data['problem_description'],
+            'activity_description':
+                self.validated_data['activity_description'],
+            'sent_at': sent_at,
+        }
+
+        super(WorksheetSerializer, self).send_email(subject, template, context)

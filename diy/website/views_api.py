@@ -5,6 +5,9 @@ from rest_framework.response import Response
 from rest_framework.generics import (
     GenericAPIView, ListAPIView, RetrieveAPIView, CreateAPIView,
 )
+from rest_framework.mixins import (
+    CreateModelMixin, UpdateModelMixin,
+)
 from rest_framework.pagination import (
     LimitOffsetPagination, PageNumberPagination,
 )
@@ -268,6 +271,16 @@ class CentreDetail(RetrieveAPIView):
 
 # Worksheet
 
-class WorksheetCreate(CreateAPIView):
+class WorksheetList(CreateModelMixin, GenericAPIView):
     serializer_class = WorksheetSerializer
     queryset = Worksheet.objects.all()
+
+    def perform_create(self, serializer):
+        '''
+        Send an e-mail notification on succesfull serializer save
+        '''
+        serializer.save()
+        serializer.send_email()
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)

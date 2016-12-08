@@ -12,7 +12,7 @@ def api_root(request, format=None):
         'metadata': reverse('metadata_list', request=request, format=format),
         # Subscription
         'subscribers': reverse(
-            'subscribers_create', request=request, format=format
+            'subscribers_list', request=request, format=format
         ),
         # Website
         'intro_content': reverse(
@@ -38,6 +38,6 @@ def api_root(request, format=None):
         'contacts': reverse('contacts_list', request=request, format=format),
         'centres': reverse('centres_list', request=request, format=format),
         'worksheets': reverse(
-            'worksheets_create', request=request, format=format
+            'worksheets_list', request=request, format=format
         ),
     })

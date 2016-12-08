@@ -14,7 +14,7 @@ from .views_api import (
     EventList, EventDetail,
     CityList, ParticipantList, ContactList, ContactDetail,
     CentreList, CentreDetail,
-    WorksheetCreate,
+    WorksheetList,
 )
 
 urlpatterns = [
@@ -108,8 +108,8 @@ urlpatterns = [
     # Worksheet
     url(
         r'^worksheets$',
-        WorksheetCreate.as_view(),
-        name='worksheets_create',
+        WorksheetList.as_view(),
+        name='worksheets_list',
     ),
 ]
 
