@@ -5,11 +5,11 @@ from django.contrib import admin
 from django.utils.html import escape
 
 # Notice overridden transmeta import!
-from .services.transmeta import canonical_fieldname
+from diy.services.transmeta import canonical_fieldname
 
 from diy.admin import (
     admin_site, DefaultOrderingModelAdmin,
-    ForbidAddMixin, ForbidDeleteMixin, ContentBlockMixin,
+    ForbidAddMixin, ForbidDeleteMixin,
 )
 
 from .models import (

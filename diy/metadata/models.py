@@ -1,7 +1,8 @@
 # diy_project/diy/metadata/models.py
 from django.db import models
 
-from transmeta import TransMeta
+# Notice overridden transmeta import!
+from diy.services.transmeta import TransMeta
 
 
 class Metadata(models.Model, metaclass=TransMeta):

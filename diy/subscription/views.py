@@ -1,3 +1,1 @@
-from django.shortcuts import render
-
-# Create your views here.
+# diy_project/diy/subscription/views.py

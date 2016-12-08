@@ -8,6 +8,7 @@ from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 
 from .admin import admin_site
+from .views import api_root
 
 handler400 = 'website.views.handler400'
 handler403 = 'website.views.handler403'
@@ -25,16 +26,28 @@ urlpatterns += i18n_patterns(
     prefix_default_language=False
 )
 
-''' Website application API '''
+''' Root API view '''
 
 urlpatterns += [
-    url(r'^api/', include('website.urls_api')),
+    url(r'^api/$', api_root),
+]
+
+''' Metadata application API '''
+
+urlpatterns += [
+    url(r'^api/', include('metadata.urls_api')),
 ]
 
 ''' Subscription application API '''
 
 urlpatterns += [
     url(r'^api/', include('subscription.urls_api')),
+]
+
+''' Website application API '''
+
+urlpatterns += [
+    url(r'^api/', include('website.urls_api')),
 ]
 
 if settings.DEBUG:

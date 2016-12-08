@@ -45,14 +45,12 @@ class ForbidDeleteMixin():
         return False
 
 
-class ContentBlockMixin(ForbidDeleteMixin, ForbidAddMixin):
-    exclude = ('name',)
-
-
-# Admin site
+# Extended admin classes
 
 class DefaultOrderingModelAdmin(admin.ModelAdmin):
     ordering = ('id',)
+
+# Admin site
 
 
 class DiyAdminSite(admin.AdminSite):

@@ -2,7 +2,7 @@
 from django import forms
 from django.contrib import admin
 
-from transmeta import canonical_fieldname
+from diy.services.transmeta import canonical_fieldname
 
 from diy.admin import (
     admin_site, DefaultOrderingModelAdmin

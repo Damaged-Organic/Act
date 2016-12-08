@@ -3,7 +3,7 @@ from django.conf.urls import url
 
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from subscription.views_api import SubscriberCreate
+from .views_api import SubscriberCreate
 
 urlpatterns = [
     url(

@@ -8,7 +8,7 @@ from transliterate import translit
 from ckeditor.fields import RichTextField
 
 # Notice overridden transmeta import!
-from .services.transmeta import TransMeta
+from diy.services.transmeta import TransMeta
 
 """
 Hack to order models in Django Admin. Whitespaces assigned in nested Meta

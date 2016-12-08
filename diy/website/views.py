@@ -1,3 +1,4 @@
+# diy_project/diy/website/views.py
 from django.http import JsonResponse
 from django.shortcuts import render
 

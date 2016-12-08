@@ -3,8 +3,7 @@ from django.conf.urls import url
 
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from website.views_api import (
-    api_root,
+from .views_api import (
     IntroContentSingular,
     SponsorList, SponsorDetail,
     SocialList, SocialDetail,
@@ -19,8 +18,6 @@ from website.views_api import (
 )
 
 urlpatterns = [
-    # Root
-    url(r'^$', api_root),
     # IntroContent
     url(
         r'^intro_content$',

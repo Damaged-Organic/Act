@@ -8,8 +8,6 @@ from rest_framework.generics import (
 from rest_framework.pagination import (
     LimitOffsetPagination, PageNumberPagination,
 )
-from rest_framework.decorators import api_view
-from rest_framework.reverse import reverse
 
 from django_filters import rest_framework as django_filters
 
@@ -32,37 +30,6 @@ from .serializers import (
     CentreCitySerializer, CentreProjectsSerializer, CentreEventsSerializer,
     WorksheetSerializer,
 )
-
-
-@api_view(['GET'])
-def api_root(request, format=None):
-    return Response({
-        'intro_content': reverse(
-            'intro_content_singular', request=request, format=format
-        ),
-        'sponsors': reverse('sponsors_list', request=request, format=format),
-        'socials': reverse('socials_list', request=request, format=format),
-        'activities': reverse(
-            'activities_list', request=request, format=format
-        ),
-        'projects_areas': reverse(
-            'projects_areas_list', request=request, format=format
-        ),
-        'projects': reverse('projects_list', request=request, format=format),
-        'events_categories': reverse(
-            'events_categories_list', request=request, format=format
-        ),
-        'events': reverse('events_list', request=request, format=format),
-        'cities': reverse('cities_list', request=request, format=format),
-        'participants': reverse(
-            'participants_list', request=request, format=format
-        ),
-        'contacts': reverse('contacts_list', request=request, format=format),
-        'centres': reverse('centres_list', request=request, format=format),
-        'worksheets': reverse(
-            'worksheets_create', request=request, format=format
-        ),
-    })
 
 
 # IntroContent
