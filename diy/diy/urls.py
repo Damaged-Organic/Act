@@ -8,7 +8,7 @@ from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 
 from .admin import admin_site
-from .views import api_root
+from .views_api import api_root
 
 handler400 = 'website.views.handler400'
 handler403 = 'website.views.handler403'

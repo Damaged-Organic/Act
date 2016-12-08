@@ -7,4 +7,4 @@ from .models import Subscriber
 class SubscriberSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subscriber
-        fields = ('url_name', 'title', 'description', 'robots', )
+        fields = ('email', )

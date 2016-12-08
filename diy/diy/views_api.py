@@ -1,4 +1,4 @@
-# diy_project/diy/diy/views.py
+# diy_project/diy/diy/views_api.py
 from rest_framework.response import Response
 
 from rest_framework.decorators import api_view

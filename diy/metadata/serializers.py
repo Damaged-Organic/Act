@@ -7,4 +7,4 @@ from .models import Metadata
 class MetadataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Metadata
-        fields = ('email', )
+        fields = ('url_name', 'title', 'description', 'robots', )
