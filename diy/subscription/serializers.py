@@ -13,14 +13,14 @@ class SubscriberSerializer(MailerMixin, serializers.ModelSerializer):
         model = Subscriber
         fields = ('email', )
 
-    def send_subscribe_email(self):
-        # TODO: Here should be a checkout hash setup somehow. Or in the view.
+    def send_subscribe_email(self, checkout_url):
         email_to = self.validated_data['email']
 
         subject = 'Підписка на новини мережі ДІЙ!'
         template = 'website/emails/subscribe.html'
         context = {
             'email': email_to,
+            'checkout_url': checkout_url,
             'sent_at': datetime.datetime.now(),
         }
 
@@ -29,4 +29,16 @@ class SubscriberSerializer(MailerMixin, serializers.ModelSerializer):
         )
 
     def send_unsubscribe_email(self):
-        return Email
+        email_to = self.validated_data['email']
+
+        subject = 'Відписка від новин мережі ДІЙ!'
+        template = 'website/emails/unsubscribe.html'
+        context = {
+            'email': email_to,
+            'checkout_url': checkout_url,
+            'sent_at': datetime.datetime.now(),
+        }
+
+        super(SubscriberSerializer, self).send_email(
+            subject, template, context, None, email_to
+        )

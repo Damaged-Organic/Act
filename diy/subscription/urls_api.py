@@ -10,6 +10,14 @@ urlpatterns = [
     url(r'^subscribers/(?P<pk>[0-9]+)$',
         SubscriberDetail.as_view(),
         name='subscribers_detail'),
+    url(r'^subscribers/subscribe/'
+        r'(?P<pk>[0-9]+)/(?P<checkout_hash>[a-f0-9]+)$',
+        SubscriberDetail.as_view(),
+        name='subscribers_detail_subscribe'),
+    url(r'^subscribers/unsubscribe/'
+        r'(?P<pk>[0-9]+)/(?P<checkout_hash>[a-f0-9]+)$',
+        SubscriberDetail.as_view(),
+        name='subscribers_detail_unsubscribe'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
