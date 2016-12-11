@@ -7,9 +7,6 @@ from .views_api import SubscriberList, SubscriberDetail
 
 urlpatterns = [
     url(r'^subscribers$', SubscriberList.as_view(), name='subscribers_list'),
-    url(r'^subscribers/(?P<pk>[0-9]+)$',
-        SubscriberDetail.as_view(),
-        name='subscribers_detail'),
     url(r'^subscribers/subscribe/'
         r'(?P<pk>[0-9]+)/(?P<checkout_hash>[a-f0-9]+)$',
         SubscriberDetail.as_view(),

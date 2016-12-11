@@ -26,30 +26,30 @@ class Subscriber(models.Model):
     def __str__(self):
         return str(self.email) or self.__class__.__name__
 
-    def checkout(self):
-        checkout_hash = self.CheckoutHash.generate()
-        self.checkout_hash = checkout_hash
+    def prepare_checkout_hash(self):
+        self.checkout_hash = self.CheckoutHash.generate()
         self.checkout_at = timezone.now()
 
-        return checkout_hash
+        return self.checkout_hash
 
-    def validate_checkout_hash(self, checkout_hash):
+    def validate_checkout(self, checkout_hash):
         if not self.checkout_hash:
-            raise ValidationError('No subscription procedure initiated.')
+            raise ValidationError(None)
 
         if not self.CheckoutHash.compare(self.checkout_hash, checkout_hash):
-            raise ValidationError('Untrusted subscription procedure attempt.')
+            raise ValidationError(None)
 
-    def subscribe(self, checkout_hash):
-        self.validate_checkout_hash(checkout_hash)
+    def complete_checkout(self, checkout_hash):
+        if self.is_active:
+            self.subscribe()
+        else:
+            self.unsubscribe()
 
+        self.checkout_at = None
+
+    def subscribe(self):
+        self.checkout_hash = self.CheckoutHash.generate()
         self.is_active = True
-        self.checkout_hash = None
-        self.checkout_at = None
 
-    def unsubscribe(self, checkout_hash):
-        self.validate_checkout_hash(checkout_hash)
-
+    def unsubscribe(self):
         self.is_active = False
-        self.checkout_hash = None
-        self.checkout_at = None
