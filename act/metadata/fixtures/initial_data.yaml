@@ -1,0 +1,11 @@
+# act_project/act/metadata/fixtures/initial_data.yaml
+
+# Metadata
+
+- model: metadata.Metadata
+  pk: 1
+  fields:
+    url_name: index
+    title_uk: Головна
+    description_uk: Опис
+    robots: index,follow,archive

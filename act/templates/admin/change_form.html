@@ -1,0 +1,12 @@
+{# act_project/act/templates/admin/change_form.html #}
+{% extends "admin/change_form.html" %}
+
+{% load admin_modify %}
+
+{% block submit_buttons_top %}
+    {% if not not_editable %}{% submit_row %}{% endif %}
+{% endblock %}
+
+{% block submit_buttons_bottom %}
+    {% if not not_editable %}{% submit_row %}{% endif %}
+{% endblock %}
