@@ -1,7 +1,10 @@
 # act_project/act/subscription/views_api.py
 from django.core.exceptions import ValidationError
+from django.db import transaction
 
-from rest_framework.exceptions import ParseError
+from rest_framework.exceptions import (
+    ParseError, ValidationError as RESTValidationError
+)
 from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import (
@@ -21,19 +24,23 @@ class SubscriberList(CreateModelMixin, GenericAPIView):
         '''
         Send a subscription confirmation e-mail on succesfull serializer save
         '''
-        subscriber = serializer.save()
+        with transaction.atomic():
+            subscriber = serializer.save()
 
-        checkout_hash = subscriber.prepare_checkout_hash()
-        checkout_url = reverse(
-            'subscribers_detail_subscribe',
-            args=[subscriber.pk, checkout_hash],
-            request=self.request)
-        serializer.send_subscribe_email(checkout_url)
+            checkout_hash = subscriber.prepare_checkout_hash()
+            checkout_url = reverse(
+                'subscribers_detail_subscribe',
+                args=[subscriber.pk, checkout_hash],
+                request=self.request)
+            serializer.send_subscribe_email(checkout_url)
 
-        subscriber.save()
+            subscriber.save()
 
     def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
+        try:
+            return self.create(request, *args, **kwargs)
+        except RESTValidationError:
+            raise ParseError('Недійсні дані підписника.')
 
 
 class SubscriberDetail(RetrieveModelMixin, UpdateModelMixin, GenericAPIView):
@@ -47,9 +54,10 @@ class SubscriberDetail(RetrieveModelMixin, UpdateModelMixin, GenericAPIView):
         return instance
 
     def perform_update(self, serializer):
-        subscriber = serializer.save()
-        subscriber.complete_checkout(self.kwargs['checkout_hash'])
-        subscriber.save()
+        with transaction.atomic():
+            subscriber = serializer.save()
+            subscriber.complete_checkout(self.kwargs['checkout_hash'])
+            subscriber.save()
 
     def get(self, request, *args, **kwargs):
         try:

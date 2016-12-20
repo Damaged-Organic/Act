@@ -50,7 +50,11 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
+            # Project
             os.path.join(BASE_DIR, 'templates'),
+            # Subscription application
+            os.path.join(BASE_DIR, 'subscription/templates'),
+            # Website application
             os.path.join(BASE_DIR, 'website/templates'),
         ],
         'OPTIONS': {

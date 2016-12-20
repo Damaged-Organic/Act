@@ -241,6 +241,20 @@ class EventCategory(models.Model, metaclass=TransMeta):
     get_events_count.short_description = 'Кількість подій'
 
 
+class EventManager(models.Manager):
+    def filter_created_at_gt(self, datetime):
+        return super(EventManager, self).get_queryset().filter(
+            is_active=True, created_at__gt=datetime)
+
+    def order_by_created_at_limit(self):
+        return (
+            super(EventManager, self).get_queryset()
+            .filter(is_active=True,)
+            .order_by('-created_at')
+            [:self.model.LIMIT['default']]
+        )
+
+
 class Event(models.Model, metaclass=TransMeta):
     LIMIT = {'default': 6, 'max': 100}
     PAGE_SIZE = {'default': 4, 'max': 100}
@@ -277,6 +291,8 @@ class Event(models.Model, metaclass=TransMeta):
 
     # TODO: slug doesn't support i18n for now
     slug = models.SlugField(editable=False)
+
+    objects = EventManager()
 
     class Meta:
         db_table = get_table_name('events')

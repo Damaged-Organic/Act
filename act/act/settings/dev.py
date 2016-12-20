@@ -31,9 +31,9 @@ DATABASES['default'].update({
 
 # Email
 
-EMAIL_HOST = ''
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST = 'mail.ukraine.com.ua'
+EMAIL_HOST_USER = 'webmaster@cheers-development.in.ua'
+EMAIL_HOST_PASSWORD = '53o2yRjv4IKX'
 
-EMAIL_FROM = ''
-EMAIL_TO = ''
+EMAIL_FROM = 'webmaster@cheers-development.in.ua'
+EMAIL_TO = 'grimv01k@gmail.com'
