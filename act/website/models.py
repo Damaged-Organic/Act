@@ -1,4 +1,6 @@
 # act_project/act/website/models.py
+from urllib.parse import urljoin
+
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -7,6 +9,7 @@ from django.utils.text import slugify
 from transliterate import translit
 from ckeditor.fields import RichTextField
 
+from act.utils import get_default_URL
 # Notice overridden transmeta import!
 from act.services.transmeta import TransMeta
 
@@ -289,7 +292,6 @@ class Event(models.Model, metaclass=TransMeta):
         'Відображається', blank=True, default=True,
     )
 
-    # TODO: slug doesn't support i18n for now
     slug = models.SlugField(editable=False)
 
     objects = EventManager()
@@ -321,6 +323,17 @@ class Event(models.Model, metaclass=TransMeta):
         return '<img src="%s" width="300" max-width="300">' % (self.image.url)
     image_preview.allow_tags = True
     image_preview.short_description = 'Превʼю головного зображення'
+
+    def get_static_path(self):
+        ''' Static path for front end application '''
+        return 'events/{}/{}'.format(self.id, self.slug)
+
+    def get_static_URL(self):
+        '''
+        Static URL for front end application,
+        built with static DEFAULT_URL setting
+        '''
+        return urljoin(get_default_URL(), self.get_static_path())
 
 
 # City
@@ -355,7 +368,6 @@ class City(models.Model, metaclass=TransMeta):
 
 
 # Centre
-
 
 class Centre(models.Model, metaclass=TransMeta):
     city = models.OneToOneField(
@@ -427,6 +439,9 @@ class CentreSubpage(models.Model, metaclass=TransMeta):
     )
 
     headline = models.CharField('Назва сторінки', max_length=100)
+    content = RichTextField(
+        'Контент', config_name='article_toolbar',
+    )
 
     class Meta:
         db_table = get_table_name('centres', 'subpages')
@@ -436,7 +451,7 @@ class CentreSubpage(models.Model, metaclass=TransMeta):
         verbose_name = 'Підсторінка Центру'
         verbose_name_plural = order_prefix + 'Підсторінки Центрів'
 
-        translate = ('headline', )
+        translate = ('headline', 'content', )
 
     def __str__(self):
         return self.headline or self.__class__.__name__

@@ -1,29 +1,4 @@
-# act_project/act/act/settings/packages.py
-
-# Transmeta
-
-TRANSMETA_DEFAULT_LANGUAGE = 'uk'
-TRANSMETA_LANGUAGES = (
-    ('uk', 'UK'),
-)
-
-# CORS
-
-CORS_ORIGIN_WHITELIST = (
-    'act.org.ua',
-    'localhost:3333',
-    '127.0.0.1:3333',
-    'localhost:8000',
-    '127.0.0.1:8000',
-)
-
-# Bleach
-
-BLEACH_ALLOWED_TAGS = ['span']
-BLEACH_STRIP_TAGS = True
-
-# CKEditor
-
+# act_project/act/act/settings/packages/ckeditor.py
 CKEDITOR_CONFIGS = {
     'article_toolbar': {
         'toolbar_Article': [

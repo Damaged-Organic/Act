@@ -136,4 +136,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 
 # Packages
 
-from .packages import *
+try:
+    from .packages.transmeta import *
+    from .packages.cors import *
+    from .packages.bleach import *
+    from .packages.ckeditor import *
+    from .packages.logging import *
+except ImportError:
+    print('No packages settings are defined.')

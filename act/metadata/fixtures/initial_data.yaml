@@ -1,11 +1,49 @@
 # act_project/act/metadata/fixtures/initial_data.yaml
 
-# Metadata
+-   model: metadata.Metadata
+    pk: 1
+    fields:
+        url_name: index
+        title_uk: Головна
+        description_uk: '-'
+        robots: index,follow,archive
 
-- model: metadata.Metadata
-  pk: 1
-  fields:
-    url_name: index
-    title_uk: Головна
-    description_uk: Опис
-    robots: index,follow,archive
+-   model: metadata.Metadata
+    pk: 2
+    fields:
+        url_name: about
+        title_uk: Про нас
+        description_uk: '-'
+        robots: index,follow,archive
+
+-   model: metadata.Metadata
+    pk: 3
+    fields:
+        url_name: centres
+        title_uk: Центри
+        description_uk: '-'
+        robots: index,follow,archive
+
+-   model: metadata.Metadata
+    pk: 4
+    fields:
+        url_name: projects
+        title_uk: Проекти
+        description_uk: '-'
+        robots: index,follow,archive
+
+-   model: metadata.Metadata
+    pk: 5
+    fields:
+        url_name: events
+        title_uk: Події
+        description_uk: '-'
+        robots: index,follow,archive
+
+-   model: metadata.Metadata
+    pk: 6
+    fields:
+        url_name: worksheet
+        title_uk: Долучитися
+        description_uk: '-'
+        robots: index,follow,archive

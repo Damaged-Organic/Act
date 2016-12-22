@@ -2,6 +2,8 @@
 import datetime
 
 from django.conf import settings
+from django.db.models import Prefetch
+
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -13,7 +15,7 @@ from .models import (
     ProjectArea, Project,
     EventCategory, Event,
     City, Participant, Contact,
-    Centre,
+    Centre, CentreSubpage,
     Worksheet,
     problem_description_validator,
     activity_description_validator,
@@ -100,6 +102,12 @@ class CentreCitySerializer(serializers.ModelSerializer):
         model = Centre
         fields = ('id', 'city', )
 
+    @staticmethod
+    def set_eager_loading(queryset):
+        queryset = queryset.select_related('city')
+
+        return queryset
+
 
 # Project
 
@@ -119,6 +127,15 @@ class ProjectSerializer(ExcludableModelSerializer):
             'id', 'project_area', 'centres',
             'started_at',  'image', 'title', 'content', 'is_active', 'slug',
         )
+
+    @staticmethod
+    def set_eager_loading(queryset):
+        queryset = queryset.select_related('project_area')
+        queryset = queryset.prefetch_related(
+            Prefetch('centres', queryset=Centre.objects.select_related('city'))
+        )
+
+        return queryset
 
 
 # Event
@@ -141,6 +158,33 @@ class EventSerializer(ExcludableModelSerializer):
             'created_at', 'image', 'title', 'content', 'is_active', 'slug',
         )
 
+    @staticmethod
+    def set_eager_loading(queryset):
+        queryset = queryset.select_related('event_category', 'project')
+        queryset = queryset.prefetch_related(
+            Prefetch('centres', queryset=Centre.objects.select_related('city'))
+        )
+
+        return queryset
+
+
+# CentreSubpage
+
+class CentreSubpageSerializer(ExcludableModelSerializer):
+    centre = CentreCitySerializer(read_only=True)
+
+    class Meta:
+        model = CentreSubpage
+        fields = (
+            'id', 'centre', 'headline', 'content',
+        )
+
+    @staticmethod
+    def set_eager_loading(queryset):
+        queryset = queryset.select_related('centre', 'centre__city')
+
+        return queryset
+
 
 # Centre (partial nested relations)
 
@@ -154,6 +198,17 @@ class CentreProjectsSerializer(serializers.ModelSerializer):
         model = Centre
         fields = ('id', 'city', 'projects', )
 
+    @staticmethod
+    def set_eager_loading(queryset):
+        queryset = queryset.select_related('city')
+        queryset = queryset.prefetch_related(
+            Prefetch(
+                'projects',
+                queryset=Project.objects.select_related('project_area'))
+        )
+
+        return queryset
+
 
 class CentreEventsSerializer(serializers.ModelSerializer):
     city = CitySerializer(read_only=True)
@@ -164,6 +219,17 @@ class CentreEventsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Centre
         fields = ('id', 'city', 'events', )
+
+    @staticmethod
+    def set_eager_loading(queryset):
+        queryset = queryset.select_related('city')
+        queryset = queryset.prefetch_related(
+            Prefetch(
+                'events',
+                queryset=Event.objects.select_related('event_category'))
+        )
+
+        return queryset
 
 
 # Centre
@@ -183,6 +249,20 @@ class CentreListSerializer(serializers.ModelSerializer):
             'id', 'city', 'projects', 'events',
         )
 
+    @staticmethod
+    def set_eager_loading(queryset):
+        queryset = queryset.select_related('city')
+        queryset = queryset.prefetch_related(
+            Prefetch(
+                'projects',
+                queryset=Project.objects.select_related('project_area')),
+            Prefetch(
+                'events',
+                queryset=Event.objects.select_related('event_category'))
+        )
+
+        return queryset
+
 
 class CentreDetailSerializer(serializers.ModelSerializer):
     city = CitySerializer(read_only=True)
@@ -190,20 +270,37 @@ class CentreDetailSerializer(serializers.ModelSerializer):
     participants = ParticipantSerializer(read_only=True, many=True)
     projects = ProjectSerializer(read_only=True, many=True)
     events = EventSerializer(read_only=True, many=True)
+    centres_subpages = CentreSubpageSerializer(
+        exclude_fields=['centre'], read_only=True, many=True
+    )
 
     class Meta:
         model = Centre
         fields = (
-            'id', 'city', 'contact', 'participants', 'projects', 'events',
+            'id', 'city', 'contact',
+            'participants', 'projects', 'events', 'centres_subpages',
             'short_description',
         )
+
+    @staticmethod
+    def set_eager_loading(queryset):
+        queryset = queryset.select_related('city', 'contact')
+        queryset = queryset.prefetch_related(
+            Prefetch('participants', queryset=Participant.objects.all()),
+            Prefetch(
+                'projects',
+                queryset=Project.objects.select_related('project_area')),
+            Prefetch(
+                'events',
+                queryset=Event.objects.select_related('event_category'))
+        )
+
+        return queryset
 
 
 # Worksheet
 
 class WorksheetSerializer(MailerMixin, serializers.ModelSerializer):
-    DATETIME_FORMAT = '%d-%m-%Y %H:%M'
-
     class Meta:
         model = Worksheet
         fields = (
@@ -247,7 +344,7 @@ class WorksheetSerializer(MailerMixin, serializers.ModelSerializer):
 
         subject = (
             'Нова анкета з сайту ДІЙ!, ' +
-            sent_at.strftime(self.DATETIME_FORMAT)
+            sent_at.strftime('%d-%m-%Y %H:%M')
         )
         template = 'website/emails/worksheet.html'
         context = {

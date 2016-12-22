@@ -14,6 +14,7 @@ from .views_api import (
     EventList, EventDetail,
     CityList, ParticipantList, ContactList, ContactDetail,
     CentreList, CentreDetail,
+    CentreSubpageList, CentreSubpageDetail,
     WorksheetList,
 )
 
@@ -104,6 +105,17 @@ urlpatterns = [
         r'^centres/(?P<pk>[0-9]+)$',
         CentreDetail.as_view(),
         name='centres_detail',
+    ),
+    # CentreSubpage
+    url(
+        r'^centres_subpages$',
+        CentreSubpageList.as_view(),
+        name='centres_subpages_list',
+    ),
+    url(
+        r'^centres_subpages/(?P<pk>[0-9]+)$',
+        CentreSubpageDetail.as_view(),
+        name='centres_subpages_detail',
     ),
     # Worksheet
     url(

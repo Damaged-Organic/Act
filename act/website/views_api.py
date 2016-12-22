@@ -20,7 +20,7 @@ from .models import (
     ProjectArea, Project,
     EventCategory, Event,
     City, Participant, Contact,
-    Centre,
+    Centre, CentreSubpage,
     Worksheet,
 )
 from .serializers import (
@@ -31,8 +31,24 @@ from .serializers import (
     CitySerializer, ParticipantSerializer, ContactSerializer,
     CentreListSerializer, CentreDetailSerializer,
     CentreCitySerializer, CentreProjectsSerializer, CentreEventsSerializer,
+    CentreSubpageSerializer,
     WorksheetSerializer,
 )
+
+
+def set_eager_loading(get_queryset):
+    '''
+    Modifies returned queryset in order to fetch related records for a model
+    '''
+    def decorator(self):
+        queryset = get_queryset(self)
+
+        if hasattr(self.get_serializer_class(), 'set_eager_loading'):
+            queryset = self.get_serializer_class().set_eager_loading(queryset)
+
+        return queryset
+
+    return decorator
 
 
 # IntroContent
@@ -138,6 +154,7 @@ class ProjectList(ListAPIView):
     filter_backends = (django_filters.DjangoFilterBackend,)
     filter_class = ProjectFilter
 
+    @set_eager_loading
     def get_queryset(self):
         queryset = Project.objects.order_by('-started_at')
 
@@ -151,7 +168,10 @@ class ProjectList(ListAPIView):
 
 class ProjectDetail(RetrieveAPIView):
     serializer_class = ProjectSerializer
-    queryset = Project.objects.all()
+
+    @set_eager_loading
+    def get_queryset(self):
+        return Project.objects.all()
 
 
 # EventCategory
@@ -194,8 +214,9 @@ class EventList(ListAPIView):
     filter_backends = (django_filters.DjangoFilterBackend,)
     filter_class = EventFilter
 
+    @set_eager_loading
     def get_queryset(self):
-        queryset = Event.objects.order_by('-created_at')
+        queryset = Event.objects.all()
 
         limit = self.request.query_params.get('limit', None)
 
@@ -207,7 +228,10 @@ class EventList(ListAPIView):
 
 class EventDetail(RetrieveAPIView):
     serializer_class = EventSerializer
-    queryset = Event.objects.all()
+
+    @set_eager_loading
+    def get_queryset(self):
+        return Event.objects.all()
 
 
 # City
@@ -249,6 +273,7 @@ class CentreList(ListAPIView):
     '''
     serializer_class = CentreListSerializer
 
+    @set_eager_loading
     def get_queryset(self):
         queryset = Centre.objects.all()
 
@@ -266,7 +291,37 @@ class CentreList(ListAPIView):
 
 class CentreDetail(RetrieveAPIView):
     serializer_class = CentreDetailSerializer
-    queryset = Centre.objects.all()
+
+    @set_eager_loading
+    def get_queryset(self):
+        return Centre.objects.all()
+
+
+# CentreSubpage
+
+class CentreSubpageFilter(django_filters.FilterSet):
+    class Meta:
+        model = CentreSubpage
+        fields = ['centre']
+
+
+class CentreSubpageList(ListAPIView):
+    serializer_class = CentreSubpageSerializer
+
+    filter_backends = (django_filters.DjangoFilterBackend,)
+    filter_class = CentreSubpageFilter
+
+    @set_eager_loading
+    def get_queryset(self):
+        return CentreSubpage.objects.all()
+
+
+class CentreSubpageDetail(RetrieveAPIView):
+    serializer_class = CentreSubpageSerializer
+
+    @set_eager_loading
+    def get_queryset(self):
+        return CentreSubpage.objects.all()
 
 
 # Worksheet

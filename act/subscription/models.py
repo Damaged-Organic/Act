@@ -70,8 +70,9 @@ class Subscriber(models.Model):
 class MailingManager(models.Manager):
     def latest_mailing(self):
         try:
-            result = super(MailingManager, self).get_queryset().latest(
-                'mailing_at')
+            result = (
+                super(MailingManager, self).get_queryset()
+                .latest('mailing_at'))
         except self.model.DoesNotExist:
             result = None
 

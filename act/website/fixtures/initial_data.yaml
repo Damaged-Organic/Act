@@ -1,0 +1,290 @@
+# act_project/act/website/fixtures/initial_data.yaml
+
+# IntroContent
+
+-   model: website.IntroContent
+    pk: 1
+    fields:
+        name: intro
+        headline_uk: >
+            Мережа моніторингових центрів для громадського контролю діяльності
+            влади в Україні
+
+# Sponsor
+
+-   model: website.Sponsor
+    pk: 1
+    fields:
+        logo: '-'
+        title_uk: Європейський Союз
+        link: https://europa.eu
+
+-   model: website.Sponsor
+    pk: 2
+    fields:
+        logo: '-'
+        title_uk: People In Need
+        link: https://www.clovekvtisni.cz
+
+-   model: website.Sponsor
+    pk: 3
+    fields:
+        logo: '-'
+        title_uk: Centre UA
+        link: http://centreua.org
+
+# Social
+
+-   model: website.Social
+    pk: 1
+    fields:
+        title: Facebook
+        link: https://facebook.com
+        icon: facebook-icon
+
+-   model: website.Social
+    pk: 2
+    fields:
+        title: Twitter
+        link: https://twitter.com
+        icon: twitter-icon
+
+-   model: website.Social
+    pk: 3
+    fields:
+        title: VKontakte
+        link: https://vk.com
+        icon: vkontakte-icon
+
+-   model: website.Social
+    pk: 4
+    fields:
+        title: YouTube
+        link: https://youtube.com
+        icon: youtube-icon
+
+# Activity
+
+-   model: website.Activity
+    pk: 1
+    fields:
+        title_uk: >
+            Моніторимо та аналізуємо діяльність міської влади
+        icon: icon
+
+-   model: website.Activity
+    pk: 2
+    fields:
+        title_uk: >
+            Адвокатуємо позитивні рішення для поліпшення життя громад
+        icon: icon
+
+-   model: website.Activity
+    pk: 3
+    fields:
+        title_uk: >
+            Організуємо освітні заходи для підвищення знань місцевих активістів
+            та журналістів
+        icon: icon
+
+-   model: website.Activity
+    pk: 4
+    fields:
+        title_uk: >
+            Консолідуємо місцевий громадський сектор
+        icon: icon
+
+# ProjectArea
+
+-   model: website.ProjectArea
+    pk: 1
+    fields:
+        title_uk: Стратегія розвитку громад
+
+-   model: website.ProjectArea
+    pk: 2
+    fields:
+        title_uk: Local Government Human Rights Compatibility Index
+
+-   model: website.ProjectArea
+    pk: 3
+    fields:
+        title_uk: Біла Книга муніципальних практик
+
+-   model: website.ProjectArea
+    pk: 4
+    fields:
+        title_uk: Cприяння децентралізації
+
+# EventCategory
+
+-   model: website.EventCategory
+    pk: 1
+    fields:
+        title_uk: Новини
+
+-   model: website.EventCategory
+    pk: 2
+    fields:
+        title_uk: Аналітика
+
+-   model: website.EventCategory
+    pk: 3
+    fields:
+        title_uk: Анонси
+
+-   model: website.EventCategory
+    pk: 4
+    fields:
+        title_uk: Розслідування
+
+-   model: website.EventCategory
+    pk: 5
+    fields:
+        title_uk: Навчальні матеріали
+
+-   model: website.EventCategory
+    pk: 6
+    fields:
+        title_uk: ЗМІ про ДІЙ!
+
+# City
+
+-   model: website.City
+    pk: 1
+    fields:
+        photo: '-'
+        photo_thumb: '-'
+        name_uk: Краматорськ
+
+-   model: website.City
+    pk: 2
+    fields:
+        photo: '-'
+        photo_thumb: '-'
+        name_uk: Маріуполь
+
+-   model: website.City
+    pk: 3
+    fields:
+        photo: '-'
+        photo_thumb: '-'
+        name_uk: Вінниця
+
+-   model: website.City
+    pk: 4
+    fields:
+        photo: '-'
+        photo_thumb: '-'
+        name_uk: Запоріжжя
+
+-   model: website.City
+    pk: 5
+    fields:
+        photo: '-'
+        photo_thumb: '-'
+        name_uk: Тернопіль
+
+# Centre
+
+-   model: website.Centre
+    pk: 1
+    fields:
+        city: 1
+        short_description_uk: '-'
+
+-   model: website.Centre
+    pk: 2
+    fields:
+        city: 2
+        short_description_uk: '-'
+
+-   model: website.Centre
+    pk: 3
+    fields:
+        city: 3
+        short_description_uk: '-'
+
+-   model: website.Centre
+    pk: 4
+    fields:
+        city: 4
+        short_description_uk: '-'
+
+-   model: website.Centre
+    pk: 5
+    fields:
+        city: 5
+        short_description_uk: '-'
+
+# CentreSubpage
+
+-   model: website.CentreSubpage
+    pk: 1
+    fields:
+        centre: 1
+        headline_uk: Доступ до публічної інформації
+        content_uk: '-'
+
+-   model: website.CentreSubpage
+    pk: 2
+    fields:
+        centre: 1
+        headline_uk: Міська рада
+        content_uk: '-'
+
+-   model: website.CentreSubpage
+    pk: 3
+    fields:
+        centre: 1
+        headline_uk: Комунальні підприємства
+        content_uk: '-'
+
+-   model: website.CentreSubpage
+    pk: 4
+    fields:
+        centre: 1
+        headline_uk: Судова практика
+        content_uk: '-'
+
+# Participant
+
+-   model: website.Participant
+    pk: 1
+    fields:
+        centre: null
+        photo: '-'
+        photo_thumb: '-'
+        position_uk: Менеджер проекту (Центр UA)
+        name_uk: Олександр
+        surname_uk: Дмітрієв
+
+-   model: website.Participant
+    pk: 2
+    fields:
+        centre: null
+        photo: '-'
+        photo_thumb: '-'
+        position_uk: Менеджер проекту (People In Need)
+        name_uk: Ганна
+        surname_uk: Мєдвєдєва
+
+-   model: website.Participant
+    pk: 3
+    fields:
+        centre: null
+        photo: '-'
+        photo_thumb: '-'
+        position_uk: Менеджер з комунікацій (Центр UA)
+        name_uk: Юлія
+        surname_uk: Решітько
+
+# Contact
+
+-   model: website.Contact
+    pk: 1
+    fields:
+        centre: null
+        email: beactiveinukraine@gmail.com
+        phone: +38 (050) 997 93 60
+        address_uk: null

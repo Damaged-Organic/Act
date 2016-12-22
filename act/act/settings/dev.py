@@ -6,6 +6,8 @@ DEBUG = True
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', ]
 INTERNAL_IPS = ('127.0.0.1', )
 
+DEFAULT_URL = 'http://{}:8000'.format(ALLOWED_HOSTS[0])
+
 SECRET_KEY = 'Something secret steers at us!'
 
 INSTALLED_APPS += [

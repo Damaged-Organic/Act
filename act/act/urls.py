@@ -16,48 +16,40 @@ handler404 = 'website.views.handler404'
 handler500 = 'website.views.handler500'
 
 urlpatterns = [
-    url(r'^deus_ex_machina/', admin_site.urls),
-]
+    url(r'^deus_ex_machina/', admin_site.urls), ]
 
 ''' Internationalization '''
 
 urlpatterns += i18n_patterns(
     url(r'', include('website.urls')),
-    prefix_default_language=False
-)
+    prefix_default_language=False)
 
 ''' Root API view '''
 
 urlpatterns += [
-    url(r'^api/$', api_root),
-]
+    url(r'^api/$', api_root), ]
 
 ''' Metadata application API '''
 
 urlpatterns += [
-    url(r'^api/', include('metadata.urls_api')),
-]
+    url(r'^api/', include('metadata.urls_api')), ]
 
 ''' Subscription application API '''
 
 urlpatterns += [
-    url(r'^api/', include('subscription.urls_api')),
-]
+    url(r'^api/', include('subscription.urls_api')), ]
 
 ''' Website application API '''
 
 urlpatterns += [
-    url(r'^api/', include('website.urls_api')),
-]
+    url(r'^api/', include('website.urls_api')), ]
 
 if settings.DEBUG:
-    import debug_toolbar
     from django.conf.urls.static import static
+    import debug_toolbar
 
     urlpatterns += [
-        url(r'^__debug__/', include(debug_toolbar.urls)),
-    ]
-
+        url(r'^__debug__/', include(debug_toolbar.urls)), ]
     urlpatterns += static(
         settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(

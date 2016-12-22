@@ -2,7 +2,7 @@
 from collections import namedtuple
 
 from django.core.exceptions import ImproperlyConfigured
-from django.core.mail import EmailMessage
+from django.core.mail import get_connection, EmailMessage
 from django.template.loader import render_to_string
 
 from django.conf import settings
@@ -26,6 +26,8 @@ class MailerMixin():
         self.email_from = settings.EMAIL_FROM
         self.email_to = settings.EMAIL_TO
 
+        self.connection = get_connection()
+
     def send_email(
         self, subject, template, context, email_from=None, email_to=None
     ):
@@ -44,3 +46,29 @@ class MailerMixin():
 
         message.content_subtype = 'html'
         message.send()
+
+    def send_mass_email(
+        self, subject, template, context, email_from=None, recipient_list=None
+    ):
+        email_html = render_to_string(template, context)
+
+        if email_from is None:
+            email_from = self.email_from
+        email_from = "ДІЙ! <%s>" % email_from
+
+        if recipient_list is None:
+            return
+
+        messages = []
+        for recepient in recipient_list:
+            message = EmailMessage(
+                subject, email_html, email_from, [recepient]
+            )
+            message.content_subtype = 'html'
+            messages.append(message)
+
+        if messages:
+            self.connection.open()
+            self.connection.send_messages(messages)
+            self.connection.close()
+            for m in messages: print(m.__dict__)

@@ -37,6 +37,9 @@ def api_root(request, format=None):
         ),
         'contacts': reverse('contacts_list', request=request, format=format),
         'centres': reverse('centres_list', request=request, format=format),
+        'centres_subpages': reverse(
+            'centres_subpages_list', request=request, format=format
+        ),
         'worksheets': reverse(
             'worksheets_list', request=request, format=format
         ),
