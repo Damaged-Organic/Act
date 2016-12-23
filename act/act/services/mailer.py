@@ -71,4 +71,3 @@ class MailerMixin():
             self.connection.open()
             self.connection.send_messages(messages)
             self.connection.close()
-            for m in messages: print(m.__dict__)

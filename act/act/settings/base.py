@@ -1,7 +1,7 @@
 # act_project/act/act/settings/base.py
 import os
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+# Base directory
 
 BASE_DIR = os.path.abspath(
     os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../')
@@ -134,6 +134,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/uploads/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 
+# Admins
+
+ADMINS = (('Webmaster', 'webmaster@cheers-development.in.ua'),)
+
 # Packages
 
 try:
@@ -141,6 +145,12 @@ try:
     from .packages.cors import *
     from .packages.bleach import *
     from .packages.ckeditor import *
-    from .packages.logging import *
+    '''
+    LOGGING is built using base directory path, so in order to
+    access base settings variables logging settings are returned
+    by function that takes all the neccesary arguments
+    '''
+    from .packages.logging import get_logging
+    LOGGING = get_logging(BASE_DIR)
 except ImportError:
     print('No packages settings are defined.')

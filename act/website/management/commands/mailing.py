@@ -1,5 +1,6 @@
 # act_project/act/website/management/commands/mailing.py
 import datetime
+import logging
 
 from smtplib import SMTPException
 
@@ -32,16 +33,11 @@ class Command(MailerMixin, MailingCommand):
 
         try:
             self.send_subscription_emails(subscribers, events)
-        except SMTPException as e:
-            import logging
+        except Exception as e:
+            file_logger = logging.getLogger('file')
+            file_logger.error(repr(e))
 
-            # Standard instance of a logger with __name__
-            stdlogger = logging.getLogger('coffeehouse')
-
-            print(e)
-            stdlogger.error(e)
-
-        # self.record_mailing(subscribers)
+        self.record_mailing(subscribers)
 
     def send_subscription_emails(self, subscribers, events):
         recepient_list = [subscriber.email for subscriber in subscribers]
