@@ -216,7 +216,7 @@ class EventList(ListAPIView):
 
     @set_eager_loading
     def get_queryset(self):
-        queryset = Event.objects.all()
+        queryset = Event.objects.order_by('-created_at')
 
         limit = self.request.query_params.get('limit', None)
 

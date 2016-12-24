@@ -36,7 +36,7 @@ class ContentBlock(models.Model):
         abstract = True
 
     def __str__(self):
-        return self.name or self.__class__.__name__
+        return str(self.name) or self.__class__.__name__
 
     def get_template_block_name(self):
         return self.name.replace(' ', '_').lower()
@@ -77,7 +77,7 @@ class Sponsor(models.Model, metaclass=TransMeta):
         translate = ('title', )
 
     def __str__(self):
-        return self.title or self.__class__.__name__
+        return str(self.title) or self.__class__.__name__
 
     def logo_preview(self):
         return '<img src="%s" width="100" max-width="100">' % (self.logo.url)
@@ -99,7 +99,7 @@ class Social(models.Model):
         verbose_name_plural = order_prefix + 'Соціальні мережі'
 
     def __str__(self):
-        return self.title or self.__class__.__name__
+        return str(self.title) or self.__class__.__name__
 
 
 # Activity
@@ -119,7 +119,24 @@ class Activity(models.Model, metaclass=TransMeta):
         translate = ('title', )
 
     def __str__(self):
-        return self.title or self.__class__.__name__
+        return str(self.title) or self.__class__.__name__
+
+
+# AttachedDocument
+
+class AttachedDocument(models.Model):
+    DOCUMENT_PATH = 'documents/'
+
+    document = models.FileField('Документ', upload_to=DOCUMENT_PATH)
+
+    class Meta:
+        db_table = get_table_name('attached', 'documents')
+
+        verbose_name = 'Документ'
+        verbose_name_plural = 'Документи'
+
+    def __str__(self):
+        return str(self.document) or self.__class__.__name__
 
 
 # Project
@@ -138,7 +155,7 @@ class ProjectArea(models.Model, metaclass=TransMeta):
         translate = ('title', )
 
     def __str__(self):
-        return self.title or self.__class__.__name__
+        return str(self.title) or self.__class__.__name__
 
     '''Projects shortcut methods'''
 
@@ -157,6 +174,12 @@ class Project(models.Model, metaclass=TransMeta):
     IMAGE_PATH = 'projects/images/'
 
     image = models.ImageField('Головне зображення', upload_to=IMAGE_PATH)
+
+    attached_documents = models.ManyToManyField(
+        AttachedDocument,
+        blank=True,
+        related_name='projects',
+    )
 
     project_area = models.ForeignKey(
         ProjectArea,
@@ -191,7 +214,7 @@ class Project(models.Model, metaclass=TransMeta):
         translate = ('title', 'content', )
 
     def __str__(self):
-        return self.title or self.__class__.__name__
+        return str(self.title) or self.__class__.__name__
 
     def save(self, *args, **kwargs):
         if self.title:
@@ -232,7 +255,7 @@ class EventCategory(models.Model, metaclass=TransMeta):
         translate = ('title', )
 
     def __str__(self):
-        return self.title or self.__class__.__name__
+        return str(self.title) or self.__class__.__name__
 
     '''Events shortcut methods'''
 
@@ -265,6 +288,12 @@ class Event(models.Model, metaclass=TransMeta):
     IMAGE_PATH = 'events/images/'
 
     image = models.ImageField('Головне зображення', upload_to=IMAGE_PATH)
+
+    attached_documents = models.ManyToManyField(
+        AttachedDocument,
+        blank=True,
+        related_name='events',
+    )
 
     event_category = models.ForeignKey(
         EventCategory,
@@ -309,7 +338,7 @@ class Event(models.Model, metaclass=TransMeta):
         translate = ('title', 'content', )
 
     def __str__(self):
-        return self.title or self.__class__.__name__
+        return str(self.title) or self.__class__.__name__
 
     def save(self, *args, **kwargs):
         if self.title:
@@ -359,7 +388,7 @@ class City(models.Model, metaclass=TransMeta):
         translate = ('name', )
 
     def __str__(self):
-        return self.name or self.__class__.__name__
+        return str(self.name) or self.__class__.__name__
 
     def photo_preview(self):
         return '<img src="%s" width="400" max-width="400">' % (self.photo.url)
@@ -454,7 +483,7 @@ class CentreSubpage(models.Model, metaclass=TransMeta):
         translate = ('headline', 'content', )
 
     def __str__(self):
-        return self.headline or self.__class__.__name__
+        return str(self.headline) or self.__class__.__name__
 
 
 # Participant
@@ -583,7 +612,7 @@ class Worksheet(models.Model):
         verbose_name_plural = order_prefix + 'Анкети'
 
     def __str__(self):
-        return str(self.pk) or self.__class__.__name__
+        return str(self.full_name) or self.__class__.__name__
 
     def clean(self, *args, **kwargs):
         '''
