@@ -38,11 +38,17 @@ def get_logging(base_dir):
                 'formatter': 'verbose',
                 'filename': os.path.join(base_dir, 'logs/django.log'),
             },
+            'mail_admins': {
+                'level': 'ERROR',
+                'class': 'django.utils.log.AdminEmailHandler',
+                'filters': ['require_debug_false'],
+                'formatter': 'verbose',
+            },
         },
         'loggers': {
-            'file': {
+            'commands': {
                 'level': 'ERROR',
-                'handlers': ['console', 'file'],
+                'handlers': ['console', 'file', 'mail_admins'],
                 'propagate': True,
             },
         },

@@ -13,18 +13,18 @@ class MailerMixin():
         super(MailerMixin, self).__init__(*args, **kwargs)
 
         email_from_set = (
-            hasattr(settings, 'EMAIL_FROM') and
-            settings.EMAIL_FROM)
+            hasattr(settings, 'DEFAULT_FROM_EMAIL') and
+            settings.DEFAULT_FROM_EMAIL)
 
         email_to_set = (
-            hasattr(settings, 'EMAIL_TO') and
-            settings.EMAIL_TO)
+            hasattr(settings, 'DEFAULT_TO_EMAIL') and
+            settings.DEFAULT_TO_EMAIL)
 
         if not email_from_set or not email_to_set:
             raise ImproperlyConfigured('E-mail settings are not set.')
 
-        self.email_from = settings.EMAIL_FROM
-        self.email_to = settings.EMAIL_TO
+        self.email_from = settings.DEFAULT_FROM_EMAIL
+        self.email_to = settings.DEFAULT_TO_EMAIL
 
         self.connection = get_connection()
 

@@ -4,8 +4,7 @@ import os
 # Base directory
 
 BASE_DIR = os.path.abspath(
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../')
-)
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../'))
 
 # Application definition
 
@@ -17,9 +16,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
-    'rest_framework',
     'django_filters',
     'django_bleach',
+    'django_crontab',
+    'rest_framework',
     'ckeditor',
     'metadata.apps.MetadataConfig',
     'subscription.apps.SubscriptionConfig',
@@ -136,7 +136,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 
 # Admins
 
-ADMINS = (('Webmaster', 'webmaster@cheers-development.in.ua'),)
+ADMINS = [
+    ('Webmaster', 'webmaster@cheers-development.in.ua'),
+]
 
 # Packages
 
@@ -145,6 +147,7 @@ try:
     from .packages.cors import *
     from .packages.bleach import *
     from .packages.ckeditor import *
+    from .packages.crontab import *
     '''
     LOGGING is built using base directory path, so in order to
     access base settings variables logging settings are returned

@@ -33,9 +33,13 @@ DATABASES['default'].update({
 
 # Email
 
-EMAIL_HOST = 'mail.ukraine.com.ua'
-EMAIL_HOST_USER = 'webmaster@cheers-development.in.ua'
-EMAIL_HOST_PASSWORD = 'hN9KDr0ch11Z'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-EMAIL_FROM = 'webmaster@cheers-development.in.ua'
-EMAIL_TO = 'grimv01k@gmail.com'
+EMAIL_HOST = ''
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+
+SERVER_EMAIL = EMAIL_HOST_USER
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+DEFAULT_TO_EMAIL = ''

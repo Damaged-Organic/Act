@@ -1,8 +1,11 @@
 # act_project/act/website/management/commands/mailing.py
+import sys
 import datetime
 import logging
 
 from smtplib import SMTPException
+
+from django.core.management.base import CommandError
 
 from act.services.mailer import MailerMixin
 
@@ -12,6 +15,11 @@ from ...models import Event
 
 
 class Command(MailerMixin, MailingCommand):
+    def __init__(self, *args, **kwargs):
+        super(Command, self).__init__(*args, **kwargs)
+
+        self.logger = logging.getLogger('commands')
+
     def get_events(self, mailing=None):
         if mailing is None:
             events = Event.objects.order_by_created_at_limit()
@@ -23,19 +31,19 @@ class Command(MailerMixin, MailingCommand):
     def handle(self, *args, **options):
         subscribers = self.get_subscribers()
         if not subscribers.exists():
-            return
+            sys.exit(0)
 
         mailing = self.get_mailing()
 
         events = self.get_events(mailing)
         if not events.exists():
-            return
+            sys.exit(0)
 
         try:
             self.send_subscription_emails(subscribers, events)
         except Exception as e:
-            file_logger = logging.getLogger('file')
-            file_logger.error(repr(e))
+            self.logger.error(repr(e))
+            sys.exit(1)
 
         self.record_mailing(subscribers)
 
