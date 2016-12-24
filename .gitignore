@@ -5,17 +5,17 @@
 
 *.mo
 
+*~
+
 __pycache__/
-
-logs/*
-!logs/.gitkeep
-
-static/
-uploads/
 
 */*/settings/prod.py
 
-*~
+*/*/logs/*
+!*/*/logs/.gitkeep
+
+static/
+uploads/
 
 node_modules/
 jspm_packages/
