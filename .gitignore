@@ -11,8 +11,8 @@ __pycache__/
 
 */*/settings/prod.py
 
-*/*/logs/*
-!*/*/logs/.gitkeep
+*/logs/*
+!*/logs/.gitkeep
 
 static/
 uploads/
