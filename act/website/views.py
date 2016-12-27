@@ -7,6 +7,14 @@ def index(request):
     return render(request, 'website/index.html')
 
 
+def handler400(request):
+    return JsonResponse({'detail': "Неправильний запит."}, status=404)
+
+
+def handler403(request):
+    return JsonResponse({'detail': "Заборонено."}, status=404)
+
+
 def handler404(request):
     return JsonResponse({'detail': "Не знайдено."}, status=404)
 

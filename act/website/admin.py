@@ -3,6 +3,7 @@ from django import forms
 from django.db import models
 from django.contrib import admin
 from django.utils.html import escape
+from django.contrib.admin.widgets import ForeignKeyRawIdWidget
 
 # Notice overridden transmeta import!
 from act.services.transmeta import canonical_fieldname
@@ -15,11 +16,13 @@ from act.admin import (
 from .models import (
     IntroContent,
     Sponsor, Social, Activity,
+    ProjectAttachedDocument, EventAttachedDocument,
     ProjectArea, Project,
     EventCategory, Event,
     City,
     Centre, CentreSubpage, Participant, Contact,
     Worksheet,
+    top_event_validator,
 )
 
 
@@ -58,7 +61,7 @@ class SponsorAdmin(
 
     fieldsets = (
         (None, {
-            'fields': ('logo_preview', 'link', ),
+            'fields': ('logo_preview', 'logo', 'link', ),
         }),
         ('Локалізована інформація', {
             'fields': ('title_uk', ),
@@ -132,13 +135,17 @@ class ProjectCentresInline(admin.TabularInline):
     model = Centre.projects.through
     extra = 1
 
-    '''
     def to_string(self):
         return self.centre.city.name
 
     Centre.projects.through.__str__ = to_string
     Centre.projects.through._meta.verbose_name_plural = "Належність до центрів"
-    '''
+
+
+class ProjectAttachedDocumentInline(admin.TabularInline):
+    model = ProjectAttachedDocument
+    fields = ('description_uk', 'document', )
+    extra = 1
 
 
 @admin.register(Project, site=admin_site)
@@ -161,7 +168,7 @@ class ProjectAdmin(DefaultOrderingModelAdmin):
     )
 
     inlines = [
-        ProjectCentresInline,
+        ProjectCentresInline, ProjectAttachedDocumentInline,
     ]
 
     def formfield_for_dbfield(self, db_field, **kwargs):
@@ -196,6 +203,18 @@ class EventCentresInline(admin.TabularInline):
     model = Centre.events.through
     extra = 1
 
+    def to_string(self):
+        return self.centre.city.name
+
+    Centre.events.through.__str__ = to_string
+    Centre.events.through._meta.verbose_name_plural = "Належність до центрів"
+
+
+class EventAttachedDocumentInline(admin.TabularInline):
+    model = EventAttachedDocument
+    fields = ('description_uk', 'document', )
+    extra = 1
+
 
 @admin.register(Event, site=admin_site)
 class EventAdmin(DefaultOrderingModelAdmin):
@@ -219,7 +238,7 @@ class EventAdmin(DefaultOrderingModelAdmin):
     )
 
     inlines = [
-        EventCentresInline,
+        EventCentresInline, EventAttachedDocumentInline,
     ]
 
     def formfield_for_dbfield(self, db_field, **kwargs):
@@ -253,7 +272,7 @@ class CityAdmin(
 
     fieldsets = (
         (None, {
-            'fields': ('photo_preview', ),
+            'fields': ('photo_preview', 'photo', ),
         }),
         ('Локалізована інформація', {
             'fields': ('name_uk', ),
@@ -278,7 +297,7 @@ class CityAdmin(
 
 class ParticipantInline(admin.TabularInline):
     model = Participant
-    fields = ('name_uk', 'surname_uk', 'position_uk', )
+    fields = ('name_uk', 'surname_uk', 'position_uk', 'photo', )
     extra = 0
     show_change_link = True
 
@@ -363,10 +382,45 @@ class ContactAdmin(
 
 # Centre
 
+
+class TopEventRawIdWidget(ForeignKeyRawIdWidget):
+    def url_parameters(self):
+        res = super(TopEventRawIdWidget, self).url_parameters()
+        res["centres__in"] = self.form_instance.instance.id
+
+        return res
+
+
+class CentreAdminForm(forms.ModelForm):
+    top_event = forms.ModelChoiceField(
+        queryset=Event.objects.all(),
+        widget=TopEventRawIdWidget(
+            Centre._meta.get_field('top_event').rel, admin_site)
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(CentreAdminForm, self).__init__(*args, **kwargs)
+        self.fields['top_event'].widget.form_instance = self
+        self.fields['top_event'].label = (
+            self._meta.model.top_event.field.verbose_name)
+
+    def clean(self):
+        cleaned_data = super(CentreAdminForm, self).clean()
+
+        error_top_event = top_event_validator(
+            cleaned_data.get('top_event'), cleaned_data.get('events'))
+        if error_top_event:
+            self.add_error('top_event', error_top_event)
+
+        return cleaned_data
+
+
 @admin.register(Centre, site=admin_site)
 class CentreAdmin(
     ForbidAddMixin, ForbidDeleteMixin, DefaultOrderingModelAdmin
 ):
+    form = CentreAdminForm
+
     readonly_fields = (
         'get_projects_count', 'get_events_count', 'get_participants_count',
     )
@@ -375,14 +429,16 @@ class CentreAdmin(
         'get_projects_count', 'get_events_count', 'get_participants_count',
     )
     list_display_links = ('city', )
-
     filter_horizontal = ('projects', 'events', )
-
     fieldsets = (
         (None, {
-            'fields': ('city', 'short_description_uk', 'projects', 'events', ),
+            'fields': (
+                'city', 'short_description_uk',
+                'projects', 'events', 'top_event',
+            ),
         }),
     )
+    raw_id_fields = ('top_event', )
 
     inlines = [
         ContactInline, ParticipantInline,

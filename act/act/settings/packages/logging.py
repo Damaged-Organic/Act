@@ -46,10 +46,15 @@ def get_logging(base_dir):
             },
         },
         'loggers': {
+            'django.security.DisallowedHost': {
+                'handlers': ['file'],
+                'level': 'ERROR',
+                'propagate': False,
+            },
             'commands': {
                 'level': 'ERROR',
                 'handlers': ['console', 'file', 'mail_admins'],
-                'propagate': True,
+                'propagate': False,
             },
         },
     }

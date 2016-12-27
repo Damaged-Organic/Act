@@ -12,8 +12,8 @@ from act.services.mailer import MailerMixin
 from .models import (
     IntroContent,
     Sponsor, Social, Activity,
-    ProjectArea, Project,
-    EventCategory, Event,
+    ProjectAttachedDocument, ProjectArea, Project,
+    EventAttachedDocument, EventCategory, Event,
     City, Participant, Contact,
     Centre, CentreSubpage,
     Worksheet,
@@ -117,7 +117,13 @@ class ProjectAreaSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', )
 
 
-class ProjectSerializer(ExcludableModelSerializer):
+class ProjectAttachedDocumentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectAttachedDocument
+        fields = ('id', 'document', 'description', )
+
+
+class ProjectListSerializer(ExcludableModelSerializer):
     project_area = ProjectAreaSerializer(read_only=True)
     centres = CentreCitySerializer(read_only=True, many=True)
 
@@ -138,6 +144,30 @@ class ProjectSerializer(ExcludableModelSerializer):
         return queryset
 
 
+class ProjectDetailSerializer(ExcludableModelSerializer):
+    project_area = ProjectAreaSerializer(read_only=True)
+    project_attached_documents = ProjectAttachedDocumentSerializer(
+        read_only=True, many=True)
+    centres = CentreCitySerializer(read_only=True, many=True)
+
+    class Meta:
+        model = Project
+        fields = (
+            'id', 'project_area', 'project_attached_documents', 'centres',
+            'started_at',  'image', 'title', 'content', 'is_active', 'slug',
+        )
+
+    @staticmethod
+    def set_eager_loading(queryset):
+        queryset = queryset.select_related('project_area')
+        queryset = queryset.prefetch_related(
+            'project_attached_documents',
+            Prefetch('centres', queryset=Centre.objects.select_related('city'))
+        )
+
+        return queryset
+
+
 # Event
 
 class EventCategorySerializer(serializers.ModelSerializer):
@@ -146,10 +176,16 @@ class EventCategorySerializer(serializers.ModelSerializer):
         fields = ('id', 'title', )
 
 
-class EventSerializer(ExcludableModelSerializer):
+class EventAttachedDocumentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EventAttachedDocument
+        fields = ('id', 'document', 'description', )
+
+
+class EventListSerializer(ExcludableModelSerializer):
     event_category = EventCategorySerializer(read_only=True)
     centres = CentreCitySerializer(read_only=True, many=True)
-    project = ProjectSerializer(read_only=True)
+    project = ProjectListSerializer(read_only=True)
 
     class Meta:
         model = Event
@@ -162,6 +198,32 @@ class EventSerializer(ExcludableModelSerializer):
     def set_eager_loading(queryset):
         queryset = queryset.select_related('event_category', 'project')
         queryset = queryset.prefetch_related(
+            Prefetch('centres', queryset=Centre.objects.select_related('city'))
+        )
+
+        return queryset
+
+
+class EventDetailSerializer(ExcludableModelSerializer):
+    event_category = EventCategorySerializer(read_only=True)
+    centres = CentreCitySerializer(read_only=True, many=True)
+    project = ProjectListSerializer(read_only=True)
+    event_attached_documents = EventAttachedDocumentSerializer(
+        read_only=True, many=True)
+
+    class Meta:
+        model = Event
+        fields = (
+            'id', 'event_category', 'event_attached_documents',
+            'centres', 'project',
+            'created_at', 'image', 'title', 'content', 'is_active', 'slug',
+        )
+
+    @staticmethod
+    def set_eager_loading(queryset):
+        queryset = queryset.select_related('event_category', 'project')
+        queryset = queryset.prefetch_related(
+            'event_attached_documents',
             Prefetch('centres', queryset=Centre.objects.select_related('city'))
         )
 
@@ -186,60 +248,14 @@ class CentreSubpageSerializer(ExcludableModelSerializer):
         return queryset
 
 
-# Centre (partial nested relations)
-
-class CentreProjectsSerializer(serializers.ModelSerializer):
-    city = CitySerializer(read_only=True)
-    projects = ProjectSerializer(
-        exclude_fields=['centres'], read_only=True, many=True
-    )
-
-    class Meta:
-        model = Centre
-        fields = ('id', 'city', 'projects', )
-
-    @staticmethod
-    def set_eager_loading(queryset):
-        queryset = queryset.select_related('city')
-        queryset = queryset.prefetch_related(
-            Prefetch(
-                'projects',
-                queryset=Project.objects.select_related('project_area'))
-        )
-
-        return queryset
-
-
-class CentreEventsSerializer(serializers.ModelSerializer):
-    city = CitySerializer(read_only=True)
-    events = EventSerializer(
-        exclude_fields=['centres'], read_only=True, many=True
-    )
-
-    class Meta:
-        model = Centre
-        fields = ('id', 'city', 'events', )
-
-    @staticmethod
-    def set_eager_loading(queryset):
-        queryset = queryset.select_related('city')
-        queryset = queryset.prefetch_related(
-            Prefetch(
-                'events',
-                queryset=Event.objects.select_related('event_category'))
-        )
-
-        return queryset
-
-
 # Centre
 
 class CentreListSerializer(serializers.ModelSerializer):
     city = CitySerializer(read_only=True)
-    projects = ProjectSerializer(
+    projects = ProjectListSerializer(
         exclude_fields=['centres'], read_only=True, many=True
     )
-    events = EventSerializer(
+    events = EventListSerializer(
         exclude_fields=['centres'], read_only=True, many=True
     )
 
@@ -268,8 +284,15 @@ class CentreDetailSerializer(serializers.ModelSerializer):
     city = CitySerializer(read_only=True)
     contact = ContactSerializer(read_only=True)
     participants = ParticipantSerializer(read_only=True, many=True)
-    projects = ProjectSerializer(read_only=True, many=True)
-    events = EventSerializer(read_only=True, many=True)
+    projects = ProjectListSerializer(
+        exclude_fields=['centres'], read_only=True, many=True
+    )
+    events = EventListSerializer(
+        exclude_fields=['centres'], read_only=True, many=True
+    )
+    top_event = EventListSerializer(
+        exclude_fields=['centres'], read_only=True
+    )
     centres_subpages = CentreSubpageSerializer(
         exclude_fields=['centre'], read_only=True, many=True
     )
@@ -278,13 +301,14 @@ class CentreDetailSerializer(serializers.ModelSerializer):
         model = Centre
         fields = (
             'id', 'city', 'contact',
-            'participants', 'projects', 'events', 'centres_subpages',
+            'participants', 'projects', 'events', 'top_event',
+            'centres_subpages',
             'short_description',
         )
 
     @staticmethod
     def set_eager_loading(queryset):
-        queryset = queryset.select_related('city', 'contact')
+        queryset = queryset.select_related('city', 'contact', 'top_event')
         queryset = queryset.prefetch_related(
             Prefetch('participants', queryset=Participant.objects.all()),
             Prefetch(
@@ -313,7 +337,6 @@ class WorksheetSerializer(MailerMixin, serializers.ModelSerializer):
         '''
         Defining validators on field level to stack them with default ones
         '''
-
         problem = 'problem' in self.initial_data and bool(
             self.initial_data['problem']) or False
 
@@ -328,7 +351,6 @@ class WorksheetSerializer(MailerMixin, serializers.ModelSerializer):
         '''
         Defining validators on field level to stack them with default ones
         '''
-
         activity = 'activity' in self.initial_data and bool(
             self.initial_data['activity']) or False
 

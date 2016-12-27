@@ -1,4 +1,6 @@
 # act_project/act/website/models.py
+import os
+
 from urllib.parse import urljoin
 
 from django.db import models
@@ -124,19 +126,28 @@ class Activity(models.Model, metaclass=TransMeta):
 
 # AttachedDocument
 
-class AttachedDocument(models.Model):
+def attached_document_upload_to(instance, filename):
+    return instance.get_document_path(filename)
+
+
+class AttachedDocument(models.Model, metaclass=TransMeta):
     DOCUMENT_PATH = 'documents/'
 
-    document = models.FileField('Документ', upload_to=DOCUMENT_PATH)
+    document = models.FileField(
+        'Документ', upload_to=attached_document_upload_to)
+    description = models.CharField('Короткий опис', max_length=200)
 
     class Meta:
-        db_table = get_table_name('attached', 'documents')
+        abstract = True
 
-        verbose_name = 'Документ'
-        verbose_name_plural = 'Документи'
+        translate = ('description', )
 
     def __str__(self):
-        return str(self.document) or self.__class__.__name__
+        return str(self.description) or self.__class__.__name__
+
+    @staticmethod
+    def get_document_path(filename):
+        return os.path.join(AttachedDocument.DOCUMENT_PATH, filename)
 
 
 # Project
@@ -174,12 +185,6 @@ class Project(models.Model, metaclass=TransMeta):
     IMAGE_PATH = 'projects/images/'
 
     image = models.ImageField('Головне зображення', upload_to=IMAGE_PATH)
-
-    attached_documents = models.ManyToManyField(
-        AttachedDocument,
-        blank=True,
-        related_name='projects',
-    )
 
     project_area = models.ForeignKey(
         ProjectArea,
@@ -239,6 +244,25 @@ class Project(models.Model, metaclass=TransMeta):
     get_events_count.short_description = 'Кількість подій'
 
 
+class ProjectAttachedDocument(AttachedDocument):
+    DOCUMENT_PATH = 'projects/'
+
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name='project_attached_documents',
+    )
+
+    class Meta:
+        db_table = get_table_name('projects', 'attached', 'documents')
+
+        verbose_name_plural = "Прикріплені документи"
+
+    def get_document_path(self, filename):
+        filename = os.path.join(self.DOCUMENT_PATH, filename)
+        return super().get_document_path(filename)
+
+
 # Event
 
 class EventCategory(models.Model, metaclass=TransMeta):
@@ -288,12 +312,6 @@ class Event(models.Model, metaclass=TransMeta):
     IMAGE_PATH = 'events/images/'
 
     image = models.ImageField('Головне зображення', upload_to=IMAGE_PATH)
-
-    attached_documents = models.ManyToManyField(
-        AttachedDocument,
-        blank=True,
-        related_name='events',
-    )
 
     event_category = models.ForeignKey(
         EventCategory,
@@ -365,6 +383,25 @@ class Event(models.Model, metaclass=TransMeta):
         return urljoin(get_default_URL(), self.get_static_path())
 
 
+class EventAttachedDocument(AttachedDocument):
+    DOCUMENT_PATH = 'events/'
+
+    event = models.ForeignKey(
+        Event,
+        on_delete=models.CASCADE,
+        related_name='event_attached_documents',
+    )
+
+    class Meta:
+        db_table = get_table_name('events', 'attached', 'documents')
+
+        verbose_name_plural = "Прикріплені документи"
+
+    def get_document_path(self, filename):
+        filename = os.path.join(self.DOCUMENT_PATH, filename)
+        return super().get_document_path(filename)
+
+
 # City
 
 class City(models.Model, metaclass=TransMeta):
@@ -398,21 +435,40 @@ class City(models.Model, metaclass=TransMeta):
 
 # Centre
 
+def top_event_validator(top_event, events):
+    '''
+    Validator makes sure that selected top event is in
+    the list of events related to the current centre.
+    '''
+    if top_event and not events.filter(pk=top_event.id):
+        return "Вказана головна подія не має відношення до даного центру"
+
+    return False
+
+
 class Centre(models.Model, metaclass=TransMeta):
     city = models.OneToOneField(
-        City, null=True, on_delete=models.SET_NULL,
+        City, null=True, on_delete=models.SET_NULL
     )
     city.verbose_name = City._meta.verbose_name
 
     projects = models.ManyToManyField(
-        Project, blank=True, related_name='centres',
+        Project, blank=True, related_name='centres'
     )
     projects.verbose_name = Project._meta.verbose_name_plural
 
     events = models.ManyToManyField(
-        Event, blank=True, related_name='centres',
+        Event, blank=True, related_name='centres'
     )
     events.verbose_name = Event._meta.verbose_name_plural
+
+    top_event = models.ForeignKey(
+        Event,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL
+    )
+    top_event.verbose_name = 'Головна подія'
 
     short_description = models.CharField('Короткий опис', max_length=500)
 
@@ -428,6 +484,22 @@ class Centre(models.Model, metaclass=TransMeta):
 
     def __str__(self):
         return str(self.city) if self.city else self.__class__.__name__
+
+    def clean(self, *args, **kwargs):
+        '''
+        Validation errors are raised in bunch, so user could
+        see them all at once - not one by one on each error
+        '''
+        super(Centre, self).clean(*args, **kwargs)
+
+        errors = {}
+
+        error_top_event = top_event_validator(self.top_event, self.events)
+        if error_top_event:
+            errors['top_event'] = [error_top_event]
+
+        if errors:
+            raise ValidationError(errors)
 
     '''Projects shortcut methods'''
 
@@ -567,6 +639,11 @@ class Contact(models.Model, metaclass=TransMeta):
 # Worksheet
 
 def problem_description_validator(problem, problem_description):
+    '''
+    Validator makes sure that problem description field
+    linked to a problem boolean field would raise error,
+    if boolean is set to `True` and description is blank.
+    '''
     if problem and not problem_description:
         return "Будь ласка, опишіть проблему."
 
@@ -574,6 +651,11 @@ def problem_description_validator(problem, problem_description):
 
 
 def activity_description_validator(activity, activity_description):
+    '''
+    Validator makes sure that activity description field
+    linked to a activity boolean field would raise error,
+    if boolean is set to `True` and description is blank.
+    '''
     if activity and not activity_description:
         return "Будь ласка, опишіть діяльність."
 
@@ -616,12 +698,11 @@ class Worksheet(models.Model):
 
     def clean(self, *args, **kwargs):
         '''
-        Clean method makes sure that description fields linked
-        to a corresponding boolean fields would raise errors,
-        if booleans set to `True` and descriptions are blank.
         Validation errors are raised in bunch, so user could
         see them all at once - not one by one on each error
         '''
+        super(Worksheet, self).clean(*args, **kwargs)
+
         errors = {}
 
         error_problem_description = problem_description_validator(
@@ -636,5 +717,3 @@ class Worksheet(models.Model):
 
         if errors:
             raise ValidationError(errors)
-
-        super(Worksheet, self).clean(*args, **kwargs)

@@ -26,11 +26,10 @@ from .models import (
 from .serializers import (
     IntroContentSerializer,
     SponsorSerializer, SocialSerializer, ActivitySerializer,
-    ProjectAreaSerializer, ProjectSerializer,
-    EventCategorySerializer, EventSerializer,
+    ProjectAreaSerializer, ProjectListSerializer, ProjectDetailSerializer,
+    EventCategorySerializer, EventListSerializer, EventDetailSerializer,
     CitySerializer, ParticipantSerializer, ContactSerializer,
-    CentreListSerializer, CentreDetailSerializer,
-    CentreCitySerializer, CentreProjectsSerializer, CentreEventsSerializer,
+    CentreListSerializer, CentreDetailSerializer, CentreCitySerializer,
     CentreSubpageSerializer,
     WorksheetSerializer,
 )
@@ -147,7 +146,7 @@ class ProjectFilter(django_filters.FilterSet):
 
 
 class ProjectList(ListAPIView):
-    serializer_class = ProjectSerializer
+    serializer_class = ProjectListSerializer
 
     pagination_class = ProjectPageNumberPagination
 
@@ -167,7 +166,7 @@ class ProjectList(ListAPIView):
 
 
 class ProjectDetail(RetrieveAPIView):
-    serializer_class = ProjectSerializer
+    serializer_class = ProjectDetailSerializer
 
     @set_eager_loading
     def get_queryset(self):
@@ -189,15 +188,17 @@ class EventCategoryDetail(RetrieveAPIView):
 # Event
 
 class EventLimitOffsetPagination(LimitOffsetPagination):
-    default_limit = 3
+    default_limit = Event.LIMIT['default']
+    max_limit = Event.LIMIT['max']
+
     limit_query_param = 'limit'
-    max_limit = 100
 
 
 class EventPageNumberPagination(PageNumberPagination):
-    page_size = 2
+    page_size = Event.PAGE_SIZE['default']
+    max_page_size = Event.PAGE_SIZE['max']
+
     page_query_param = 'page'
-    max_page_size = 100
 
 
 class EventFilter(django_filters.FilterSet):
@@ -207,7 +208,7 @@ class EventFilter(django_filters.FilterSet):
 
 
 class EventList(ListAPIView):
-    serializer_class = EventSerializer
+    serializer_class = EventListSerializer
 
     pagination_class = EventPageNumberPagination
 
@@ -227,7 +228,7 @@ class EventList(ListAPIView):
 
 
 class EventDetail(RetrieveAPIView):
-    serializer_class = EventSerializer
+    serializer_class = EventDetailSerializer
 
     @set_eager_loading
     def get_queryset(self):
@@ -268,8 +269,6 @@ class CentreList(ListAPIView):
     should be included in serialized objects list. Available options are:
 
     1. 'related=city', to include only nested city object
-    2. 'related=projects', to include projects as well as city
-    3. 'related=events', to include events as well as city
     '''
     serializer_class = CentreListSerializer
 
@@ -281,10 +280,6 @@ class CentreList(ListAPIView):
 
         if related == 'city':
             self.serializer_class = CentreCitySerializer
-        elif related == 'projects':
-            self.serializer_class = CentreProjectsSerializer
-        elif related == 'events':
-            self.serializer_class = CentreEventsSerializer
 
         return queryset
 
