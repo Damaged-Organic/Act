@@ -31,19 +31,19 @@ class Command(MailerMixin, MailingCommand):
     def handle(self, *args, **options):
         subscribers = self.get_subscribers()
         if not subscribers.exists():
-            sys.exit(0)
+            return
 
         mailing = self.get_mailing()
 
         events = self.get_events(mailing)
         if not events.exists():
-            sys.exit(0)
+            return
 
         try:
             self.send_subscription_emails(subscribers, events)
         except Exception as e:
             self.logger.error(repr(e))
-            sys.exit(1)
+            return
 
         self.record_mailing(subscribers)
 

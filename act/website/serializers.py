@@ -3,6 +3,7 @@ import datetime
 
 from django.conf import settings
 from django.db.models import Prefetch
+from django.db.models.fields.files import ImageFieldFile
 
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -33,6 +34,44 @@ class ExcludableModelSerializer(serializers.ModelSerializer):
         if exclude_fields:
             for field_name in exclude_fields:
                 self.fields.pop(field_name)
+
+
+class StdImageSerializer(serializers.ImageField):
+    '''
+    Output representation override to include thumbnail `variations`
+    fields and present returned value as a complete dictionary
+    '''
+    def to_representation(self, value):
+        representation = {
+            'original': super().to_representation(value), }
+
+        images = {
+            key: image for key, image in value.__dict__.items()
+            if isinstance(image, ImageFieldFile)}
+
+        for field, image in images.items():
+            representation.update({field: super().to_representation(image)})
+
+        return representation
+
+
+class AdjacentObjectsSerializerMixin(serializers.Serializer):
+    '''
+    This mixin adds to a serializer two fields that contain ids of previous
+    and next records in database for a given serializer's model instance
+    '''
+    prev_id = serializers.SerializerMethodField()
+    next_id = serializers.SerializerMethodField()
+
+    def get_prev_id(self, instance):
+        prev_instance = (
+            instance._meta.model.objects.filter(id__lt=instance.id).first())
+        return prev_instance.id if prev_instance else None
+
+    def get_next_id(self, instance):
+        next_instance = (
+            instance._meta.model.objects.filter(id__gt=instance.id).first())
+        return next_instance.id if next_instance else None
 
 
 # Content
@@ -68,19 +107,21 @@ class ActivitySerializer(serializers.ModelSerializer):
 # City
 
 class CitySerializer(serializers.ModelSerializer):
+    photo = StdImageSerializer(read_only=True)
+
     class Meta:
         model = City
-        fields = ('id', 'photo', 'photo_thumb', 'name', )
+        fields = ('id', 'photo', 'name', )
 
 
 # Participant
 
 class ParticipantSerializer(serializers.ModelSerializer):
+    photo = StdImageSerializer(read_only=True)
+
     class Meta:
         model = Participant
-        fields = (
-            'id', 'photo', 'photo_thumb', 'name', 'surname', 'position',
-        )
+        fields = ('id', 'photo', 'name', 'surname', 'position', )
 
 
 # Contant
@@ -88,9 +129,7 @@ class ParticipantSerializer(serializers.ModelSerializer):
 class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
-        fields = (
-            'id', 'email', 'phone', 'address',
-        )
+        fields = ('id', 'email', 'phone', 'address', )
 
 
 # Centre (partial nested relation)
@@ -109,7 +148,7 @@ class CentreCitySerializer(serializers.ModelSerializer):
         return queryset
 
 
-# Project
+# Project (major and list)
 
 class ProjectAreaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -124,6 +163,8 @@ class ProjectAttachedDocumentSerializer(serializers.ModelSerializer):
 
 
 class ProjectListSerializer(ExcludableModelSerializer):
+    image = StdImageSerializer(read_only=True)
+
     project_area = ProjectAreaSerializer(read_only=True)
     centres = CentreCitySerializer(read_only=True, many=True)
 
@@ -144,31 +185,7 @@ class ProjectListSerializer(ExcludableModelSerializer):
         return queryset
 
 
-class ProjectDetailSerializer(ExcludableModelSerializer):
-    project_area = ProjectAreaSerializer(read_only=True)
-    project_attached_documents = ProjectAttachedDocumentSerializer(
-        read_only=True, many=True)
-    centres = CentreCitySerializer(read_only=True, many=True)
-
-    class Meta:
-        model = Project
-        fields = (
-            'id', 'project_area', 'project_attached_documents', 'centres',
-            'started_at',  'image', 'title', 'content', 'is_active', 'slug',
-        )
-
-    @staticmethod
-    def set_eager_loading(queryset):
-        queryset = queryset.select_related('project_area')
-        queryset = queryset.prefetch_related(
-            'project_attached_documents',
-            Prefetch('centres', queryset=Centre.objects.select_related('city'))
-        )
-
-        return queryset
-
-
-# Event
+# Event (major and list)
 
 class EventCategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -183,6 +200,8 @@ class EventAttachedDocumentSerializer(serializers.ModelSerializer):
 
 
 class EventListSerializer(ExcludableModelSerializer):
+    image = StdImageSerializer(read_only=True)
+
     event_category = EventCategorySerializer(read_only=True)
     centres = CentreCitySerializer(read_only=True, many=True)
     project = ProjectListSerializer(read_only=True)
@@ -204,7 +223,47 @@ class EventListSerializer(ExcludableModelSerializer):
         return queryset
 
 
-class EventDetailSerializer(ExcludableModelSerializer):
+# Project (detail)
+
+class ProjectDetailSerializer(
+    AdjacentObjectsSerializerMixin, ExcludableModelSerializer
+):
+    image = StdImageSerializer(read_only=True)
+
+    project_area = ProjectAreaSerializer(read_only=True)
+    project_attached_documents = ProjectAttachedDocumentSerializer(
+        read_only=True, many=True)
+    centres = CentreCitySerializer(read_only=True, many=True)
+    events = EventListSerializer(
+        exclude_fields=['centres', 'project'], read_only=True, many=True)
+
+    class Meta:
+        model = Project
+        fields = (
+            'id', 'project_area', 'project_attached_documents',
+            'centres', 'events',
+            'started_at',  'image', 'title', 'content', 'is_active', 'slug',
+            'prev_id', 'next_id',
+        )
+
+    @staticmethod
+    def set_eager_loading(queryset):
+        queryset = queryset.select_related('project_area')
+        queryset = queryset.prefetch_related(
+            'project_attached_documents',
+            Prefetch('centres', queryset=Centre.objects.select_related('city'))
+        )
+
+        return queryset
+
+
+# Event (detail)
+
+class EventDetailSerializer(
+    AdjacentObjectsSerializerMixin, ExcludableModelSerializer
+):
+    image = StdImageSerializer(read_only=True)
+
     event_category = EventCategorySerializer(read_only=True)
     centres = CentreCitySerializer(read_only=True, many=True)
     project = ProjectListSerializer(read_only=True)

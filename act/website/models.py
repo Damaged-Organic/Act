@@ -10,10 +10,12 @@ from django.utils.text import slugify
 
 from transliterate import translit
 from ckeditor.fields import RichTextField
+from stdimage.models import StdImageField
 
 from act.utils import get_default_URL
 # Notice overridden transmeta import!
 from act.services.transmeta import TransMeta
+from act.services.file_name import RandomFileName
 
 """
 Hack to order models in Django Admin. Whitespaces assigned in nested Meta
@@ -24,9 +26,18 @@ models.options.DEFAULT_NAMES += ('order_prefix',)
 
 
 def get_table_name(*args):
-    """ Getting the correct and clean table name """
+    ''' Getting the correct and clean table name '''
     app_label = 'website'
     return '_'.join((app_label, ) + args)
+
+
+class FixedStdImageField(StdImageField):
+    '''
+    Specified default width and height for a StdImageField that
+    could be later used in consuming model attributes definition
+    '''
+    MAX_WIDTH = 1920
+    MAX_HEIGHT = 1280
 
 
 # Content
@@ -63,7 +74,7 @@ class IntroContent(ContentBlock, metaclass=TransMeta):
 class Sponsor(models.Model, metaclass=TransMeta):
     LOGO_PATH = 'sponsors/logos/'
 
-    logo = models.ImageField('Логотип', upload_to=LOGO_PATH)
+    logo = models.ImageField('Логотип', upload_to=RandomFileName(LOGO_PATH))
 
     title = models.CharField('Назва організації', max_length=100)
     link = models.URLField('Посилання', max_length=300)
@@ -127,7 +138,7 @@ class Activity(models.Model, metaclass=TransMeta):
 # AttachedDocument
 
 def attached_document_upload_to(instance, filename):
-    return instance.get_document_path(filename)
+    return instance.get_document_path(instance, filename)
 
 
 class AttachedDocument(models.Model, metaclass=TransMeta):
@@ -146,8 +157,25 @@ class AttachedDocument(models.Model, metaclass=TransMeta):
         return str(self.description) or self.__class__.__name__
 
     @staticmethod
-    def get_document_path(filename):
-        return os.path.join(AttachedDocument.DOCUMENT_PATH, filename)
+    def get_document_path(instance, filename, path=None):
+        '''
+        This static method is actually a callable for `upload_to` file
+        field argument, which is called after instance already created (and
+        does not exist during file field definition). It's also called by
+        subclasses to concatenate root document path with their subfolders
+        '''
+        document_path = AttachedDocument.DOCUMENT_PATH
+
+        if path is not None:
+            document_path = os.path.join(document_path, path)
+
+        '''
+        RandomFileName implements `__call()__` which expects the same
+        arguments as `upload_to` callable - `instance` and `filename`
+        '''
+        random_file_name = RandomFileName(document_path)
+
+        return random_file_name(instance, filename)
 
 
 # Project
@@ -168,7 +196,7 @@ class ProjectArea(models.Model, metaclass=TransMeta):
     def __str__(self):
         return str(self.title) or self.__class__.__name__
 
-    '''Projects shortcut methods'''
+    ''' Projects shortcut methods '''
 
     def get_projects(self):
         return self.projects.all()
@@ -184,7 +212,17 @@ class Project(models.Model, metaclass=TransMeta):
 
     IMAGE_PATH = 'projects/images/'
 
-    image = models.ImageField('Головне зображення', upload_to=IMAGE_PATH)
+    variations = {
+        'wide': {
+            'width': FixedStdImageField.MAX_WIDTH,
+            'height': 810,
+            'crop': True},
+    }
+
+    image = FixedStdImageField(
+        'Головне зображення',
+        upload_to=RandomFileName(IMAGE_PATH),
+        variations=variations)
 
     project_area = models.ForeignKey(
         ProjectArea,
@@ -258,9 +296,9 @@ class ProjectAttachedDocument(AttachedDocument):
 
         verbose_name_plural = "Прикріплені документи"
 
-    def get_document_path(self, filename):
-        filename = os.path.join(self.DOCUMENT_PATH, filename)
-        return super().get_document_path(filename)
+    def get_document_path(self, instance, filename):
+        return super().get_document_path(
+            instance, filename, self.DOCUMENT_PATH)
 
 
 # Event
@@ -311,7 +349,18 @@ class Event(models.Model, metaclass=TransMeta):
 
     IMAGE_PATH = 'events/images/'
 
-    image = models.ImageField('Головне зображення', upload_to=IMAGE_PATH)
+    variations = {
+        'square': {'width': 480, 'height': 480, 'crop': True},
+        'wide': {
+            'width': FixedStdImageField.MAX_WIDTH,
+            'height': 810,
+            'crop': True},
+    }
+
+    image = FixedStdImageField(
+        'Головне зображення',
+        upload_to=RandomFileName(IMAGE_PATH),
+        variations=variations)
 
     event_category = models.ForeignKey(
         EventCategory,
@@ -397,21 +446,29 @@ class EventAttachedDocument(AttachedDocument):
 
         verbose_name_plural = "Прикріплені документи"
 
-    def get_document_path(self, filename):
-        filename = os.path.join(self.DOCUMENT_PATH, filename)
-        return super().get_document_path(filename)
+    def get_document_path(self, instance, filename):
+        return super().get_document_path(
+            instance, filename, self.DOCUMENT_PATH)
 
 
 # City
 
 class City(models.Model, metaclass=TransMeta):
     PHOTO_PATH = 'cities/photos/'
-    PHOTO_PATH_THUMB = 'cities/photos/thumbs/'
 
-    photo = models.ImageField('Фотографія', upload_to=PHOTO_PATH)
-    photo_thumb = models.ImageField(
-        'Фотографія', upload_to=PHOTO_PATH_THUMB, null=True
-    )
+    variations = {
+        'square': {'width': 480, 'height': 480, 'crop': True},
+        'high': {
+            'width': 400,
+            'height': FixedStdImageField.MAX_HEIGHT,
+            'crop': True},
+    }
+
+    photo = FixedStdImageField(
+        'Фотографія',
+        upload_to=RandomFileName(PHOTO_PATH),
+        variations=variations)
+
     name = models.CharField('Назва', max_length=100, unique=True)
 
     class Meta:
@@ -562,12 +619,15 @@ class CentreSubpage(models.Model, metaclass=TransMeta):
 
 class Participant(models.Model, metaclass=TransMeta):
     PHOTO_PATH = 'participants/photos/'
-    PHOTO_PATH_THUMB = 'participants/photos/thumbs/'
 
-    photo = models.ImageField('Фотографія', upload_to=PHOTO_PATH)
-    photo_thumb = models.ImageField(
-        'Фотографія', upload_to=PHOTO_PATH_THUMB, null=True,
-    )
+    variations = {
+        'square': {'width': 480, 'height': 480, 'crop': True},
+    }
+
+    photo = FixedStdImageField(
+        'Фотографія',
+        upload_to=RandomFileName(PHOTO_PATH),
+        variations=variations)
 
     centre = models.ForeignKey(
         Centre,

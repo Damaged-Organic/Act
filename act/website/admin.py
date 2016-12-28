@@ -148,8 +148,33 @@ class ProjectAttachedDocumentInline(admin.TabularInline):
     extra = 1
 
 
+class ProjectAdminForm(forms.ModelForm):
+    events = forms.ModelMultipleChoiceField(queryset=Event.objects.all())
+
+    def __init__(self, *args, **kwargs):
+        super(ProjectAdminForm, self).__init__(*args, **kwargs)
+
+        self.fields['events'].initial = self.instance.events.all()
+        self.fields['events'].label = (
+            self._meta.model.events.rel.related_model
+                ._meta.verbose_name_plural)
+        self.fields['events'].help_text = (
+            "Ви можете обрати декілька подій "
+            "одразу, затиснувши клавішу 'Ctrl'")
+
+    def save(self, *args, **kwargs):
+        instance = super(ProjectAdminForm, self).save(commit=False)
+
+        self.fields['events'].initial.update(project=None)
+        self.cleaned_data['events'].update(project=instance)
+
+        return instance
+
+
 @admin.register(Project, site=admin_site)
 class ProjectAdmin(DefaultOrderingModelAdmin):
+    form = ProjectAdminForm
+
     readonly_fields = ('image_preview', )
     list_display = (
         'id', 'title_uk', 'started_at', 'project_area', 'is_active',
@@ -159,7 +184,7 @@ class ProjectAdmin(DefaultOrderingModelAdmin):
     fieldsets = (
         (None, {
             'fields': (
-                'image_preview', 'image', 'project_area', 'is_active',
+                'image_preview', 'image', 'project_area', 'is_active', 'events'
             ),
         }),
         ('Локалізована інформація', {
