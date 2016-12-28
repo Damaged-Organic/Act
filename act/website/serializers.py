@@ -251,7 +251,12 @@ class ProjectDetailSerializer(
         queryset = queryset.select_related('project_area')
         queryset = queryset.prefetch_related(
             'project_attached_documents',
-            Prefetch('centres', queryset=Centre.objects.select_related('city'))
+            Prefetch(
+                'events',
+                queryset=Event.objects.select_related('event_category')),
+            Prefetch(
+                'centres',
+                queryset=Centre.objects.select_related('city'))
         )
 
         return queryset
