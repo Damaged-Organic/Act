@@ -35,9 +35,6 @@ class IntroContentAdmin(
     list_display = ('headline_uk', )
 
     fieldsets = (
-        (None, {
-            'fields': ('logo_preview', ),
-        }),
         ('Локалізована інформація', {
             'fields': ('headline_uk', ),
         }),

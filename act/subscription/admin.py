@@ -15,6 +15,8 @@ from .models import Subscriber
 @admin.register(Subscriber, site=admin_site)
 class SubscriberAdmin(ForbidAddMixin, DefaultOrderingModelAdmin):
     readonly_fields = ('email', 'subscribed_at', )
+    list_display = ('email', 'subscribed_at', 'is_active', )
+
     fieldsets = (
         (None, {
             'fields': ('email', 'subscribed_at', 'is_active', ), }),
