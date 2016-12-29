@@ -154,35 +154,30 @@
     pk: 1
     fields:
         photo: '-'
-        photo_thumb: '-'
         name_uk: Краматорськ
 
 -   model: website.City
     pk: 2
     fields:
         photo: '-'
-        photo_thumb: '-'
         name_uk: Маріуполь
 
 -   model: website.City
     pk: 3
     fields:
         photo: '-'
-        photo_thumb: '-'
         name_uk: Вінниця
 
 -   model: website.City
     pk: 4
     fields:
         photo: '-'
-        photo_thumb: '-'
         name_uk: Запоріжжя
 
 -   model: website.City
     pk: 5
     fields:
         photo: '-'
-        photo_thumb: '-'
         name_uk: Тернопіль
 
 # Centre
@@ -254,7 +249,6 @@
     fields:
         centre: null
         photo: '-'
-        photo_thumb: '-'
         position_uk: Менеджер проекту (Центр UA)
         name_uk: Олександр
         surname_uk: Дмітрієв
@@ -264,7 +258,6 @@
     fields:
         centre: null
         photo: '-'
-        photo_thumb: '-'
         position_uk: Менеджер проекту (People In Need)
         name_uk: Ганна
         surname_uk: Мєдвєдєва
@@ -274,7 +267,6 @@
     fields:
         centre: null
         photo: '-'
-        photo_thumb: '-'
         position_uk: Менеджер з комунікацій (Центр UA)
         name_uk: Юлія
         surname_uk: Решітько

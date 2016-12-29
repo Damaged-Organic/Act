@@ -22,8 +22,8 @@ from .models import (
     City,
     Centre, CentreSubpage, Participant, Contact,
     Worksheet,
-    top_event_validator,
 )
+from .validators import top_event_validator
 
 
 # Content

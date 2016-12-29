@@ -7,15 +7,23 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.text import slugify
+from django.template.defaultfilters import filesizeformat
 
 from transliterate import translit
 from ckeditor.fields import RichTextField
 from stdimage.models import StdImageField
 
+from act.validators import FileContentTypeValidator
 from act.utils import get_default_URL
 # Notice overridden transmeta import!
 from act.services.transmeta import TransMeta
 from act.services.file_name import RandomFileName
+
+from .validators import (
+    top_event_validator,
+    problem_description_validator,
+    activity_description_validator,
+)
 
 """
 Hack to order models in Django Admin. Whitespaces assigned in nested Meta
@@ -144,8 +152,42 @@ def attached_document_upload_to(instance, filename):
 class AttachedDocument(models.Model, metaclass=TransMeta):
     DOCUMENT_PATH = 'documents/'
 
+    allowed_content_types = (
+        'image/jpeg',
+        'application/pdf',
+        'application/msword',
+        ('application/'
+         'vnd.openxmlformats-officedocument.wordprocessingml.document'),
+        ('application/'
+         'vnd.openxmlformats-officedocument.wordprocessingml.document'),
+        'application/vnd.ms-excel',
+        'application/octet-stream',
+        ('application/'
+         'vnd.openxmlformats-officedocument.spreadsheetml.sheet'),
+        'application/vnd.ms-powerpoint',
+        ('application/'
+         'vnd.openxmlformats-officedocument.presentationml.presentation'),
+    )
+    allowed_content_types_extensions = (
+        '.jpeg', '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx')
+    max_size = 1024 * 5120
+
+    content_type_validator = FileContentTypeValidator(
+        # `max_size` of 5 megabytes
+        max_size=max_size,
+        allowed_content_types=allowed_content_types)
+
     document = models.FileField(
-        'Документ', upload_to=attached_document_upload_to)
+        'Документ',
+        upload_to=attached_document_upload_to,
+        validators=[content_type_validator],
+        help_text=(
+            "Дозволені типи файлів: " +
+            ", ".join(allowed_content_types_extensions) +
+            "\n"
+            "Максимальний розмір файлу: " +
+            filesizeformat(max_size))
+    )
     description = models.CharField('Короткий опис', max_length=200)
 
     class Meta:
@@ -492,17 +534,6 @@ class City(models.Model, metaclass=TransMeta):
 
 # Centre
 
-def top_event_validator(top_event, events):
-    '''
-    Validator makes sure that selected top event is in
-    the list of events related to the current centre.
-    '''
-    if top_event and not events.filter(pk=top_event.id):
-        return "Вказана головна подія не має відношення до даного центру"
-
-    return False
-
-
 class Centre(models.Model, metaclass=TransMeta):
     city = models.OneToOneField(
         City, null=True, on_delete=models.SET_NULL
@@ -698,30 +729,6 @@ class Contact(models.Model, metaclass=TransMeta):
 
 # Worksheet
 
-def problem_description_validator(problem, problem_description):
-    '''
-    Validator makes sure that problem description field
-    linked to a problem boolean field would raise error,
-    if boolean is set to `True` and description is blank.
-    '''
-    if problem and not problem_description:
-        return "Будь ласка, опишіть проблему."
-
-    return False
-
-
-def activity_description_validator(activity, activity_description):
-    '''
-    Validator makes sure that activity description field
-    linked to a activity boolean field would raise error,
-    if boolean is set to `True` and description is blank.
-    '''
-    if activity and not activity_description:
-        return "Будь ласка, опишіть діяльність."
-
-    return False
-
-
 class Worksheet(models.Model):
     full_name = models.CharField('ПІБ',  max_length=300)
     residence = models.CharField('Місце проживання', max_length=500)
@@ -748,7 +755,7 @@ class Worksheet(models.Model):
     class Meta:
         db_table = get_table_name('worksheet')
 
-        order_prefix = ' ' * 6
+        order_prefix = ' ' * 1
 
         verbose_name = 'Анкета'
         verbose_name_plural = order_prefix + 'Анкети'

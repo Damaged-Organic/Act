@@ -18,6 +18,8 @@ from .models import (
     City, Participant, Contact,
     Centre, CentreSubpage,
     Worksheet,
+)
+from .validators import (
     problem_description_validator,
     activity_description_validator,
 )
