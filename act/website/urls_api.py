@@ -4,7 +4,7 @@ from django.conf.urls import url
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from .views_api import (
-    IntroContentSingular,
+    IntroContentSingular, AboutContentSingular, GoalContentSingular,
     SponsorList, SponsorDetail,
     SocialList, SocialDetail,
     ActivityList, ActivityDetail,
@@ -19,11 +19,21 @@ from .views_api import (
 )
 
 urlpatterns = [
-    # IntroContent
+    # Content
     url(
         r'^intro_content$',
         IntroContentSingular.as_view(),
         name='intro_content_singular'
+    ),
+    url(
+        r'^about_content$',
+        AboutContentSingular.as_view(),
+        name='about_content_singular'
+    ),
+    url(
+        r'^goal_content$',
+        GoalContentSingular.as_view(),
+        name='goal_content_singular'
     ),
     # Sponsor
     url(r'^sponsors$', SponsorList.as_view(), name='sponsors_list'),

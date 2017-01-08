@@ -15,7 +15,7 @@ from rest_framework.pagination import (
 from django_filters import rest_framework as django_filters
 
 from .models import (
-    IntroContent,
+    IntroContent, AboutContent, GoalContent,
     Sponsor, Social, Activity,
     ProjectArea, Project,
     EventCategory, Event,
@@ -24,7 +24,7 @@ from .models import (
     Worksheet,
 )
 from .serializers import (
-    IntroContentSerializer,
+    IntroContentSerializer, AboutContentSerializer, GoalContentSerializer,
     SponsorSerializer, SocialSerializer, ActivitySerializer,
     ProjectAreaSerializer, ProjectListSerializer, ProjectDetailSerializer,
     EventCategorySerializer, EventListSerializer, EventDetailSerializer,
@@ -50,29 +50,43 @@ def set_eager_loading(get_queryset):
     return decorator
 
 
-# IntroContent
+# Content
 
-class IntroContentSingular(GenericAPIView):
+class SingularItemAPIView(GenericAPIView):
     '''
     This view is tricky, as it overrides common behavior of `get_object()`
     method. It does not require positional `pk` argument, because it's
     intention is to return first & only one object of a given queryset
     '''
-    queryset = IntroContent.objects.all()
-    serializer_class = IntroContentSerializer
-
     def get_object(self):
         instance = self.get_queryset().first()
         return instance
 
-    def get(self, request):
-        intro_content = self.get_object()
+    def get(self, request, format=None):
+        singular_content = self.get_object()
 
-        if not intro_content:
+        if not singular_content:
             raise Http404
 
-        serializer = IntroContentSerializer(intro_content)
+        serializer_class = self.get_serializer_class()
+        serializer = serializer_class(singular_content)
+
         return Response(serializer.data)
+
+
+class IntroContentSingular(SingularItemAPIView):
+    queryset = IntroContent.objects.all()
+    serializer_class = IntroContentSerializer
+
+
+class AboutContentSingular(SingularItemAPIView):
+    queryset = AboutContent.objects.all()
+    serializer_class = AboutContentSerializer
+
+
+class GoalContentSingular(SingularItemAPIView):
+    queryset = GoalContent.objects.all()
+    serializer_class = GoalContentSerializer
 
 
 # Sponsor
@@ -245,15 +259,43 @@ class CityList(ListAPIView):
 # Participant
 
 class ParticipantList(ListAPIView):
+    '''
+    You can use `head_office` quary parameter to get only head office
+    participants (with `centre` foreign key that equals `NULL`)
+    '''
     serializer_class = ParticipantSerializer
-    queryset = Participant.objects.all()
+
+    @set_eager_loading
+    def get_queryset(self):
+        queryset = Participant.objects.all()
+
+        head_office = self.request.query_params.get('head_office', None)
+
+        if head_office is not None:
+            queryset = queryset.filter(centre__isnull=True)
+
+        return queryset
 
 
 # Contact
 
 class ContactList(ListAPIView):
+    '''
+    You can use `head_office` quary parameter to get only head office
+    contacts (with `centre` foreign key that equals `NULL`)
+    '''
     serializer_class = ContactSerializer
-    queryset = Contact.objects.all()
+
+    @set_eager_loading
+    def get_queryset(self):
+        queryset = Contact.objects.all()
+
+        head_office = self.request.query_params.get('head_office', None)
+
+        if head_office is not None:
+            queryset = queryset.filter(centre__isnull=True)
+
+        return queryset
 
 
 class ContactDetail(RetrieveAPIView):

@@ -11,7 +11,7 @@ from rest_framework.exceptions import ValidationError
 from act.services.mailer import MailerMixin
 
 from .models import (
-    IntroContent,
+    IntroContent, AboutContent, GoalContent,
     Sponsor, Social, Activity,
     ProjectAttachedDocument, ProjectArea, Project,
     EventAttachedDocument, EventCategory, Event,
@@ -84,6 +84,18 @@ class IntroContentSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'headline', )
 
 
+class AboutContentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AboutContent
+        fields = ('id', 'name', 'title', 'text', )
+
+
+class GoalContentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GoalContent
+        fields = ('id', 'name', 'title', 'text', )
+
+
 # Links
 
 class SponsorSerializer(serializers.ModelSerializer):
@@ -116,24 +128,6 @@ class CitySerializer(serializers.ModelSerializer):
         fields = ('id', 'photo', 'name', )
 
 
-# Participant
-
-class ParticipantSerializer(serializers.ModelSerializer):
-    photo = StdImageSerializer(read_only=True)
-
-    class Meta:
-        model = Participant
-        fields = ('id', 'photo', 'name', 'surname', 'position', )
-
-
-# Contant
-
-class ContactSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Contact
-        fields = ('id', 'email', 'phone', 'address', )
-
-
 # Centre (partial nested relation)
 
 class CentreCitySerializer(serializers.ModelSerializer):
@@ -146,6 +140,39 @@ class CentreCitySerializer(serializers.ModelSerializer):
     @staticmethod
     def set_eager_loading(queryset):
         queryset = queryset.select_related('city')
+
+        return queryset
+
+
+# Participant
+
+class ParticipantSerializer(ExcludableModelSerializer):
+    photo = StdImageSerializer(read_only=True)
+    centre = CentreCitySerializer(read_only=True)
+
+    class Meta:
+        model = Participant
+        fields = ('id', 'photo', 'name', 'surname', 'position', 'centre', )
+
+    @staticmethod
+    def set_eager_loading(queryset):
+        queryset = queryset.select_related('centre')
+
+        return queryset
+
+
+# Contact
+
+class ContactSerializer(ExcludableModelSerializer):
+    centre = CentreCitySerializer(read_only=True)
+
+    class Meta:
+        model = Contact
+        fields = ('id', 'email', 'phone', 'address', 'centre', )
+
+    @staticmethod
+    def set_eager_loading(queryset):
+        queryset = queryset.select_related('centre')
 
         return queryset
 
@@ -348,8 +375,12 @@ class CentreListSerializer(serializers.ModelSerializer):
 
 class CentreDetailSerializer(serializers.ModelSerializer):
     city = CitySerializer(read_only=True)
-    contact = ContactSerializer(read_only=True)
-    participants = ParticipantSerializer(read_only=True, many=True)
+    contact = ContactSerializer(
+        exclude_fields=['centre'], read_only=True
+    )
+    participants = ParticipantSerializer(
+        exclude_fields=['centre'], read_only=True, many=True
+    )
     projects = ProjectListSerializer(
         exclude_fields=['centres'], read_only=True, many=True
     )

@@ -26,6 +26,8 @@ class SecurityHeadersMiddleware(object):
                 ),
                 'script-src': (
                     "'self'"
+                    " 'unsafe-eval'"
+                    " 'unsafe-inline'"
                     " https://ajax.googleapis.com"
                     " https://maps.googleapis.com"
                 ),

@@ -14,7 +14,7 @@ from act.admin import (
 )
 
 from .models import (
-    IntroContent,
+    IntroContent, AboutContent, GoalContent,
     Sponsor, Social, Activity,
     ProjectAttachedDocument, EventAttachedDocument,
     ProjectArea, Project,
@@ -43,6 +43,44 @@ class IntroContentAdmin(
     formfield_overrides = {
         models.CharField: {'widget': forms.TextInput(attrs={
             'style': 'width:50%; max-width:50%;'
+        })},
+    }
+
+
+@admin.register(AboutContent, site=admin_site)
+class AboutContentAdmin(
+    ForbidAddMixin, ForbidDeleteMixin, DefaultOrderingModelAdmin
+):
+    list_display = ('title_uk', )
+
+    fieldsets = (
+        ('Локалізована інформація', {
+            'fields': ('title_uk', 'text_uk', ),
+        }),
+    )
+
+    formfield_overrides = {
+        models.CharField: {'widget': forms.TextInput(attrs={
+            'style': 'width:35%; max-width:35%;'
+        })},
+    }
+
+
+@admin.register(GoalContent, site=admin_site)
+class GoalContentAdmin(
+    ForbidAddMixin, ForbidDeleteMixin, DefaultOrderingModelAdmin
+):
+    list_display = ('title_uk', )
+
+    fieldsets = (
+        ('Локалізована інформація', {
+            'fields': ('title_uk', 'text_uk', ),
+        }),
+    )
+
+    formfield_overrides = {
+        models.CharField: {'widget': forms.TextInput(attrs={
+            'style': 'width:35%; max-width:35%;'
         })},
     }
 

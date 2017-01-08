@@ -69,12 +69,42 @@ class IntroContent(ContentBlock, metaclass=TransMeta):
     class Meta:
         db_table = get_table_name('content', 'intro')
 
-        order_prefix = ' ' * 13
+        order_prefix = ' ' * 15
 
-        verbose_name = 'Інтро'
+        verbose_name = 'Контент - Інтро'
         verbose_name_plural = order_prefix + verbose_name
 
         translate = ('headline', )
+
+
+class AboutContent(ContentBlock, metaclass=TransMeta):
+    title = models.CharField('Заголовок', max_length=200)
+    text = models.TextField('Текст', max_length=2000)
+
+    class Meta:
+        db_table = get_table_name('content', 'about')
+
+        order_prefix = ' ' * 14
+
+        verbose_name = 'Контент - Про нас'
+        verbose_name_plural = order_prefix + verbose_name
+
+        translate = ('title', 'text', )
+
+
+class GoalContent(ContentBlock, metaclass=TransMeta):
+    title = models.CharField('Заголовок', max_length=200)
+    text = models.TextField('Текст', max_length=2000)
+
+    class Meta:
+        db_table = get_table_name('content', 'goal')
+
+        order_prefix = ' ' * 13
+
+        verbose_name = 'Контент - Мета'
+        verbose_name_plural = order_prefix + verbose_name
+
+        translate = ('title', 'text', )
 
 
 # Links

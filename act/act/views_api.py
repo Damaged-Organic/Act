@@ -18,6 +18,12 @@ def api_root(request, format=None):
         'intro_content': reverse(
             'intro_content_singular', request=request, format=format
         ),
+        'about_content': reverse(
+            'about_content_singular', request=request, format=format
+        ),
+        'goal_content': reverse(
+            'goal_content_singular', request=request, format=format
+        ),
         'sponsors': reverse('sponsors_list', request=request, format=format),
         'socials': reverse('socials_list', request=request, format=format),
         'activities': reverse(
