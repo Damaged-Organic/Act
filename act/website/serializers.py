@@ -67,7 +67,7 @@ class AdjacentObjectsSerializerMixin(serializers.Serializer):
 
     def get_prev_id(self, instance):
         prev_instance = (
-            instance._meta.model.objects.filter(id__lt=instance.id).first())
+            instance._meta.model.objects.filter(id__lt=instance.id).last())
         return prev_instance.id if prev_instance else None
 
     def get_next_id(self, instance):
@@ -310,6 +310,7 @@ class EventDetailSerializer(
             'id', 'event_category', 'event_attached_documents',
             'centres', 'project',
             'created_at', 'image', 'title', 'content', 'is_active', 'slug',
+            'prev_id', 'next_id',
         )
 
     @staticmethod

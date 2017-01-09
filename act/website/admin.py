@@ -184,7 +184,8 @@ class ProjectAttachedDocumentInline(admin.TabularInline):
 
 
 class ProjectAdminForm(forms.ModelForm):
-    events = forms.ModelMultipleChoiceField(queryset=Event.objects.all())
+    events = forms.ModelMultipleChoiceField(
+        queryset=Event.objects.all(), required=False)
 
     def __init__(self, *args, **kwargs):
         super(ProjectAdminForm, self).__init__(*args, **kwargs)
@@ -199,6 +200,10 @@ class ProjectAdminForm(forms.ModelForm):
 
     def save(self, *args, **kwargs):
         instance = super(ProjectAdminForm, self).save(commit=False)
+
+        # `save()` on Model after ModelForm `save(commit=False)` provides
+        # required `save_m2m()` method to ModelForm subclass itself
+        instance.save()
 
         self.fields['events'].initial.update(project=None)
         self.cleaned_data['events'].update(project=instance)
