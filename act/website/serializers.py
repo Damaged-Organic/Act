@@ -62,18 +62,28 @@ class AdjacentObjectsSerializerMixin(serializers.Serializer):
     This mixin adds to a serializer two fields that contain ids of previous
     and next records in database for a given serializer's model instance
     '''
-    prev_id = serializers.SerializerMethodField()
-    next_id = serializers.SerializerMethodField()
+    prev_object = serializers.SerializerMethodField()
+    next_object = serializers.SerializerMethodField()
 
-    def get_prev_id(self, instance):
+    def get_prev_object(self, instance):
         prev_instance = (
             instance._meta.model.objects.filter(id__lt=instance.id).last())
-        return prev_instance.id if prev_instance else None
 
-    def get_next_id(self, instance):
+        return self.build_adjacent_object(prev_instance)
+
+    def get_next_object(self, instance):
         next_instance = (
             instance._meta.model.objects.filter(id__gt=instance.id).first())
-        return next_instance.id if next_instance else None
+
+        return self.build_adjacent_object(next_instance)
+
+    def build_adjacent_object(self, instance):
+        if instance and hasattr(instance, 'slug'):
+            adjacent_object = {'id': instance.id, 'slug': instance.slug}
+        else:
+            adjacent_object = None
+
+        return adjacent_object
 
 
 # Content
@@ -272,7 +282,7 @@ class ProjectDetailSerializer(
             'id', 'project_area', 'project_attached_documents',
             'centres', 'events',
             'started_at',  'image', 'title', 'content', 'is_active', 'slug',
-            'prev_id', 'next_id',
+            'prev_object', 'next_object',
         )
 
     @staticmethod
@@ -310,7 +320,7 @@ class EventDetailSerializer(
             'id', 'event_category', 'event_attached_documents',
             'centres', 'project',
             'created_at', 'image', 'title', 'content', 'is_active', 'slug',
-            'prev_id', 'next_id',
+            'prev_object', 'next_object',
         )
 
     @staticmethod
