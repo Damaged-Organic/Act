@@ -767,14 +767,14 @@ class Worksheet(models.Model):
     personal_link = models.URLField(
         'Персональна сторінка', max_length=200, null=True, blank=True,
     )
-    problem = models.BooleanField('Бажаєте повідомити про проблему?')
+    problem = models.NullBooleanField('Бажаєте повідомити про проблему?')
     problem_description = models.CharField(
         'Із якою проблемою Вам довелося зіштовхнутися?',
         max_length=1000,
         null=True,
         blank=True,
     )
-    activity = models.BooleanField('Чи бажаєте Ви долучитись до «ДІЙ!»?')
+    activity = models.NullBooleanField('Чи бажаєте Ви долучитись до «ДІЙ!»?')
     activity_description = models.CharField(
         'У якій діяльності в рамках «ДІЙ!» ви би хотіли взяти участь?',
         max_length=1000,

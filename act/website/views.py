@@ -8,11 +8,11 @@ def index(request):
 
 
 def handler400(request):
-    return JsonResponse({'detail': "Неправильний запит."}, status=404)
+    return JsonResponse({'detail': "Неправильний запит."}, status=400)
 
 
 def handler403(request):
-    return JsonResponse({'detail': "Заборонено."}, status=404)
+    return JsonResponse({'detail': "Заборонено."}, status=403)
 
 
 def handler404(request):
@@ -20,4 +20,4 @@ def handler404(request):
 
 
 def handler500(request):
-    return JsonResponse({'detail': "Internal Server Error."}, status=500)
+    return JsonResponse({'detail': "Внутрішня помилка серверу."}, status=500)
