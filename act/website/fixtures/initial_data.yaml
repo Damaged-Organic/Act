@@ -71,28 +71,28 @@
     fields:
         title: Facebook
         link: https://facebook.com
-        icon: facebook-icon
+        icon: facebook
 
 -   model: website.Social
     pk: 2
     fields:
         title: Twitter
         link: https://twitter.com
-        icon: twitter-icon
+        icon: twitter
 
 -   model: website.Social
     pk: 3
     fields:
         title: VKontakte
         link: https://vk.com
-        icon: vkontakte-icon
+        icon: vk
 
 -   model: website.Social
     pk: 4
     fields:
         title: YouTube
         link: https://youtube.com
-        icon: youtube-icon
+        icon: youtube
 
 # Activity
 
@@ -101,14 +101,14 @@
     fields:
         title_uk: >
             Моніторимо та аналізуємо діяльність міської влади
-        icon: icon
+        icon: flatscreen-tv
 
 -   model: website.Activity
     pk: 2
     fields:
         title_uk: >
             Адвокатуємо позитивні рішення для поліпшення життя громад
-        icon: icon
+        icon: balance
 
 -   model: website.Activity
     pk: 3
@@ -116,14 +116,14 @@
         title_uk: >
             Організуємо освітні заходи для підвищення знань місцевих активістів
             та журналістів
-        icon: icon
+        icon: graduate-cap
 
 -   model: website.Activity
     pk: 4
     fields:
         title_uk: >
             Консолідуємо місцевий громадський сектор
-        icon: icon
+        icon: business-briefcase
 
 # ProjectArea
 

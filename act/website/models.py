@@ -280,7 +280,7 @@ class ProjectArea(models.Model, metaclass=TransMeta):
 
 class Project(models.Model, metaclass=TransMeta):
     LIMIT = {'default': 3, 'max': 100}
-    PAGE_SIZE = {'default': 4, 'max': 100}
+    PAGE_SIZE = {'default': 5, 'max': 100}
 
     IMAGE_PATH = 'projects/images/'
 
@@ -324,7 +324,7 @@ class Project(models.Model, metaclass=TransMeta):
         verbose_name = 'Проект'
         verbose_name_plural = order_prefix + 'Проекти'
 
-        ordering = ('started_at', )
+        ordering = ('-started_at', '-id', )
 
         translate = ('title', 'content', )
 
@@ -410,14 +410,13 @@ class EventManager(models.Manager):
         return (
             super(EventManager, self).get_queryset()
             .filter(is_active=True,)
-            .order_by('-created_at')
             [:self.model.LIMIT['default']]
         )
 
 
 class Event(models.Model, metaclass=TransMeta):
     LIMIT = {'default': 6, 'max': 100}
-    PAGE_SIZE = {'default': 4, 'max': 100}
+    PAGE_SIZE = {'default': 9, 'max': 100}
 
     IMAGE_PATH = 'events/images/'
 
@@ -472,7 +471,7 @@ class Event(models.Model, metaclass=TransMeta):
         verbose_name = 'Подія'
         verbose_name_plural = order_prefix + 'Події'
 
-        ordering = ('created_at', )
+        ordering = ('-created_at', '-id', )
 
         translate = ('title', 'content', )
 

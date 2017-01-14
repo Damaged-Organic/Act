@@ -60,24 +60,41 @@ class StdImageSerializer(serializers.ImageField):
 class AdjacentObjectsSerializerMixin(serializers.Serializer):
     '''
     This mixin adds to a serializer two fields that contain ids of previous
-    and next records in database for a given serializer's model instance
+    and next records in database for a given serializer's model instance.
+    It works ONLY when given model's Meta class `ordering` attribute is
+    specified and ONLY if there's one or two ordering fields (with second
+    beeing a primary key). No purpose for making it dynamic for now
     '''
     prev_object = serializers.SerializerMethodField()
     next_object = serializers.SerializerMethodField()
 
-    def get_prev_object(self, instance):
-        prev_instance = (
-            instance._meta.model.objects.filter(id__lt=instance.id).last())
+    def get_adjacent_instance(self, instance, method):
+        Meta, Model = instance._meta, instance._meta.model
+        adjacent_instance = None
 
-        return self.build_adjacent_object(prev_instance)
+        if hasattr(Meta, 'ordering') and Meta.ordering:
+            ordering_field = Meta.ordering[0].replace('-', '')
+
+            get_by = getattr(Model, '%s_by_%s' % (method, ordering_field))
+
+            try:
+                adjacent_instance = get_by(instance)
+            except Model.DoesNotExist:
+                pass
+
+        return adjacent_instance
+
+    def get_prev_object(self, instance):
+        prev_instance = self.get_adjacent_instance(instance, 'get_previous')
+
+        return self.serialize_adjacent_object(prev_instance)
 
     def get_next_object(self, instance):
-        next_instance = (
-            instance._meta.model.objects.filter(id__gt=instance.id).first())
+        next_instance = self.get_adjacent_instance(instance, 'get_next')
 
-        return self.build_adjacent_object(next_instance)
+        return self.serialize_adjacent_object(next_instance)
 
-    def build_adjacent_object(self, instance):
+    def serialize_adjacent_object(self, instance):
         if instance and hasattr(instance, 'slug'):
             adjacent_object = {'id': instance.id, 'slug': instance.slug}
         else:

@@ -169,7 +169,7 @@ class ProjectList(ListAPIView):
 
     @set_eager_loading
     def get_queryset(self):
-        queryset = Project.objects.order_by('-started_at')
+        queryset = Project.objects.all()
 
         limit = self.request.query_params.get('limit', None)
 
@@ -231,7 +231,7 @@ class EventList(ListAPIView):
 
     @set_eager_loading
     def get_queryset(self):
-        queryset = Event.objects.order_by('-created_at')
+        queryset = Event.objects.all()
 
         limit = self.request.query_params.get('limit', None)
 
