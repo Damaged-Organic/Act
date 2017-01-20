@@ -1,10 +1,16 @@
 # act_project/act/act/settings/base.py
-import os
+from os.path import join, abspath, dirname
 
 # Base directory
 
-BASE_DIR = os.path.abspath(
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../'))
+BASE_DIR = join(abspath(dirname(__file__)), '../../')
+
+
+# Root directory
+
+def root(*dirs):
+    return join(abspath(BASE_DIR), *dirs)
+
 
 # Application definition
 
@@ -53,11 +59,11 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             # Project
-            os.path.join(BASE_DIR, 'templates'),
+            root('templates'),
             # Subscription application
-            os.path.join(BASE_DIR, 'subscription/templates'),
+            root('subscription', 'templates'),
             # Website application
-            os.path.join(BASE_DIR, 'website/templates'),
+            root('website', 'templates'),
         ],
         'OPTIONS': {
             'context_processors': [
@@ -78,6 +84,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'act.wsgi.application'
 
+
 # Databases
 
 DATABASES = {
@@ -91,6 +98,7 @@ DATABASES = {
         }
     }
 }
+
 
 # Password validation
 
@@ -111,6 +119,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
 # Internationalization
 
 LANGUAGE_CODE = 'uk'
@@ -125,22 +134,25 @@ USE_L10N = True
 USE_TZ = True
 
 LOCALE_PATHS = [
-    os.path.join(BASE_DIR, 'website/locale'),
+    root('website', 'locale'),
 ]
+
 
 # Static files
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = root('static')
 
 MEDIA_URL = '/uploads/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
+MEDIA_ROOT = root('uploads')
+
 
 # Admins
 
 ADMINS = [
     ('Webmaster', 'webmaster@cheers-development.in.ua'),
 ]
+
 
 # Packages
 
@@ -150,6 +162,7 @@ try:
     from .packages.bleach import *
     from .packages.ckeditor import *
     from .packages.crontab import *
+    from .packages.metadata import *
     '''
     LOGGING is built using base directory path, so in order to
     access base settings variables logging settings are returned

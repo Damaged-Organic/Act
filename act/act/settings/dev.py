@@ -3,12 +3,16 @@ from .base import *
 
 DEBUG = True
 
+
+# Hosts
+
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', ]
 INTERNAL_IPS = ('127.0.0.1', )
 
 DEFAULT_URL = 'http://{}:8000'.format(ALLOWED_HOSTS[0])
 
-SECRET_KEY = 'Something secret steers at us!'
+
+# Application definition
 
 INSTALLED_APPS += [
     'debug_toolbar',
@@ -18,9 +22,11 @@ MIDDLEWARE_CLASSES += [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
+
 # Minify
 
 HTML_MINIFY = False
+
 
 # Database
 
@@ -30,6 +36,7 @@ DATABASES['default'].update({
     'USER':     'root',
     'PASSWORD': 'root',
 })
+
 
 # Email
 
@@ -43,3 +50,8 @@ SERVER_EMAIL = EMAIL_HOST_USER
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 DEFAULT_TO_EMAIL = ''
+
+
+# Secret key
+
+SECRET_KEY = 'Something secret steers at us!'

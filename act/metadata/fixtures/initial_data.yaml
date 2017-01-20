@@ -43,6 +43,14 @@
 -   model: metadata.Metadata
     pk: 6
     fields:
+        url_name: centres_subpages
+        title_uk: Підсторінки центру
+        description_uk: '-'
+        robots: index,follow,archive
+
+-   model: metadata.Metadata
+    pk: 7
+    fields:
         url_name: worksheet
         title_uk: Долучитися
         description_uk: '-'

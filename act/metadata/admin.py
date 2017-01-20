@@ -5,18 +5,22 @@ from django.contrib import admin
 from act.services.transmeta import canonical_fieldname
 
 from act.admin import (
-    admin_site, DefaultOrderingModelAdmin
+    admin_site, DefaultOrderingModelAdmin,
+    ForbidAddMixin, ForbidDeleteMixin,
 )
 
 from .models import Metadata
 
 
 @admin.register(Metadata, site=admin_site)
-class MetadataAdmin(DefaultOrderingModelAdmin):
-    readonly_fields = ('url_name',)
+class MetadataAdmin(
+    ForbidAddMixin, ForbidDeleteMixin, DefaultOrderingModelAdmin
+):
+    readonly_fields = ('url_name', 'image_preview', )
+    list_display = ('title_uk', )
     fieldsets = (
         (None, {
-            'fields': ('url_name', 'robots', )
+            'fields': ('image_preview', 'image', 'url_name', 'robots', )
         }),
         ('Локалізована інформація', {
             'fields': ('title_uk', 'description_uk',)

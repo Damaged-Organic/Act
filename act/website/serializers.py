@@ -8,6 +8,7 @@ from django.db.models.fields.files import ImageFieldFile
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
+from act.serializers import StdImageSerializer
 from act.services.mailer import MailerMixin
 
 from .models import (
@@ -36,25 +37,6 @@ class ExcludableModelSerializer(serializers.ModelSerializer):
         if exclude_fields:
             for field_name in exclude_fields:
                 self.fields.pop(field_name)
-
-
-class StdImageSerializer(serializers.ImageField):
-    '''
-    Output representation override to include thumbnail `variations`
-    fields and present returned value as a complete dictionary
-    '''
-    def to_representation(self, value):
-        representation = {
-            'original': super().to_representation(value), }
-
-        images = {
-            key: image for key, image in value.__dict__.items()
-            if isinstance(image, ImageFieldFile)}
-
-        for field, image in images.items():
-            representation.update({field: super().to_representation(image)})
-
-        return representation
 
 
 class AdjacentObjectsSerializerMixin(serializers.Serializer):

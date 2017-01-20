@@ -19,6 +19,9 @@ from act.utils import get_default_URL
 from act.services.transmeta import TransMeta
 from act.services.file_name import RandomFileName
 
+from metadata.models import Metadata
+from metadata.mixins import MetadataMixin
+
 from .validators import (
     top_event_validator,
     problem_description_validator,
@@ -115,7 +118,7 @@ class Sponsor(models.Model, metaclass=TransMeta):
     logo = models.ImageField('Логотип', upload_to=RandomFileName(LOGO_PATH))
 
     title = models.CharField('Назва організації', max_length=100)
-    link = models.URLField('Посилання', max_length=300)
+    link = models.URLField('Посилання', max_length=200)
 
     class Meta:
         db_table = get_table_name('sponsors')
@@ -138,7 +141,7 @@ class Sponsor(models.Model, metaclass=TransMeta):
 
 class Social(models.Model):
     title = models.CharField('Назва мережі', max_length=50)
-    link = models.URLField('Посилання', max_length=300)
+    link = models.URLField('Посилання', max_length=200)
     icon = models.CharField('Іконка', max_length=30)
 
     class Meta:
@@ -278,18 +281,18 @@ class ProjectArea(models.Model, metaclass=TransMeta):
     get_projects_count.short_description = 'Кількість проектів'
 
 
-class Project(models.Model, metaclass=TransMeta):
+class Project(MetadataMixin, models.Model, metaclass=TransMeta):
     LIMIT = {'default': 3, 'max': 100}
     PAGE_SIZE = {'default': 5, 'max': 100}
 
     IMAGE_PATH = 'projects/images/'
 
-    variations = {
+    variations = MetadataMixin.update_with_metadata_variations({
         'wide': {
             'width': FixedStdImageField.MAX_WIDTH,
             'height': 810,
             'crop': True},
-    }
+    })
 
     image = FixedStdImageField(
         'Головне зображення',
@@ -314,7 +317,7 @@ class Project(models.Model, metaclass=TransMeta):
     )
 
     # TODO: slug doesn't support i18n for now
-    slug = models.SlugField(editable=False)
+    slug = models.SlugField(max_length=200, editable=False)
 
     class Meta:
         db_table = get_table_name('projects')
@@ -352,6 +355,27 @@ class Project(models.Model, metaclass=TransMeta):
     def get_events_count(self):
         return self.events.count()
     get_events_count.short_description = 'Кількість подій'
+
+    def get_static_path(self):
+        ''' Static path for front end application '''
+        return 'projects/{}/{}'.format(self.id, self.slug)
+
+    def get_static_URL(self):
+        '''
+        Static URL for front end application,
+        built with static DEFAULT_URL setting
+        '''
+        return urljoin(get_default_URL(), self.get_static_path())
+
+    ''' Metadata implementation '''
+
+    def get_metadata(self):
+        return {
+            'image': self.image,
+            'url_name': self.get_static_URL(),
+            'title_uk': self.title,
+            'description_uk': self.content,
+        }
 
 
 class ProjectAttachedDocument(AttachedDocument):
@@ -414,19 +438,19 @@ class EventManager(models.Manager):
         )
 
 
-class Event(models.Model, metaclass=TransMeta):
+class Event(MetadataMixin, models.Model, metaclass=TransMeta):
     LIMIT = {'default': 6, 'max': 100}
     PAGE_SIZE = {'default': 9, 'max': 100}
 
     IMAGE_PATH = 'events/images/'
 
-    variations = {
+    variations = MetadataMixin.update_with_metadata_variations({
         'square': {'width': 480, 'height': 480, 'crop': True},
         'wide': {
             'width': FixedStdImageField.MAX_WIDTH,
             'height': 810,
             'crop': True},
-    }
+    })
 
     image = FixedStdImageField(
         'Головне зображення',
@@ -459,7 +483,7 @@ class Event(models.Model, metaclass=TransMeta):
         'Відображається', blank=True, default=True,
     )
 
-    slug = models.SlugField(editable=False)
+    slug = models.SlugField(max_length=200, editable=False)
 
     objects = EventManager()
 
@@ -502,6 +526,16 @@ class Event(models.Model, metaclass=TransMeta):
         '''
         return urljoin(get_default_URL(), self.get_static_path())
 
+    ''' Metadata implementation '''
+
+    def get_metadata(self):
+        return {
+            'image': self.image,
+            'url_name': self.get_static_URL(),
+            'title_uk': self.title,
+            'description_uk': self.content,
+        }
+
 
 class EventAttachedDocument(AttachedDocument):
     DOCUMENT_PATH = 'events/'
@@ -524,16 +558,16 @@ class EventAttachedDocument(AttachedDocument):
 
 # City
 
-class City(models.Model, metaclass=TransMeta):
+class City(MetadataMixin, models.Model, metaclass=TransMeta):
     PHOTO_PATH = 'cities/photos/'
 
-    variations = {
+    variations = MetadataMixin.update_with_metadata_variations({
         'square': {'width': 480, 'height': 480, 'crop': True},
         'high': {
             'width': 400,
             'height': FixedStdImageField.MAX_HEIGHT,
             'crop': True},
-    }
+    })
 
     photo = FixedStdImageField(
         'Фотографія',
@@ -563,7 +597,7 @@ class City(models.Model, metaclass=TransMeta):
 
 # Centre
 
-class Centre(models.Model, metaclass=TransMeta):
+class Centre(MetadataMixin, models.Model, metaclass=TransMeta):
     city = models.OneToOneField(
         City, null=True, on_delete=models.SET_NULL
     )
@@ -587,7 +621,7 @@ class Centre(models.Model, metaclass=TransMeta):
     )
     top_event.verbose_name = 'Головна подія'
 
-    short_description = models.CharField('Короткий опис', max_length=500)
+    short_description = models.CharField('Короткий опис', max_length=1000)
 
     class Meta:
         db_table = get_table_name('centres')
@@ -650,8 +684,29 @@ class Centre(models.Model, metaclass=TransMeta):
     def get_subpages(self):
         return self.centres_subpages.all()
 
+    def get_static_path(self):
+        ''' Static path for front end application '''
+        return 'centres/{}'.format(self.id)
 
-class CentreSubpage(models.Model, metaclass=TransMeta):
+    def get_static_URL(self):
+        '''
+        Static URL for front end application,
+        built with static DEFAULT_URL setting
+        '''
+        return urljoin(get_default_URL(), self.get_static_path())
+
+    ''' Metadata implementation '''
+
+    def get_metadata(self):
+        return {
+            'image': self.city.photo,
+            'url_name': self.get_static_URL(),
+            'title_uk': self.city.name,
+            'description_uk': self.short_description,
+        }
+
+
+class CentreSubpage(MetadataMixin, models.Model, metaclass=TransMeta):
     centre = models.ForeignKey(
         Centre, on_delete=models.CASCADE, related_name='centres_subpages',
     )
@@ -673,6 +728,26 @@ class CentreSubpage(models.Model, metaclass=TransMeta):
 
     def __str__(self):
         return str(self.headline) or self.__class__.__name__
+
+    def get_static_path(self):
+        ''' Static path for front end application '''
+        return 'centres/{}/subpages/{}'.format(self.centre.id, self.id)
+
+    def get_static_URL(self):
+        '''
+        Static URL for front end application,
+        built with static DEFAULT_URL setting
+        '''
+        return urljoin(get_default_URL(), self.get_static_path())
+
+    ''' Metadata implementation '''
+
+    def get_metadata(self):
+        return {
+            'url_name': self.get_static_URL(),
+            'title_uk': self.headline,
+            'description_uk': self.content,
+        }
 
 
 # Participant
@@ -740,6 +815,9 @@ class Contact(models.Model, metaclass=TransMeta):
     phone = models.CharField('Телефон', max_length=19)
     address = models.CharField(
         'Адреса', max_length=300, null=True, blank=True,
+    )
+    social_link = models.URLField(
+        'Соціальна мережа', max_length=200, null=True, blank=True,
     )
 
     class Meta:

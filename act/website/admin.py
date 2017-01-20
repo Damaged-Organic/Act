@@ -458,6 +458,7 @@ class TopEventRawIdWidget(ForeignKeyRawIdWidget):
 
 class CentreAdminForm(forms.ModelForm):
     top_event = forms.ModelChoiceField(
+        required=False,
         queryset=Event.objects.all(),
         widget=TopEventRawIdWidget(
             Centre._meta.get_field('top_event').rel, admin_site)
