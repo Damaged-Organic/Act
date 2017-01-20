@@ -11,7 +11,14 @@ from act.services.transmeta import TransMeta
 from act.services.file_name import RandomFileName
 from act.utils import get_default_URL
 
-from .utils import truncate_description
+from .utils import truncate_text
+
+
+def update_with_metadata_variations(variations):
+    if Metadata.variations is not None:
+        variations.update(Metadata.variations)
+
+    return variations
 
 
 class Metadata(models.Model, metaclass=TransMeta):
@@ -43,10 +50,17 @@ class Metadata(models.Model, metaclass=TransMeta):
 
     @staticmethod
     def build_metadata_from_dict(master_metadata, object_metadata_dict):
+        '''
+        Builds metadata object from dictionary that has appropriate fields.
+        Used for dynamic metadata creation for various objects specified in
+        metadata settings. Object metadata is based on `master_metadata` which
+        resembles `ancestor` for a given object (e.g. for concrete Post object
+        ancestor would be a Metadata for a list of posts), and will fill empty
+        fields that could be omitted in `object_metadata_dict`
+        '''
         metadata = Metadata(**object_metadata_dict)
 
-        metadata.description_uk = truncate_description(
-            metadata.description_uk, 250)
+        metadata.description_uk = truncate_text(metadata.description_uk, 250)
 
         if not metadata.image:
             metadata.image = master_metadata.image
@@ -70,8 +84,15 @@ class Metadata(models.Model, metaclass=TransMeta):
             metadata=self, card=twitter_card)
 
 
-class MetadataAttributeMixin():
+class MetadataLinked(models.Model):
     metadata = None
+
+    class Meta:
+        abstract = True
+
+    def __init__(self, *args, **kwargs):
+        self.metadata = kwargs.pop('metadata')
+        super(MetadataLinked, self).__init__(*args, **kwargs)
 
     def get_metadata_attribute(self, attribute):
         if not isinstance(self.metadata, Metadata):
@@ -80,7 +101,7 @@ class MetadataAttributeMixin():
         return getattr(self.metadata, attribute)
 
 
-class OpenGraph(MetadataAttributeMixin, models.Model):
+class OpenGraph(MetadataLinked):
     TYPE_WEBSITE = 'website'
     TYPE_ARTICLE = 'article'
 
@@ -90,9 +111,10 @@ class OpenGraph(MetadataAttributeMixin, models.Model):
 
     _type = None
 
-    def __init__(self, *args, **kwargs):
-        self.metadata = kwargs.pop('metadata')
+    class Meta:
+        managed = False
 
+    def __init__(self, *args, **kwargs):
         open_graph_type = kwargs.pop('type', self.TYPE_WEBSITE)
         if open_graph_type in self.TYPES:
             self._type = open_graph_type
@@ -116,7 +138,7 @@ class OpenGraph(MetadataAttributeMixin, models.Model):
 
     @property
     def description(self):
-        return truncate_description(
+        return truncate_text(
             self.get_metadata_attribute('description'),
             self.DESCRIPTION_LENGTH)
 
@@ -125,7 +147,7 @@ class OpenGraph(MetadataAttributeMixin, models.Model):
         return self.get_metadata_attribute('image')
 
 
-class TwitterCard(MetadataAttributeMixin, models.Model):
+class TwitterCard(MetadataLinked):
     CARD_SUMMARY = 'summary'
     CARD_SUMMARY_LARGE_IMAGE = 'summary_large_image'
 
@@ -135,9 +157,10 @@ class TwitterCard(MetadataAttributeMixin, models.Model):
 
     _card = None
 
-    def __init__(self, *args, **kwargs):
-        self.metadata = kwargs.pop('metadata')
+    class Meta:
+        managed = False
 
+    def __init__(self, *args, **kwargs):
         twitter_card = kwargs.pop('card', self.CARD_SUMMARY)
         if twitter_card in self.CARDS:
             self._card = twitter_card
@@ -157,7 +180,7 @@ class TwitterCard(MetadataAttributeMixin, models.Model):
 
     @property
     def description(self):
-        return truncate_description(
+        return truncate_text(
             self.get_metadata_attribute('description'),
             self.DESCRIPTION_LENGTH)
 

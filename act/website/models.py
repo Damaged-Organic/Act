@@ -19,8 +19,8 @@ from act.utils import get_default_URL
 from act.services.transmeta import TransMeta
 from act.services.file_name import RandomFileName
 
-from metadata.models import Metadata
 from metadata.mixins import MetadataMixin
+from metadata.models import update_with_metadata_variations
 
 from .validators import (
     top_event_validator,
@@ -287,7 +287,7 @@ class Project(MetadataMixin, models.Model, metaclass=TransMeta):
 
     IMAGE_PATH = 'projects/images/'
 
-    variations = MetadataMixin.update_with_metadata_variations({
+    variations = update_with_metadata_variations({
         'wide': {
             'width': FixedStdImageField.MAX_WIDTH,
             'height': 810,
@@ -444,7 +444,7 @@ class Event(MetadataMixin, models.Model, metaclass=TransMeta):
 
     IMAGE_PATH = 'events/images/'
 
-    variations = MetadataMixin.update_with_metadata_variations({
+    variations = update_with_metadata_variations({
         'square': {'width': 480, 'height': 480, 'crop': True},
         'wide': {
             'width': FixedStdImageField.MAX_WIDTH,
@@ -561,7 +561,7 @@ class EventAttachedDocument(AttachedDocument):
 class City(MetadataMixin, models.Model, metaclass=TransMeta):
     PHOTO_PATH = 'cities/photos/'
 
-    variations = MetadataMixin.update_with_metadata_variations({
+    variations = update_with_metadata_variations({
         'square': {'width': 480, 'height': 480, 'crop': True},
         'high': {
             'width': 400,
@@ -711,10 +711,13 @@ class CentreSubpage(MetadataMixin, models.Model, metaclass=TransMeta):
         Centre, on_delete=models.CASCADE, related_name='centres_subpages',
     )
 
-    headline = models.CharField('Назва сторінки', max_length=100)
+    headline = models.CharField('Назва сторінки', max_length=150)
     content = RichTextField(
         'Контент', config_name='article_toolbar',
     )
+
+    # TODO: slug doesn't support i18n for now
+    slug = models.SlugField(max_length=150, editable=False)
 
     class Meta:
         db_table = get_table_name('centres', 'subpages')
@@ -728,6 +731,14 @@ class CentreSubpage(MetadataMixin, models.Model, metaclass=TransMeta):
 
     def __str__(self):
         return str(self.headline) or self.__class__.__name__
+
+    def save(self, *args, **kwargs):
+        if self.headline:
+            # TODO: 'uk' parameter should be changed in case of extra locale
+            transliterated = translit(self.headline, 'uk', reversed=True)
+            self.slug = slugify(transliterated).replace('-', '_')
+
+        super(Event, self).save(*args, **kwargs)
 
     def get_static_path(self):
         ''' Static path for front end application '''

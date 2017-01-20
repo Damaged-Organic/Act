@@ -7,7 +7,9 @@ from rest_framework.generics import (
     ListAPIView, RetrieveAPIView,
 )
 
-from .models import Metadata, OpenGraph, TwitterCard
+from .models import (
+    Metadata, OpenGraph, TwitterCard,
+)
 from .serializers import (
     MetadataListSerializer, MetadataDetailSerializer,
 )

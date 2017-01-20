@@ -24,11 +24,10 @@ def get_supported_model_instance(url_name, id):
     return instance
 
 
-def truncate_description(description, length):
-    description = strip_tags(description)
+def truncate_text(text, length):
+    text = strip_tags(text)
 
-    if len(description) > length:
-        description = "{}...".format(
-            description[:length].rsplit(' ', 1)[0].rstrip('.'))
+    if len(text) > length:
+        text = "{}...".format(text[:length].rsplit(' ', 1)[0].rstrip('.'))
 
-    return description
+    return text

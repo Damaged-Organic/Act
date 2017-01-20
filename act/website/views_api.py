@@ -14,6 +14,8 @@ from rest_framework.pagination import (
 
 from django_filters import rest_framework as django_filters
 
+from act.serializers import set_eager_loading
+
 from .models import (
     IntroContent, AboutContent, GoalContent,
     Sponsor, Social, Activity,
@@ -33,21 +35,6 @@ from .serializers import (
     CentreSubpageSerializer,
     WorksheetSerializer,
 )
-
-
-def set_eager_loading(get_queryset):
-    '''
-    Modifies returned queryset in order to fetch related records for a model
-    '''
-    def decorator(self):
-        queryset = get_queryset(self)
-
-        if hasattr(self.get_serializer_class(), 'set_eager_loading'):
-            queryset = self.get_serializer_class().set_eager_loading(queryset)
-
-        return queryset
-
-    return decorator
 
 
 # Content
@@ -156,7 +143,7 @@ class ProjectPageNumberPagination(PageNumberPagination):
 class ProjectFilter(django_filters.FilterSet):
     class Meta:
         model = Project
-        fields = ['project_area', 'centres']
+        fields = ['project_area', 'centres__city']
 
 
 class ProjectList(ListAPIView):
@@ -218,7 +205,7 @@ class EventPageNumberPagination(PageNumberPagination):
 class EventFilter(django_filters.FilterSet):
     class Meta:
         model = Event
-        fields = ['event_category', 'project', 'centres']
+        fields = ['event_category', 'project', 'centres__city']
 
 
 class EventList(ListAPIView):
@@ -339,7 +326,7 @@ class CentreDetail(RetrieveAPIView):
 class CentreSubpageFilter(django_filters.FilterSet):
     class Meta:
         model = CentreSubpage
-        fields = ['centre']
+        fields = ['centre__city']
 
 
 class CentreSubpageList(ListAPIView):

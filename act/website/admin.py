@@ -524,6 +524,34 @@ class CentreAdmin(
         return field
 
 
+# CentreSubpage
+
+@admin.register(CentreSubpage, site=admin_site)
+class CentreSubpageAdmin(
+    ForbidAddMixin, ForbidDeleteMixin, DefaultOrderingModelAdmin
+):
+    list_display = ('headline_uk', 'centre', )
+
+    fieldsets = (
+        ('Локалізована інформація', {
+            'fields': ('headline_uk', 'content_uk', ),
+        }),
+    )
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        field = super(CentreSubpageAdmin, self).formfield_for_dbfield(
+            db_field, **kwargs
+        )
+        db_fieldname = canonical_fieldname(db_field)
+
+        if db_fieldname == 'headline':
+            field.widget = forms.TextInput(attrs={
+                'style': 'width:70%; max-width:70%;'
+            })
+
+        return field
+
+
 # Worksheet
 
 @admin.register(Worksheet, site=admin_site)

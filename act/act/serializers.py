@@ -4,6 +4,25 @@ from django.db.models.fields.files import ImageFieldFile
 from rest_framework import serializers
 
 
+def set_eager_loading(get_queryset):
+    '''
+    Modifies returned queryset in order to fetch related records for a model
+    '''
+    def decorator(self):
+        queryset = get_queryset(self)
+
+        eager_serializer_class = (
+            hasattr(self, 'get_serializer_class') and
+            hasattr(self.get_serializer_class(), 'set_eager_loading'))
+
+        if eager_serializer_class:
+            queryset = self.get_serializer_class().set_eager_loading(queryset)
+
+        return queryset
+
+    return decorator
+
+
 class StdImageSerializer(serializers.ImageField):
     '''
     Serializer for Django Standardized Image Field package:

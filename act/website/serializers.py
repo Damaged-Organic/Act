@@ -346,7 +346,7 @@ class CentreSubpageSerializer(ExcludableModelSerializer):
 
     @staticmethod
     def set_eager_loading(queryset):
-        queryset = queryset.select_related('centre', 'centre__city')
+        queryset = queryset.select_related('centre__city')
 
         return queryset
 

@@ -3,7 +3,9 @@ from rest_framework import serializers
 
 from act.serializers import StdImageSerializer
 
-from .models import Metadata, OpenGraph, TwitterCard
+from .models import (
+    Metadata, OpenGraph, TwitterCard,
+)
 
 
 class OpenGraphSerializer(serializers.ModelSerializer):
