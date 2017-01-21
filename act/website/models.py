@@ -281,6 +281,8 @@ class Project(MetadataMixin, models.Model, metaclass=TransMeta):
     LIMIT = {'default': 3, 'max': 100}
     PAGE_SIZE = {'default': 5, 'max': 100}
 
+    STATIC_PATH_FORMAT = 'projects/{id}/{slug}'
+
     IMAGE_PATH = 'projects/images/'
 
     variations = update_with_metadata_variations({
@@ -345,11 +347,11 @@ class Project(MetadataMixin, models.Model, metaclass=TransMeta):
 
     def get_events_count(self):
         return self.events.count()
-    get_events_count.short_description = 'Кількість подій'
+    get_events_count.short_description = 'Кількість матеріалів'
 
     def get_static_path(self):
         ''' Static path for front end application '''
-        return 'projects/{}/{}'.format(self.id, self.slug)
+        return self.STATIC_PATH_FORMAT.format(id=self.id, slug=self.slug)
 
     def get_static_URL(self):
         '''
@@ -398,8 +400,8 @@ class EventCategory(models.Model, metaclass=TransMeta):
 
         order_prefix = ' ' * 3
 
-        verbose_name = 'Категорія події'
-        verbose_name_plural = order_prefix + 'Категорії подій'
+        verbose_name = 'Категорія матеріалу'
+        verbose_name_plural = order_prefix + 'Категорії матеріалів'
 
         translate = ('title', )
 
@@ -413,7 +415,7 @@ class EventCategory(models.Model, metaclass=TransMeta):
 
     def get_events_count(self):
         return self.events.count()
-    get_events_count.short_description = 'Кількість подій'
+    get_events_count.short_description = 'Кількість матеріалів'
 
 
 class EventManager(models.Manager):
@@ -432,6 +434,8 @@ class EventManager(models.Manager):
 class Event(MetadataMixin, models.Model, metaclass=TransMeta):
     LIMIT = {'default': 6, 'max': 100}
     PAGE_SIZE = {'default': 9, 'max': 100}
+
+    STATIC_PATH_FORMAT = 'events/{id}/{slug}'
 
     IMAGE_PATH = 'events/images/'
 
@@ -465,7 +469,7 @@ class Event(MetadataMixin, models.Model, metaclass=TransMeta):
     )
     project.verbose_name = Project._meta.verbose_name
 
-    created_at = models.DateTimeField('Дата та час події', auto_now_add=True)
+    created_at = models.DateTimeField('Дата та час', auto_now_add=True)
     title = models.CharField('Назва', max_length=200)
     content = RichTextField(
         'Контент', config_name='article_toolbar',
@@ -483,8 +487,8 @@ class Event(MetadataMixin, models.Model, metaclass=TransMeta):
 
         order_prefix = ' ' * 2
 
-        verbose_name = 'Подія'
-        verbose_name_plural = order_prefix + 'Події'
+        verbose_name = 'Матеріал'
+        verbose_name_plural = order_prefix + 'Матеріали'
 
         ordering = ('-created_at', '-id', )
 
@@ -503,7 +507,7 @@ class Event(MetadataMixin, models.Model, metaclass=TransMeta):
 
     def get_static_path(self):
         ''' Static path for front end application '''
-        return 'events/{}/{}'.format(self.id, self.slug)
+        return self.STATIC_PATH_FORMAT.format(id=self.id, slug=self.slug)
 
     def get_static_URL(self):
         '''
@@ -579,6 +583,8 @@ class City(MetadataMixin, models.Model, metaclass=TransMeta):
 # Centre
 
 class Centre(MetadataMixin, models.Model, metaclass=TransMeta):
+    STATIC_PATH_FORMAT = 'centres/{id}'
+
     city = models.OneToOneField(
         City, null=True, on_delete=models.SET_NULL
     )
@@ -600,7 +606,7 @@ class Centre(MetadataMixin, models.Model, metaclass=TransMeta):
         null=True,
         on_delete=models.SET_NULL
     )
-    top_event.verbose_name = 'Головна подія'
+    top_event.verbose_name = 'Головний матеріал'
 
     short_description = models.CharField('Короткий опис', max_length=1000)
 
@@ -649,7 +655,7 @@ class Centre(MetadataMixin, models.Model, metaclass=TransMeta):
 
     def get_events_count(self):
         return self.events.count()
-    get_events_count.short_description = 'Кількість подій'
+    get_events_count.short_description = 'Кількість матеріалів'
 
     '''Participants shortcut methods'''
 
@@ -667,7 +673,7 @@ class Centre(MetadataMixin, models.Model, metaclass=TransMeta):
 
     def get_static_path(self):
         ''' Static path for front end application '''
-        return 'centres/{}'.format(self.id)
+        return self.STATIC_PATH_FORMAT.format(id=self.id)
 
     def get_static_URL(self):
         '''
@@ -688,6 +694,10 @@ class Centre(MetadataMixin, models.Model, metaclass=TransMeta):
 
 
 class CentreSubpage(MetadataMixin, models.Model, metaclass=TransMeta):
+    STATIC_PATH_FORMAT = (
+        'centres/{centre_id}/'
+        'subpages/{centre_subpage_id}/{centre_subpage_slug}')
+
     centre = models.ForeignKey(
         Centre, on_delete=models.CASCADE, related_name='centres_subpages',
     )
@@ -728,7 +738,10 @@ class CentreSubpage(MetadataMixin, models.Model, metaclass=TransMeta):
 
     def get_static_path(self):
         ''' Static path for front end application '''
-        return 'centres/{}/subpages/{}'.format(self.centre.id, self.id)
+        return self.STATIC_PATH_FORMAT.format(
+            centre_id=self.centre.id,
+            centre_subpage_id=self.id,
+            centre_subpage_slug=self.slug)
 
     def get_static_URL(self):
         '''

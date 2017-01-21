@@ -202,7 +202,7 @@ class ProjectAdminForm(forms.ModelForm):
             self._meta.model.events.rel.related_model
                 ._meta.verbose_name_plural)
         self.fields['events'].help_text = (
-            "Ви можете обрати декілька подій "
+            "Ви можете обрати декілька матеріалів "
             "одразу, затиснувши клавішу 'Ctrl'")
 
     def save(self, *args, **kwargs):

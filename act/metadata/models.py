@@ -85,19 +85,29 @@ class Metadata(models.Model, metaclass=TransMeta):
 
 
 class MetadataLinked(models.Model):
+    '''
+    Adds a `Metadata` instance to subclass so it can build itself on that
+    instance attributes. `MetadataLinked` object must accept `metadata`
+    kwarg, and will raise exception if that condition is not met
+    '''
     metadata = None
 
     class Meta:
         abstract = True
 
     def __init__(self, *args, **kwargs):
-        self.metadata = kwargs.pop('metadata')
+        metadata = kwargs.pop('metadata')
+
+        if not isinstance(metadata, Metadata):
+            raise ImproperlyConfigured('Passed kwarg is not Metadata instance')
+
+        self.metadata = metadata
         super(MetadataLinked, self).__init__(*args, **kwargs)
 
     def get_metadata_attribute(self, attribute):
-        if not isinstance(self.metadata, Metadata):
-            raise ImproperlyConfigured('Metadata object is not set correctly')
-
+        '''
+        Getting `Metadata` attributes through this method for more control
+        '''
         return getattr(self.metadata, attribute)
 
 
@@ -112,6 +122,7 @@ class OpenGraph(MetadataLinked):
     _type = None
 
     class Meta:
+        ''' Should not be persisted in database, built on top of `Metadata` '''
         managed = False
 
     def __init__(self, *args, **kwargs):
@@ -158,6 +169,7 @@ class TwitterCard(MetadataLinked):
     _card = None
 
     class Meta:
+        ''' Should not be persisted in database, built on top of `Metadata` '''
         managed = False
 
     def __init__(self, *args, **kwargs):
