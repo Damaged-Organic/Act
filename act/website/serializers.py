@@ -341,7 +341,7 @@ class CentreSubpageSerializer(ExcludableModelSerializer):
     class Meta:
         model = CentreSubpage
         fields = (
-            'id', 'centre', 'headline', 'content',
+            'id', 'centre', 'headline', 'content', 'slug',
         )
 
     @staticmethod

@@ -1,4 +1,4 @@
-{# act_project/act/templates/admin/inlines/tabular_enumerated.html #}
+{# act_project/act/templates/admin/inlines/tabular_linked.html #}
 {% load i18n admin_urls static admin_modify %}
 
 <div class="js-inline-admin-formset inline-group" id="{{ inline_admin_formset.formset.prefix }}-group"
@@ -15,10 +15,6 @@
                 <thead><tr>
                 <th class="original"></th>
 
-                {# Additional <th> for tabular inline numeration #}
-                <th>№</th>
-                {# END (Additional <th> for tabular inline numeration) #}
-
                 {% for field in inline_admin_formset.fields %}
                     {% if not field.widget.is_hidden %}
                         <th{% if field.required %} class="required"{% endif %}>{{ field.label|capfirst }}
@@ -26,6 +22,10 @@
                         </th>
                     {% endif %}
                 {% endfor %}
+
+                {# Additional <th> for tabular inline numeration #}
+                <th>Link</th>
+                {# END (Additional <th> for tabular inline numeration) #}
 
                 {% if inline_admin_formset.formset.can_delete %}<th>{% trans "Delete?" %}</th>{% endif %}
                 </tr></thead>
@@ -36,17 +36,9 @@
                             <tr><td colspan="{{ inline_admin_form|cell_count }}">{{ inline_admin_form.form.non_field_errors }}</td></tr>
                         {% endif %}
 
-                        <tr class="form-row {% cycle "row1" "row2" %} {% if inline_admin_form.original or inline_admin_form.show_url %}has_original{% endif %}{% if forloop.last %} empty-form{% endif %}"
+                        <tr class="form-row {% cycle "row1" "row2" %} linked {% if inline_admin_form.original or inline_admin_form.show_url %}has_original{% endif %}{% if forloop.last %} empty-form{% endif %}"
                             id="{{ inline_admin_formset.formset.prefix }}-{% if not forloop.last %}{{ forloop.counter0 }}{% else %}empty{% endif %}">
                             <td class="original">
-
-                            {% if inline_admin_form.original or inline_admin_form.show_url %}<p>
-                                {% if inline_admin_form.original %}
-                                    {{ inline_admin_form.original }}
-                                    {% if inline_admin_form.model_admin.show_change_link and inline_admin_form.model_admin.has_registered_model %}<a href="{% url inline_admin_form.model_admin.opts|admin_urlname:'change' inline_admin_form.original.pk|admin_urlquote %}" class="inlinechangelink">{% trans "Change" %}</a>{% endif %}
-                                {% endif %}
-                                {% if inline_admin_form.show_url %}<a href="{{ inline_admin_form.absolute_url }}">{% trans "View on site" %}</a>{% endif %}
-                            </p>{% endif %}
 
                             {% if inline_admin_form.needs_explicit_pk_field %}{{ inline_admin_form.pk_field.field }}{% endif %}
                                 {{ inline_admin_form.fk_field.field }}
@@ -62,12 +54,6 @@
                             </td>
 
                             {% for fieldset in inline_admin_form %}
-
-                                {# <td> with forloop counter for tabular inline numeration #}
-                                <td>
-                                <p>{{ forloop.parentloop.counter }}</p>
-                                </td>
-                                {# END (<td> with forloop counter for tabular inline numeration) #}
 
                                 {% for line in fieldset %}
                                     {% for field in line %}
@@ -85,6 +71,17 @@
                                 {% endfor %}
                             {% endfor %}
 
+                            {# <td> with forloop counter for tabular inline numeration #}
+                            <td class="fixed">
+                                {% if inline_admin_form.original or inline_admin_form.show_url %}<p>
+                                    {% if inline_admin_form.original %}
+                                        {% if inline_admin_form.model_admin.show_change_link and inline_admin_form.model_admin.has_registered_model %}<a href="{% url inline_admin_form.model_admin.opts|admin_urlname:'change' inline_admin_form.original.pk|admin_urlquote %}" class="inlinechangelink">{% trans "Change" %}</a>{% endif %}
+                                    {% endif %}
+                                    {% if inline_admin_form.show_url %}<a href="{{ inline_admin_form.absolute_url }}">{% trans "View on site" %}</a>{% endif %}
+                                </p>{% endif %}
+                            </td>
+                            {# END (<td> with forloop counter for tabular inline numeration) #}
+
                             {% if inline_admin_formset.formset.can_delete %}
                                 <td class="delete">{% if inline_admin_form.original %}{{ inline_admin_form.deletion_field.field }}{% endif %}</td>
                             {% endif %}
@@ -95,3 +92,14 @@
         </fieldset>
     </div>
 </div>
+
+{% block extrastyle %}
+    <style>
+        .inline-group .tabular tr.linked td{
+            padding-top: 1em;
+        }
+        .inline-group .tabular tr.linked td.fixed{
+            width: 100px;
+        }
+    </style>
+{% endblock %}

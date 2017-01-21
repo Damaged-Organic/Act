@@ -6,8 +6,9 @@ from urllib.parse import urljoin
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils.html import strip_tags
 from django.utils.text import slugify
-from django.template.defaultfilters import filesizeformat
+from django.template.defaultfilters import filesizeformat, truncatechars
 
 from transliterate import translit
 from ckeditor.fields import RichTextField
@@ -132,11 +133,6 @@ class Sponsor(models.Model, metaclass=TransMeta):
 
     def __str__(self):
         return str(self.title) or self.__class__.__name__
-
-    def logo_preview(self):
-        return '<img src="%s" width="100" max-width="100">' % (self.logo.url)
-    logo_preview.allow_tags = True
-    logo_preview.short_description = 'Логотип'
 
 
 class Social(models.Model):
@@ -342,11 +338,6 @@ class Project(MetadataMixin, models.Model, metaclass=TransMeta):
 
         super(Project, self).save(*args, **kwargs)
 
-    def image_preview(self):
-        return '<img src="%s" width="300" max-width="300">' % (self.image.url)
-    image_preview.allow_tags = True
-    image_preview.short_description = 'Превʼю головного зображення'
-
     '''Events shortcut methods'''
 
     def get_events(self):
@@ -510,11 +501,6 @@ class Event(MetadataMixin, models.Model, metaclass=TransMeta):
 
         super(Event, self).save(*args, **kwargs)
 
-    def image_preview(self):
-        return '<img src="%s" width="300" max-width="300">' % (self.image.url)
-    image_preview.allow_tags = True
-    image_preview.short_description = 'Превʼю головного зображення'
-
     def get_static_path(self):
         ''' Static path for front end application '''
         return 'events/{}/{}'.format(self.id, self.slug)
@@ -588,11 +574,6 @@ class City(MetadataMixin, models.Model, metaclass=TransMeta):
 
     def __str__(self):
         return str(self.name) or self.__class__.__name__
-
-    def photo_preview(self):
-        return '<img src="%s" width="400" max-width="400">' % (self.photo.url)
-    photo_preview.allow_tags = True
-    photo_preview.short_description = 'Превʼю фотографії'
 
 
 # Centre
@@ -710,6 +691,7 @@ class CentreSubpage(MetadataMixin, models.Model, metaclass=TransMeta):
     centre = models.ForeignKey(
         Centre, on_delete=models.CASCADE, related_name='centres_subpages',
     )
+    centre.verbose_name = Centre._meta.verbose_name
 
     headline = models.CharField('Назва сторінки', max_length=150)
     content = RichTextField(
@@ -738,7 +720,11 @@ class CentreSubpage(MetadataMixin, models.Model, metaclass=TransMeta):
             transliterated = translit(self.headline, 'uk', reversed=True)
             self.slug = slugify(transliterated).replace('-', '_')
 
-        super(Event, self).save(*args, **kwargs)
+        super(CentreSubpage, self).save(*args, **kwargs)
+
+    def content_preview(self):
+        return truncatechars(strip_tags(self.content), 200)
+    content_preview.short_description = 'Контент'
 
     def get_static_path(self):
         ''' Static path for front end application '''
@@ -800,11 +786,6 @@ class Participant(models.Model, metaclass=TransMeta):
 
     def __str__(self):
         return self.get_full_name() or self.__class__.__name__
-
-    def photo_preview(self):
-        return '<img src="%s" width="200" max-width="200">' % (self.photo.url)
-    photo_preview.allow_tags = True
-    photo_preview.short_description = 'Превʼю фотографії'
 
     def get_full_name(self):
         if not (self.name or self.surname):

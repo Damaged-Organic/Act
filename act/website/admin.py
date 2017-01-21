@@ -2,7 +2,8 @@
 from django import forms
 from django.db import models
 from django.contrib import admin
-from django.utils.html import escape
+from django.urls import reverse
+from django.utils.html import escape, format_html
 from django.contrib.admin.widgets import ForeignKeyRawIdWidget
 
 # Notice overridden transmeta import!
@@ -108,6 +109,12 @@ class SponsorAdmin(
             'style': 'width:50%; max-width:50%;'
         })},
     }
+
+    def logo_preview(self, instance):
+        return format_html(
+            '<img src="{}" width="100" max-width="100">'
+            .format(instance.logo.url))
+    logo_preview.short_description = 'Логотип'
 
 
 @admin.register(Social, site=admin_site)
@@ -249,6 +256,12 @@ class ProjectAdmin(DefaultOrderingModelAdmin):
 
         return field
 
+    def image_preview(self, instance):
+        return format_html(
+            '<img src="{}" width="300" max-width="300">'
+            .format(instance.image.url))
+    image_preview.short_description = 'Превʼю головного зображення'
+
 
 # Event
 
@@ -324,6 +337,12 @@ class EventAdmin(DefaultOrderingModelAdmin):
 
         return field
 
+    def image_preview(self, instance):
+        return format_html(
+            '<img src="{}" width="300" max-width="300">'
+            .format(instance.image.url))
+    image_preview.short_description = 'Превʼю головного зображення'
+
 
 # City
 
@@ -357,6 +376,12 @@ class CityAdmin(
 
         return field
 
+    def photo_preview(self, instance):
+        return format_html(
+            '<img src="{}" width="400" max-width="400">'
+            .format(instance.photo.url))
+    photo_preview.short_description = 'Превʼю фотографії'
+
 
 # Participant
 
@@ -386,6 +411,12 @@ class ParticipantAdmin(DefaultOrderingModelAdmin):
             'fields': ('name_uk', 'surname_uk', 'position_uk', ),
         }),
     )
+
+    def photo_preview(self, instance):
+        return format_html(
+            '<img src="{}" width="200" max-width="200">'
+            .format(instance.photo.url))
+    photo_preview.short_description = 'Превʼю фотографії'
 
 
 # Contact
@@ -456,6 +487,22 @@ class TopEventRawIdWidget(ForeignKeyRawIdWidget):
         return res
 
 
+class CentreSubpageInline(
+    ForbidAddMixin, ForbidDeleteMixin, admin.TabularInline
+):
+    model = CentreSubpage
+    readonly_fields = ('headline_uk', 'content_preview', )
+    fields = ('headline_uk', 'content_preview', )
+    extra = 0
+    show_change_link = True
+    can_delete = False
+
+    '''
+    Custom template to display linked tabular inline
+    '''
+    template = "admin/inlines/tabular_linked.html"
+
+
 class CentreAdminForm(forms.ModelForm):
     top_event = forms.ModelChoiceField(
         required=False,
@@ -507,7 +554,7 @@ class CentreAdmin(
     raw_id_fields = ('top_event', )
 
     inlines = [
-        ContactInline, ParticipantInline,
+        ContactInline, ParticipantInline, CentreSubpageInline,
     ]
 
     def formfield_for_dbfield(self, db_field, **kwargs):
@@ -530,9 +577,15 @@ class CentreAdmin(
 class CentreSubpageAdmin(
     ForbidAddMixin, ForbidDeleteMixin, DefaultOrderingModelAdmin
 ):
-    list_display = ('headline_uk', 'centre', )
+    list_display = ('id', 'headline_uk', 'centre', )
+    list_display_links = ('headline_uk', )
+
+    readonly_fields = ('centre_preview', )
 
     fieldsets = (
+        (None, {
+            'fields': ('centre_preview', ),
+        }),
         ('Локалізована інформація', {
             'fields': ('headline_uk', 'content_uk', ),
         }),
@@ -546,10 +599,33 @@ class CentreSubpageAdmin(
 
         if db_fieldname == 'headline':
             field.widget = forms.TextInput(attrs={
-                'style': 'width:70%; max-width:70%;'
+                'style': 'width:45%; max-width:45%;'
             })
 
         return field
+
+    def get_admin_url(self, instance):
+        url = None
+        centre = getattr(instance, 'centre', None)
+
+        if centre:
+            url_name = 'admin:{}_{}_change'.format(
+                centre._meta.app_label, centre._meta.model_name)
+            url = reverse(url_name, args=[centre.id])
+
+        return url
+
+    def centre_preview(self, instance):
+        centre_preview = instance.centre
+        url = self.get_admin_url(instance)
+
+        if url:
+            centre_preview = format_html(
+                '<a href="{}" class="inlinechangelink">{}</a>'.format(
+                    url, instance.centre))
+
+        return centre_preview
+    centre_preview.short_description = Centre._meta.verbose_name
 
 
 # Worksheet
