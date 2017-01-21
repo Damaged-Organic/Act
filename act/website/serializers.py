@@ -12,8 +12,8 @@ from act.serializers import StdImageSerializer
 from act.services.mailer import MailerMixin
 
 from .models import (
-    IntroContent, AboutContent, GoalContent,
-    Sponsor, Social, Activity,
+    IntroContent, AboutContent, GoalContent, DisclaimerContent,
+    Sponsor, Social, Activity, Partner,
     ProjectAttachedDocument, ProjectArea, Project,
     EventAttachedDocument, EventCategory, Event,
     City, Participant, Contact,
@@ -105,6 +105,12 @@ class GoalContentSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'title', 'text', )
 
 
+class DisclaimerContentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DisclaimerContent
+        fields = ('id', 'title', 'text_uk', 'text_en', )
+
+
 # Links
 
 class SponsorSerializer(serializers.ModelSerializer):
@@ -125,6 +131,16 @@ class ActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Activity
         fields = ('id', 'title', 'icon', )
+
+
+# Partner
+
+class PartnerSerializer(serializers.ModelSerializer):
+    logo = StdImageSerializer(read_only=True)
+
+    class Meta:
+        model = Partner
+        fields = ('id', 'logo', 'name', 'link', )
 
 
 # City
@@ -177,7 +193,7 @@ class ContactSerializer(ExcludableModelSerializer):
 
     class Meta:
         model = Contact
-        fields = ('id', 'email', 'phone', 'address', 'centre', )
+        fields = ('id', 'email', 'phone', 'address', 'centre', 'social_link', )
 
     @staticmethod
     def set_eager_loading(queryset):

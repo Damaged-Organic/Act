@@ -17,8 +17,8 @@ from django_filters import rest_framework as django_filters
 from act.serializers import set_eager_loading
 
 from .models import (
-    IntroContent, AboutContent, GoalContent,
-    Sponsor, Social, Activity,
+    IntroContent, AboutContent, GoalContent, DisclaimerContent,
+    Sponsor, Social, Activity, Partner,
     ProjectArea, Project,
     EventCategory, Event,
     City, Participant, Contact,
@@ -26,8 +26,9 @@ from .models import (
     Worksheet,
 )
 from .serializers import (
-    IntroContentSerializer, AboutContentSerializer, GoalContentSerializer,
-    SponsorSerializer, SocialSerializer, ActivitySerializer,
+    IntroContentSerializer, AboutContentSerializer,
+    GoalContentSerializer, DisclaimerContentSerializer,
+    SponsorSerializer, SocialSerializer, ActivitySerializer, PartnerSerializer,
     ProjectAreaSerializer, ProjectListSerializer, ProjectDetailSerializer,
     EventCategorySerializer, EventListSerializer, EventDetailSerializer,
     CitySerializer, ParticipantSerializer, ContactSerializer,
@@ -76,6 +77,11 @@ class GoalContentSingular(SingularItemAPIView):
     serializer_class = GoalContentSerializer
 
 
+class DisclaimerContentSingular(SingularItemAPIView):
+    queryset = DisclaimerContent.objects.all()
+    serializer_class = DisclaimerContentSerializer
+
+
 # Sponsor
 
 class SponsorList(ListAPIView):
@@ -100,7 +106,7 @@ class SocialDetail(RetrieveAPIView):
     queryset = Social.objects.all()
 
 
-# Social
+# Activity
 
 class ActivityList(ListAPIView):
     serializer_class = ActivitySerializer
@@ -110,6 +116,13 @@ class ActivityList(ListAPIView):
 class ActivityDetail(RetrieveAPIView):
     serializer_class = ActivitySerializer
     queryset = Activity.objects.all()
+
+
+# Partner
+
+class PartnerList(ListAPIView):
+    serializer_class = PartnerSerializer
+    queryset = Partner.objects.all()
 
 
 # ProjectArea

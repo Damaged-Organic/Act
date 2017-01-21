@@ -41,6 +41,25 @@
             та законами України з боку державних службовців, комунальних
             підприємств, установ та організацій.
 
+# DisclaimerContent
+
+-   model: website.DisclaimerContent
+    pk: 1
+    fields:
+        name: disclaimer
+        title: Дисклеймер
+        text_uk: >
+            Цей веб-сайт створено за фінансової підтримки Європейського Союзу.
+            Викладена на веб-сайті інформація є позицією Всеукраїнської мережі
+            центрів громадського контролю «ДІЙ!» та не відображає позицію
+            Європейського Союзу
+        text_en: >
+            This web-site has been produced with the financial assistance of
+            the European Union. The contents of this web-site are the sole
+            responsibility of the ACT! National network of watchdog centres and
+            can under no circumstances be regarded as reflecting the position
+            of the European Union
+
 # Sponsor
 
 -   model: website.Sponsor
@@ -270,6 +289,118 @@
     pk: 4
     fields:
         centre: 1
+        headline_uk: Судова практика
+        content_uk: '-'
+
+-   model: website.CentreSubpage
+    pk: 5
+    fields:
+        centre: 2
+        headline_uk: Доступ до публічної інформації
+        content_uk: '-'
+
+-   model: website.CentreSubpage
+    pk: 6
+    fields:
+        centre: 2
+        headline_uk: Міська рада
+        content_uk: '-'
+
+-   model: website.CentreSubpage
+    pk: 7
+    fields:
+        centre: 2
+        headline_uk: Комунальні підприємства
+        content_uk: '-'
+
+-   model: website.CentreSubpage
+    pk: 8
+    fields:
+        centre: 2
+        headline_uk: Судова практика
+        content_uk: '-'
+
+-   model: website.CentreSubpage
+    pk: 9
+    fields:
+        centre: 3
+        headline_uk: Доступ до публічної інформації
+        content_uk: '-'
+
+-   model: website.CentreSubpage
+    pk: 10
+    fields:
+        centre: 3
+        headline_uk: Міська рада
+        content_uk: '-'
+
+-   model: website.CentreSubpage
+    pk: 11
+    fields:
+        centre: 3
+        headline_uk: Комунальні підприємства
+        content_uk: '-'
+
+-   model: website.CentreSubpage
+    pk: 12
+    fields:
+        centre: 3
+        headline_uk: Судова практика
+        content_uk: '-'
+
+-   model: website.CentreSubpage
+    pk: 13
+    fields:
+        centre: 4
+        headline_uk: Доступ до публічної інформації
+        content_uk: '-'
+
+-   model: website.CentreSubpage
+    pk: 14
+    fields:
+        centre: 4
+        headline_uk: Міська рада
+        content_uk: '-'
+
+-   model: website.CentreSubpage
+    pk: 15
+    fields:
+        centre: 4
+        headline_uk: Комунальні підприємства
+        content_uk: '-'
+
+-   model: website.CentreSubpage
+    pk: 16
+    fields:
+        centre: 4
+        headline_uk: Судова практика
+        content_uk: '-'
+
+-   model: website.CentreSubpage
+    pk: 17
+    fields:
+        centre: 5
+        headline_uk: Доступ до публічної інформації
+        content_uk: '-'
+
+-   model: website.CentreSubpage
+    pk: 18
+    fields:
+        centre: 5
+        headline_uk: Міська рада
+        content_uk: '-'
+
+-   model: website.CentreSubpage
+    pk: 19
+    fields:
+        centre: 5
+        headline_uk: Комунальні підприємства
+        content_uk: '-'
+
+-   model: website.CentreSubpage
+    pk: 20
+    fields:
+        centre: 5
         headline_uk: Судова практика
         content_uk: '-'
 

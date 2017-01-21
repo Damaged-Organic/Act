@@ -15,8 +15,8 @@ from act.admin import (
 )
 
 from .models import (
-    IntroContent, AboutContent, GoalContent,
-    Sponsor, Social, Activity,
+    IntroContent, AboutContent, GoalContent, DisclaimerContent,
+    Sponsor, Social, Activity, Partner,
     ProjectAttachedDocument, EventAttachedDocument,
     ProjectArea, Project,
     EventCategory, Event,
@@ -84,6 +84,37 @@ class GoalContentAdmin(
             'style': 'width:35%; max-width:35%;'
         })},
     }
+
+
+@admin.register(DisclaimerContent, site=admin_site)
+class DisclaimerContentAdmin(
+    ForbidAddMixin, ForbidDeleteMixin, DefaultOrderingModelAdmin
+):
+    list_display = ('title', )
+
+    fieldsets = (
+        ('Локалізована інформація', {
+            'fields': ('title', 'text_uk', 'text_en', ),
+        }),
+    )
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        field = super(DisclaimerContentAdmin, self).formfield_for_dbfield(
+            db_field, **kwargs
+        )
+        db_fieldname = canonical_fieldname(db_field)
+
+        if db_fieldname == 'title':
+            field.widget = forms.TextInput(attrs={
+                'style': 'width:45%; max-width:45%;',
+            })
+
+        if db_fieldname in ['text_uk', 'text_en']:
+            field.widget = forms.Textarea(attrs={
+                'style': 'resize:none', 'cols': '100', 'rows': '5',
+            })
+
+        return field
 
 
 # Links
@@ -157,6 +188,35 @@ class ActivityAdmin(
             'style': 'width:25%; max-width:25%;'
         })},
     }
+
+
+# Partner
+
+@admin.register(Partner, site=admin_site)
+class PartnerAdmin(DefaultOrderingModelAdmin):
+    readonly_fields = ('logo_preview', )
+    list_display = ('name_uk', 'link', )
+
+    fieldsets = (
+        (None, {
+            'fields': ('logo_preview', 'logo', 'link', ),
+        }),
+        ('Локалізована інформація', {
+            'fields': ('name_uk', ),
+        }),
+    )
+
+    formfield_overrides = {
+        models.CharField: {'widget': forms.TextInput(attrs={
+            'style': 'width:50%; max-width:50%;'
+        })},
+    }
+
+    def logo_preview(self, instance):
+        return format_html(
+            '<img src="{}" width="200" max-width="200">'
+            .format(instance.logo.url))
+    logo_preview.short_description = 'Логотип'
 
 
 # Project
@@ -423,7 +483,7 @@ class ParticipantAdmin(DefaultOrderingModelAdmin):
 
 class ContactInline(admin.StackedInline):
     model = Contact
-    fields = (('email', 'phone', 'address_uk',), )
+    fields = (('email', 'phone', 'address_uk', 'social_link', ), )
     can_delete = False
 
 
@@ -444,7 +504,7 @@ class ContactAdmin(
 
     fieldsets = (
         (None, {
-            'fields': ('centre', 'email', 'phone', ),
+            'fields': ('centre', 'email', 'phone', 'social_link', ),
         }),
         ('Локалізована інформація', {
             'fields': ('address_uk', ),

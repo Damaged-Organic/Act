@@ -24,11 +24,15 @@ def api_root(request, format=None):
         'goal_content': reverse(
             'goal_content_singular', request=request, format=format
         ),
+        'disclaimer_content': reverse(
+            'disclaimer_content_singular', request=request, format=format
+        ),
         'sponsors': reverse('sponsors_list', request=request, format=format),
         'socials': reverse('socials_list', request=request, format=format),
         'activities': reverse(
             'activities_list', request=request, format=format
         ),
+        'partners': reverse('partners_list', request=request, format=format),
         'projects_areas': reverse(
             'projects_areas_list', request=request, format=format
         ),

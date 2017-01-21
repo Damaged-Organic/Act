@@ -73,7 +73,7 @@ class IntroContent(ContentBlock, metaclass=TransMeta):
     class Meta:
         db_table = get_table_name('content', 'intro')
 
-        order_prefix = ' ' * 15
+        order_prefix = ' ' * 16
 
         verbose_name = 'Контент - Інтро'
         verbose_name_plural = order_prefix + verbose_name
@@ -88,7 +88,7 @@ class AboutContent(ContentBlock, metaclass=TransMeta):
     class Meta:
         db_table = get_table_name('content', 'about')
 
-        order_prefix = ' ' * 14
+        order_prefix = ' ' * 15
 
         verbose_name = 'Контент - Про нас'
         verbose_name_plural = order_prefix + verbose_name
@@ -103,12 +103,27 @@ class GoalContent(ContentBlock, metaclass=TransMeta):
     class Meta:
         db_table = get_table_name('content', 'goal')
 
-        order_prefix = ' ' * 13
+        order_prefix = ' ' * 14
 
         verbose_name = 'Контент - Мета'
         verbose_name_plural = order_prefix + verbose_name
 
         translate = ('title', 'text', )
+
+
+class DisclaimerContent(ContentBlock):
+    title = models.CharField('Заголовок', max_length=200)
+
+    text_uk = models.CharField('Дисклеймер українською', max_length=500)
+    text_en = models.CharField('Дисклеймер англійською', max_length=500)
+
+    class Meta:
+        db_table = get_table_name('content', 'disclaimer')
+
+        order_prefix = ' ' * 13
+
+        verbose_name = 'Контент - Дисклеймер'
+        verbose_name_plural = order_prefix + verbose_name
 
 
 # Links
@@ -170,6 +185,37 @@ class Activity(models.Model, metaclass=TransMeta):
 
     def __str__(self):
         return str(self.title) or self.__class__.__name__
+
+
+# Partner
+
+class Partner(models.Model, metaclass=TransMeta):
+    LOGO_PATH = 'partners/logos/'
+
+    variations = {
+        'square': {'width': 300, 'height': 300, 'crop': True},
+    }
+
+    logo = FixedStdImageField(
+        'Логотип',
+        upload_to=RandomFileName(LOGO_PATH),
+        variations=variations)
+
+    name = models.CharField('Назва компанії', max_length=250)
+    link = models.URLField('Посилання', max_length=200)
+
+    class Meta:
+        db_table = get_table_name('partners')
+
+        order_prefix = ' ' * 9
+
+        verbose_name = 'Партнер'
+        verbose_name_plural = order_prefix + 'Партнери'
+
+        translate = ('name', )
+
+    def __str__(self):
+        return str(self.name) or self.__class__.__name__
 
 
 # AttachedDocument

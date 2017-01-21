@@ -4,10 +4,12 @@ from django.conf.urls import url
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from .views_api import (
-    IntroContentSingular, AboutContentSingular, GoalContentSingular,
+    IntroContentSingular, AboutContentSingular,
+    GoalContentSingular, DisclaimerContentSingular,
     SponsorList, SponsorDetail,
     SocialList, SocialDetail,
     ActivityList, ActivityDetail,
+    PartnerList,
     ProjectAreaList, ProjectAreaDetail,
     ProjectList, ProjectDetail,
     EventCategoryList, EventCategoryDetail,
@@ -35,6 +37,11 @@ urlpatterns = [
         GoalContentSingular.as_view(),
         name='goal_content_singular'
     ),
+    url(
+        r'^disclaimer_content$',
+        DisclaimerContentSingular.as_view(),
+        name='disclaimer_content_singular'
+    ),
     # Sponsor
     url(r'^sponsors$', SponsorList.as_view(), name='sponsors_list'),
     url(
@@ -56,6 +63,8 @@ urlpatterns = [
         ActivityDetail.as_view(),
         name='activities_detail',
     ),
+    # Partner
+    url(r'^partners$', PartnerList.as_view(), name='partners_list'),
     # ProjectArea
     url(
         r'^projects_areas$',
