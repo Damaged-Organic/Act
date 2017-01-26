@@ -305,8 +305,8 @@ class ProjectArea(models.Model, metaclass=TransMeta):
 
         order_prefix = ' ' * 5
 
-        verbose_name = 'Напрямок проекту'
-        verbose_name_plural = order_prefix + 'Напрямки проектів'
+        verbose_name = 'Напрямок діяльності'
+        verbose_name_plural = order_prefix + 'Напрямки діяльностей'
 
         translate = ('title', )
 
@@ -320,7 +320,7 @@ class ProjectArea(models.Model, metaclass=TransMeta):
 
     def get_projects_count(self):
         return self.projects.count()
-    get_projects_count.short_description = 'Кількість проектів'
+    get_projects_count.short_description = 'Кількість діяльностей'
 
 
 class Project(MetadataMixin, models.Model, metaclass=TransMeta):
@@ -368,8 +368,8 @@ class Project(MetadataMixin, models.Model, metaclass=TransMeta):
 
         order_prefix = ' ' * 4
 
-        verbose_name = 'Проект'
-        verbose_name_plural = order_prefix + 'Проекти'
+        verbose_name = 'Діяльність'
+        verbose_name_plural = order_prefix + 'Діяльності'
 
         ordering = ('-started_at', '-id', )
 
@@ -692,7 +692,7 @@ class Centre(MetadataMixin, models.Model, metaclass=TransMeta):
 
     def get_projects_count(self):
         return self.projects.count()
-    get_projects_count.short_description = 'Кількість проектів'
+    get_projects_count.short_description = 'Кількість діяльностей'
 
     '''Events shortcut methods'''
 
