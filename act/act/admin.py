@@ -21,8 +21,6 @@ class ForbidChangeMixin():
     template = "admin/change_form.html"
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
-        obj = Group.objects.get(pk=object_id)
-
         # Set variable that contorls editable behavior
         not_editable = True
 
@@ -57,6 +55,7 @@ class ActAdminSite(admin.AdminSite):
     site_title = 'ДІЙ!'
     site_header = 'ДІЙ!'
     index_title = 'ДІЙ! - Керування контентом'
+
 
 admin_site = ActAdminSite(name='deus_ex_machina')
 
