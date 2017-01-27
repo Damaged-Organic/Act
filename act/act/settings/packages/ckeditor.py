@@ -19,7 +19,7 @@ CKEDITOR_CONFIGS = {
                 'Link', 'Unlink', 'Anchor',
             ]},
             {'name': 'insert', 'items': [
-                'Image', 'Iframe',
+                'Image'
             ]},
         ],
         'toolbar': 'Article',
