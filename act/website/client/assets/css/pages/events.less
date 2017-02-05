@@ -1,0 +1,170 @@
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  layout start                              */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  layout end                                */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  events start                              */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+.__events .events-holder{
+    & > .inner{
+        width: 100%;
+        height: auto;
+        padding: 0 12.5%;
+        margin-top: 120px;
+        box-sizing: border-box;
+        overflow: hidden;
+        .upper-divider{
+            background: @darkGrey;
+            margin-bottom: 30px;
+        }
+        h1{ color: @darkGrey; }
+        .filters-holder{
+            width: 100%;
+            height: 60px;
+            margin-top: 30px;
+            overflow: hidden;
+            & > ul{
+                width: 100%;
+                height: auto;
+                overflow: hidden;
+                li{
+                    width: 16.66666666666667%;
+                    height: 100%;
+                    float: left;
+                    border-right: 1px solid @lightGrey;
+                    box-sizing: border-box;
+                    overflow: hidden;
+                    &:last-child{ border-right: none; }
+                    a{
+                        display: block;
+                        width: 100%;
+                        height: 100%;
+                        text-align: center;
+                        color: @white;
+                        font-weight: 700;
+                        line-height: 60px;
+                        transition: all .25s @easing;
+                        background: @darkGrey;
+                        overflow: hidden;
+                    }
+                    &:hover,
+                    &.active{
+                        a{
+                            color: @white;
+                            background: @red;
+                        }
+                    }
+                }
+            }
+        }
+        .events{
+            width: 100%;
+            height: auto;
+            overflow: hidden;
+            & > .inner{
+                width: 100%;
+                height: auto;
+                overflow: hidden;
+                .empty-holder{
+                    margin-top: 60px;
+                }
+            }
+        }
+    }
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  events end                                */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  adaptive start                            */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+@media only screen @tablet{
+
+    .__events .events-holder{
+        & > .inner{
+            padding: 0 60px;
+            margin-top: 60px;
+            .filters-holder{
+                width: 100%;
+                height: 45px;
+                margin-top: 30px;
+                overflow: hidden;
+                & > ul{
+                    width: 100%;
+                    height: 65px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    overflow-x: scroll;
+                    -webkit-overflow-scrolling: touch;
+                    li{
+                        display: inline-block;
+                        vertical-align: top;
+                        width: 180px;
+                        height: 45px;
+                        float: none;
+                        a{
+                            line-height: 45px;
+                        }
+                        &:hover a{ background: @darkGrey; }
+                    }
+                }
+            }
+            .events{
+                & > .inner{
+                    .empty-holder{
+                        margin-top: 30px;
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+@media only screen @smartphoneXL{
+
+    .__events .events-holder{
+        & > .inner{
+            padding: 0;
+            margin-top: 30px;
+            .upper-divider{ margin: 0 0 15px 30px; }
+            h1{ padding-left: 30px; }
+            .filters-holder{
+                margin-top: 30px;
+                & > ul li{
+                    display: inline-block;
+                    vertical-align: top;
+                    width: auto;
+                    height: 45px;
+                    float: none;
+                    a{
+                        padding: 0 15px;
+                        line-height: 45px;
+                        box-sizing: border-box;
+                    }
+                }
+            }
+            .categories-holder{
+                padding: 0 30px;
+                margin-bottom: 30px;
+                box-sizing: border-box;
+            }
+            .events{
+                & > .inner{
+                    .empty-holder{
+                        margin-top: 30px;
+                    }
+                }
+            }
+        }
+    }
+
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  adaptive end                              */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/

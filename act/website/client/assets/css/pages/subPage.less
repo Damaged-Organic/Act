@@ -1,0 +1,202 @@
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  sub page start                            */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+#page.__sub-page{
+    height: 100%;
+    min-height: 100%;
+    #content{
+        height: 100%;
+        min-height: 100%;
+    }
+    .sub-page-holder{
+        .inner{
+            width: 100%;
+            height: auto;
+            margin-top: 120px;
+            padding: 0 12.5%;
+            box-sizing: border-box;
+            overflow: hidden;
+            .back-holder{
+                display: block;
+                width: 160px;
+                height: 160px;
+                position: fixed;
+                top: 50%;
+                left: 0;
+                z-index: 20;
+                overflow: hidden;
+                & > a{
+                    display: block;
+                    width: 100%;
+                    height: 100%;
+                    position: relative;
+                    background: transparent;
+                    overflow: hidden;
+                    span{
+                        display: block;
+                        width: 60px;
+                        height: 60px;
+                        position: absolute;
+                        top: 50%;
+                        left: 30px;
+                        z-index: 20;
+                        margin-top: -30px;
+                        text-align: center;
+                        line-height: 60px;
+                        background: @lightGrey;
+                        visibility: visible;
+                        overflow: hidden;
+                    }
+                    figure{
+                        display: block;
+                        width: 100%;
+                        height: 100%;
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        opacity: 0;
+                        transition: all .25s @easing;
+                        visibility: hidden;
+                        overflow: hidden;
+                        &:after{
+                            display: block;
+                            width: 100%;
+                            height: 100%;
+                            position: absolute;
+                            right: 0;
+                            bottom: 0;
+                            z-index: 5;
+                            text-align: center;
+                            color: @white;
+                            font-size: .875em;
+                            font-weight: 700;
+                            line-height: 160px;
+                            content: attr(data-title);
+                            background: fade(@darkGrey, 60%);
+                            overflow: hidden;
+                        }
+                    }
+                    &:hover{
+                        span{ visibility: hidden; }
+                        figure{
+                            opacity: 1;
+                            visibility: visible;
+                        }
+                    }
+                }
+            }
+            .upper-divider{
+                margin-bottom: 30px;
+                background: @darkGrey;
+            }
+            h1{ color: @darkGrey; }
+            .content-holder{
+                width: 100%;
+                height: auto;
+                margin-top: 60px;
+                overflow: hidden;
+                p + p{ padding-top: 15px; }
+                img,
+                p > img{
+                    display: block;
+                    width: 50%;
+                    height: auto;
+                    margin: 15px auto;
+                    overflow: hidden;
+                }
+                iframe,
+                p > iframe{
+                    display: block;
+                    width: 640px;
+                    height: 480px;
+                    min-height: 200px;
+                    margin: 15px auto;
+                    overflow: hidden;
+                }
+            }
+        }
+    }
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  sub page end                              */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  adaptive start                            */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+@media only screen @tablet{
+
+    #page.__sub-page{
+        .sub-page-holder{
+            .inner{
+                margin-top: 60px;
+                padding: 0 60px;
+                .back-holder{
+                    width: 60px;
+                    height: 60px;
+                    position: fixed;
+                    top: auto;
+                    left: 60px;
+                    bottom: 60px;
+                    & > a{
+                        width: 60px;
+                        height: 60px;
+                        position: relative;
+                        background: @darkGrey;
+                        text-align: center;
+                        span{
+                            position: static;
+                            color: @white;
+                            line-height: 60px;
+                            transform: translateY(0%);
+                        }
+                        figure{  display: none; }
+                        &:hover span{ visibility: visible; }
+                    }
+                }
+                .upper-divider{ margin-bottom: 15px; }
+                .content-holder{
+                    margin-top: 30px;
+                    img,
+                    p > img{
+                        width: 100%;
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+@media only screen @smartphoneXL{
+
+    #page.__sub-page{
+        .sub-page-holder{
+            .inner{
+                margin-top: 30px;
+                padding: 0 30px;
+                .back-holder{
+                    display: none;
+                }
+                .upper-divider{ margin-bottom: 15px; }
+                .content-holder{
+                    margin-top: 15px;
+                    img,
+                    p > img{
+                        width: 100%;
+                    }
+                    iframe,
+                    p > iframe{
+                        width: 100%;
+                        height: auto;
+                        min-height: 240px;
+                    }
+                }
+            }
+        }
+    }
+
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  adaptive end                              */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/

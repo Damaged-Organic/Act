@@ -1,0 +1,378 @@
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  event start                               */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+#page.__event{
+    .event-holder{
+        .inner{
+            width: 100%;
+            height: auto;
+            margin-top: 120px;
+            padding: 0 12.5%;
+            box-sizing: border-box;
+            overflow: hidden;
+            .upper-divider{
+                margin-bottom: 30px;
+                background: @darkGrey;
+            }
+            h1{
+                font-size: 2.25em;
+                color: @darkGrey;
+            }
+            .centers-holder{
+                display: inline-block;
+                vertical-align: top;
+                width: auto;
+                position: fixed;
+                top: 50%;
+                left: 1px;
+                z-index: 20;
+                transform-origin: 0% 0%;
+                transform: rotate(-90deg) translateX(-50%) translateY(0%);
+                overflow: hidden;
+                & > a{
+                    display: inline-block;
+                    vertical-align: top;
+                    padding: 15px 30px;
+                    margin-right: 1px;
+                    box-sizing: border-box;
+                    background: @red;
+                    color: @white;
+                    font-size: .875em;
+                    font-weight: 700;
+                    overflow: hidden;
+                }
+            }
+            .navigation-holder{
+                display: block;
+                width: 60px;
+                height: auto;
+                position: fixed;
+                right: 4.6875%;
+                bottom: 5.555556%;
+                z-index: 100;
+                overflow: hidden;
+                & > a{
+                    display: block;
+                    width: 60px;
+                    height: 60px;
+                    background: @darkGrey;
+                    border-bottom: 1px solid @white;
+                    color: @white;
+                    font-size: 1em;
+                    transition: all .5s @easing;
+                    text-align: center;
+                    overflow: hidden;
+                    &.disabled{
+                        background: @lightGrey;
+                        pointer-events: none;
+                    }
+                    &:before{
+                        display: inline-block;
+                        vertical-align: middle;
+                        line-height: 60px;
+                    }
+                    &:last-child{ border-bottom: none; }
+                    &:hover{
+                        background: @red;
+                    }
+                }
+            }
+            .photo-holder,
+            .photo-holder > figure{
+                width: 100%;
+                height: auto;
+                overflow: hidden;
+            }
+            .photo-holder{
+                margin-top: 60px;
+                position: relative;
+                &:before{
+                    display: block;
+                    width: 100%;
+                    height: 100%;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    z-index: 10;
+                    content: "";
+                    opacity: 1;
+                    transition: all .25s @easing;
+                    background: @darkGrey;
+                    visibility: visible;
+                    overflow: hidden;
+                }
+                .category-holder{
+                    display: inline-block;
+                    vertical-align: top;
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    font-size: 1em;
+                    font-weight: 700;
+                    color: @white;
+                    padding: 30px 30px 0 0;
+                    box-sizing: border-box;
+                    overflow: hidden;
+                }
+                &.loaded{
+                    &:before{
+                        opacity: 0;
+                        visibility: hidden;
+                    }
+                }
+            }
+            .date-share-holder{
+                width: 100%;
+                height: auto;
+                margin: 15px 0;
+                overflow: hidden;
+                & > time{
+                    display: inline-block;
+                    font-size: .875em;
+                    color: @red;
+                    float: left;
+                    overflow: hidden;
+                }
+                .socials-holder{
+                    display: inline-block;
+                    float: right;
+                    overflow: hidden;
+                    li{
+                        display: inline-block;
+                        width: auto;
+                        cursor: pointer;
+                        margin-left: 30px;
+                        overflow: hidden;
+                        &:first-child{ margin-left: 0; }
+                        .icon{
+                            color: @lightGrey;
+                            font-size: 1.25em;
+                            transition: all .25s @easing;
+                        }
+                        &:hover{
+                            .icon{ color: @red; }
+                        }
+                    }
+                }
+            }
+            & > .content-holder{
+                width: 100%;
+                height: auto;
+                overflow: hidden;
+                p{
+                    font-size: 1em;
+                    text-align: left;
+                    color: @darkGrey;
+                    &:last-child{ padding: 0; }
+                    & + p{ padding-bottom: 15px; }
+                }
+                img,
+                p > img{
+                    display: block;
+                    width: 50%;
+                    height: auto;
+                    margin: 15px auto;
+                    overflow: hidden;
+                }
+                iframe,
+                p > iframe{
+                    display: block;
+                    width: 640px;
+                    height: 480px;
+                    min-height: 200px;
+                    margin: 15px auto;
+                    overflow: hidden;
+                }
+            }
+            .additional-content-holder{
+                width: 100%;
+                height: auto;
+                margin-top: 60px;
+                overflow: hidden;
+                .document-holder{
+                    width: 100%;
+                    height: auto;
+                    position: relative;
+                    overflow: hidden;
+                    .document{
+                        width: 31.94444444444444%;
+                        height: auto;
+                        background: @lightGrey;
+                        float: left;
+                        text-align: right;
+                        margin: 0 2.083333333333333% 15px 0;
+                        overflow: hidden;
+                        &:nth-child(3n+3){ margin-right: 0; }
+                        &:last-child{ margin-bottom: 0; }
+                        .icon{
+                            display: block;
+                            width: 45px;
+                            height: auto;
+                            margin: 30px 0 15px 30px;
+                            font-size: 2em;
+                            line-height: 30px;
+                            color: @darkGrey;
+                            overflow: hidden;
+                        }
+                        p{
+                            text-align: left;
+                            padding: 0 30px;
+                        }
+                        & > a{
+                            display: inline-block;
+                            font-size: .875em;
+                            color: @red;
+                            margin: 15px 30px 30px 0;
+                            overflow: hidden;
+                        }
+                    }
+                }
+                .projects-holder{
+                    width: 100%;
+                    height: auto;
+                    margin-top: 60px;
+                    overflow: hidden;
+                    h2{
+                        font-size: 2.25em;
+                        color: @darkGrey;
+                    }
+                }
+            }
+        }
+    }
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  event end                                 */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  adaptive start                            */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+@media only screen @tablet{
+
+    #page.__event{
+        .event-holder{
+            .inner{
+                margin-top: 60px;
+                padding: 0 60px;
+                h1{ font-size: 1.5em; }
+                .centers-holder{
+                    display: block;
+                    width: 100%;
+                    position: relative;
+                    top: 0;
+                    left: 0;
+                    margin-top: 30px;
+                    transform: rotate(0deg) translateX(0%) translateY(0%);
+                }
+                .navigation-holder{
+                    width: 45px;
+                    right: 0;
+                    bottom: 45px;
+                    & > a{
+                        width: 45px;
+                        height: 45px;
+                        &:before{ line-height: 45px; }
+                        &:hover{ background: @darkGrey; }
+                    }
+                }
+                .photo-holder{
+                    margin-top: 30px;
+                    .category-holder{ padding: 15px 15px 0 0; }
+                }
+                .date-share-holder{
+                    .socials-holder{
+                        li:hover .icon{ color: @lightGrey; }
+                    }
+                }
+                .content-holder{
+                    img,
+                    p > img{
+                        width: 75%;
+                    }
+                }
+                .additional-content-holder{
+                    margin-top: 60px;
+                    .document-holder{
+                        .document{
+                            width: 100%;
+                            height: auto;
+                            float: none;
+                            margin: 0 0 15px 0;
+                        }
+                    }
+                    .projects-holder{
+                        h2{ font-size: 1.5em; }
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+@media only screen @smartphoneXL{
+
+    #page.__event{
+        .event-holder{
+            .inner{
+                margin-top: 30px;
+                padding: 0;
+                .upper-divider{ margin: 0 0 15px 30px; }
+                h1{
+                    font-size: 1.25em;
+                    padding: 0 30px;
+                }
+                .centers-holder{ display: none; }
+                .navigation-holder{ display: none; }
+                .photo-holder{
+                    margin-top: 30px;
+                    .category-holder{ display: none; }
+                }
+                .date-share-holder{
+                    padding: 0 30px;
+                    box-sizing: border-box;
+                    .socials-holder{
+                        li:hover .icon{ color: @lightGrey; }
+                    }
+                }
+                & > .content-holder{
+                    padding: 0 30px;
+                    box-sizing: border-box;
+                    img,
+                    p > img{
+                        width: 100%;
+                    }
+                    iframe,
+                    p > iframe{
+                        width: 100%;
+                        height: auto;
+                        min-height: 240px;
+                    }
+                }
+                .additional-content-holder{
+                    margin-top: 30px;
+                    .document-holder{
+                        padding: 0 30px;
+                        box-sizing: border-box;
+                        .document{
+                            width: 100%;
+                            height: auto;
+                            float: none;
+                            margin: 0 0 15px 0;
+                            .icon{ margin: 20px 0 5px 30px; }
+                            a{ margin: 5px 30px 15px 0; }
+                        }
+                    }
+                    .projects-holder{
+                        h2{ font-size: 1.25em; }
+                    }
+                }
+            }
+        }
+    }
+
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  adaptive end                              */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/

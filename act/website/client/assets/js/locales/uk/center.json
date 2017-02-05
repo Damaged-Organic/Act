@@ -1,0 +1,20 @@
+{
+    "projectsInCenter": "діяльності",
+    "projectsInCenter_0": "{{count}} діяльність",
+    "projectsInCenter_1": "{{count}} діяльності",
+    "projectsInCenter_2": "{{count}} діяльності",
+    "eventsInCenter": "матеріалів",
+    "eventsInCenter_0": "{{count}} матеріал",
+    "eventsInCenter_1": "{{count}} матеріала",
+    "eventsInCenter_2": "{{count}} матеріалів",
+    "headlines": {
+        "projects": "Діяльність",
+        "events": "Матеріали",
+        "participants": "Команда"
+    },
+    "buttons": {
+        "allProjects": "Уся діяльність",
+        "allEvents": "Усі матеріали",
+        "socialLink": "Facebook центру"
+    }
+}

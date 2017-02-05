@@ -1,0 +1,660 @@
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  layout start                              */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+#page.__center,
+#page.__center #content{
+    height: 100%;
+    min-height: 100%;
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  layout end                                */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  centers start                             */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+.__center .intro-holder{
+    height: 70%;
+    min-height: 70%;
+    position: relative;
+    overflow: hidden;
+    &:before{
+        display: block;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        content: "";
+        background: fade(@darkGrey, 60%);
+        overflow: hidden;
+    }
+    .address-holder,
+    .contact-holder,
+    .info-holder,
+    .projects-count-holder,
+    .events-count-holder{
+        position: absolute;
+        z-index: 10;
+    }
+    .address-holder,
+    .projects-count-holder,
+    .events-count-holder{
+        display: inline-block;
+        color: @white;
+        font-size: .875em;
+    }
+    .address-holder{
+        max-width: 240px;
+        padding: 30px 0 0 30px;
+        overflow: hidden;
+    }
+    .contact-holder{
+        display: block;
+        width: 100%;
+        max-width: 240px;
+        top: 0;
+        right: 0;
+        padding: 120px 30px 0 0;
+        overflow: hidden;
+        .social-link{
+            display: block;
+            width: 160px;
+            height: auto;
+            float: right;
+            margin-bottom: 15px;
+            overflow: hidden;
+            & > a{
+                display: block;
+                width: 100%;
+                height: auto;
+                padding: 15px 0;
+                color: @white;
+                font-size: .875em;
+                text-align: center;
+                border: 1px solid @white;
+                box-sizing: border-box;
+                transition: all .25s @easing;
+                background: transparent;
+                overflow: hidden;
+                &:hover{
+                    background: @red;
+                    border: 1px solid @red;
+                }
+            }
+        }
+        & > a{
+            display: block;
+            width: 100%;
+            height: auto;
+            color: @white;
+            font-size: .875em;
+            text-align: right;
+            transition: all .25s @easing;
+            overflow: hidden;
+            &:first-child{ margin-bottom: 5px; }
+            &:hover{ color: @red; }
+        }
+    }
+    .info-holder{
+        width: 100%;
+        height: auto;
+        padding: 0 12.5%;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+        box-sizing: border-box;
+        overflow: hidden;
+        .upper-divider{
+            margin-bottom: 30px;
+        }
+        h1{
+            color: @white;
+            font-size: 2.25em;
+        }
+        p{
+            color: @white;
+            margin-top: 15px;
+        }
+    }
+    .projects-count-holder{
+        left: 0;
+        bottom: 0;
+        padding: 0 0 30px 30px;
+    }
+    .events-count-holder{
+        right: 0;
+        bottom: 0;
+        padding: 0 30px 30px 0;
+    }
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  center end                                */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  center subPages start                     */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+.__center .sub-pages-holder{
+    .inner{
+        width: 100%;
+        height: auto;
+        overflow: hidden;
+        ul{
+            display: block;
+            width: 100%;
+            height: auto;
+            overflow: hidden;
+            li{
+                display: block;
+                width: 25%;
+                height: auto;
+                float: left;
+                box-sizing: border-box;
+                overflow: hidden;
+                & + li{  border-left: 1px solid @white; }
+                a{
+                    display: block;
+                    width: 100%;
+                    height: 60px;
+                    text-align: center;
+                    line-height: 60px;
+                    color: @darkGrey;
+                    font-weight: 700;
+                    font-size: .875em;
+                    background: @lightGrey;
+                    transition: all .25s @easing;
+                    overflow: hidden;
+                    &:hover{
+                        color: @white;
+                        background: @red;
+                    }
+                }
+            }
+        }
+    }
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  center subPages end                       */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  center project start                      */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+.__center .projects-holder{
+    .inner{
+        width: 100%;
+        height: auto;
+        padding: 0 12.5%;
+        box-sizing: border-box;
+        overflow: hidden;
+        .upper-divider{
+            margin: 120px 0 30px;
+            background: @darkGrey;
+        }
+        & > h2{
+            font-size: 2.25em;
+            color: @darkGrey;
+            margin-bottom: 60px;
+        }
+        .btn{
+            margin: 60px auto 0;
+        }
+    }
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  center project end                        */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  center events start                       */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+.__center .events-holder{
+    & > .inner{
+        width: 100%;
+        height: auto;
+        padding: 0 12.5%;
+        box-sizing: border-box;
+        overflow: hidden;
+        .upper-divider{
+            margin: 120px 0 30px;
+            background: @darkGrey;
+        }
+        & > h2{
+            font-size: 2.25em;
+            color: @darkGrey;
+        }
+        .events{
+            width: 100%;
+            height: auto;
+            margin-top: 30px;
+            overflow: hidden;
+            .top-event-holder{
+                width: 100%;
+                height: 0;
+                position: relative;
+                padding-top: 33.333333%;
+                box-sizing: border-box;
+                overflow: hidden;
+                a,
+                a:before,
+                a figure,
+                a figure img{
+                    display: block;
+                    width: 100%;
+                    height: 100%;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    overflow: hidden;
+                }
+                a{
+                    &:before{
+                        content: "";
+                        z-index: 5;
+                        transition: all .5s @easing;
+                        background: fade(@darkGrey, 60%);
+                    }
+                    figure{
+                        img{
+                            width: 100%;
+                            height: auto;
+                            top: 50%;
+                            transition: all .5s @easing;
+                            transform: translateY(-50%) scale(1.1);
+                            backface-visibility: hidden;
+                        }
+                    }
+                    .date-holder,
+                    .category-holder,
+                    h3{
+                        display: inline-block;
+                        vertical-align: top;
+                        position: absolute;
+                        font-size: .875em;
+                        color: @white;
+                        z-index: 10;
+                    }
+                    .date-holder{
+                        top: 0;
+                        left: 0;
+                        padding: 15px 0 0 15px;
+                    }
+                    .category-holder{
+                        top: 0;
+                        right: 0;
+                        padding: 15px 15px 0 0;
+                    }
+                    h3{
+                        left: 0;
+                        bottom: 0;
+                        font-size: 1.125em;
+                        padding: 0 15px 15px;
+                    }
+                    &:hover{
+                        &:before{ background: fade(@darkGrey, 0%); }
+                        figure{
+                            img{ transform: translateY(-50%) scale(1); }
+                        }
+                    }
+                }
+            }
+            & > .inner{
+                width: 100%;
+                height: auto;
+                overflow: hidden;
+            }
+        }
+        .btn{
+            margin: 30px auto 0;
+        }
+    }
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  center events end                         */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  center participants start                 */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+.__center .participants-holder{
+    & > .inner{
+        width: 100%;
+        height: auto;
+        padding: 0 12.5%;
+        margin-top: 120px;
+        box-sizing: border-box;
+        overflow: hidden;
+        .upper-divider{
+            margin-bottom: 30px;
+            background: @darkGrey;
+        }
+        h2{
+            font-size: 2.25em;
+            color: @darkGrey;
+        }
+        .participants{
+            width: 100%;
+            height: auto;
+            overflow: hidden;
+            .participant{
+                width: 31.94444444444444%;
+                height: 0;
+                padding-top: 31.94444444444444%;
+                position: relative;
+                float: left;
+                margin: 30px 2.083333333333333% 0 0;
+                overflow: hidden;
+                &:nth-child(3n+3){ margin-right: 0; }
+                .inner{
+                    width: 100%;
+                    height: 100%;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    background: @darkGrey;
+                    overflow: hidden;
+                    figure{
+                        width: 100%;
+                        height: 100%;
+                        position: relative;
+                        overflow: hidden;
+                        img{
+                            display: block;
+                            width: auto;
+                            height: 100%;
+                            position: absolute;
+                            top: 0;
+                            left: 50%;
+                            transform: translateX(-50%);
+                            overflow: hidden;
+                        }
+                    }
+                    .position-holder,
+                    h3{
+                        display: inline-block;
+                        vertical-align: top;
+                        position: absolute;
+                        z-index: 10;
+                        color: @white;
+                    }
+                    .position-holder{
+                        top: 0;
+                        right: 0;
+                        padding: 15px 15px 0 0;
+                        font-size: .875em;
+                    }
+                    h3{
+                        left: 0;
+                        bottom: 0;
+                        padding: 0 0 15px 15px;
+                        font-size: 1em;
+                    }
+                }
+            }
+        }
+    }
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  center participants end                   */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  adaptive start                            */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+@media only screen @tablet{
+    
+    #page.__center,
+    #page.__center #content{
+        height: auto;
+        min-height: auto;
+    }
+
+    .__center .intro-holder{
+        height: auto;
+        min-height: auto;
+        padding-top: 120px;
+        &:before{ display: none; }
+        .address-holder,
+        .contact-holder,
+        .info-holder,
+        .projects-count-holder,
+        .events-count-holder{
+            position: relative;
+        }
+        .projects-count-holder,
+        .events-count-holder{
+            display: none;
+        }
+        .address-holder{
+            max-width: 240px;
+            padding: 30px 0 0 60px;
+            color: @darkGrey;
+            float: left;
+            overflow: hidden;
+        }
+        .contact-holder{
+            display: block;
+            width: 100%;
+            max-width: 240px;
+            float: right;
+            padding: 30px 60px 0 0;
+            margin-bottom: 30px;
+            overflow: hidden;
+            .social-link{
+                float: right;
+                & > a{
+                    color: @darkGrey;
+                    border: 1px solid @darkGrey;
+                    &:hover{
+                        background: @darkGrey;
+                        border: 1px solid @darkGrey;
+                    }
+                }
+            }
+            & > a{
+                color: @darkGrey;
+                &:hover{ color: @darkGrey; }
+            }
+        }
+        .info-holder{
+            width: 100%;
+            height: auto;
+            padding: 0 60px;
+            margin-top: 0;
+            position: relative;
+            top: 0;
+            left: 0;
+            transform: translateY(0%);
+            .upper-divider{
+                margin-bottom: 30px;
+            }
+            h1{
+                color: @darkGrey;
+                font-size: 1.5em;
+            }
+            p{
+                color: @darkGrey;
+                margin-top: 15px;
+            }
+        }
+    }
+
+    .__center .sub-pages-holder{
+        .inner{
+            margin-top: 60px;
+            padding: 0 60px;
+            box-sizing: border-box;
+            ul{
+                li{
+                    width: 50%;
+                    border-bottom: 1px solid @white;
+                    & + li{  border-left: none }
+                    &:nth-child(2n+2){ border-left: 1px solid @white; }
+                    a{
+                        &:hover{
+                            color: @darkGrey;
+                            background: @lightGrey;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .__center .projects-holder{
+        .inner{
+            padding: 0 60px;
+            .upper-divider{
+                margin: 60px 0 30px;
+            }
+            & > h2{
+                font-size: 1.5em;
+                color: @darkGrey;
+                margin-bottom: 30px;
+            }
+            .btn{
+                margin: 60px auto 0;
+            }
+        }
+    }
+
+    .__center .events-holder{
+        & > .inner{
+            padding: 0 60px;
+            .upper-divider{
+                margin: 60px 0 30px;
+            }
+            & > h2{
+                font-size: 1.5em;
+                color: @darkGrey;
+            }
+            .events{
+                .top-event-holder{
+                    padding-top: 40%;
+                }
+            }
+        }
+    }
+
+    .__center .participants-holder{
+        & > .inner{
+            padding: 0 60px;
+            margin-top: 60px;
+            h2{ font-size: 1.5em; }
+            .participants{
+                margin-top: 15px;
+                .participant{
+                    width: 49.0234375%;
+                    padding-top: 49.0234375%;
+                    margin: 15px 1.953125% 0 0;
+                    &:nth-child(2n+2){ margin-right: 0; }
+                    &:nth-child(3n+3){ margin-right: 1.953125%; }
+                }
+            }
+        }
+    }
+
+}
+
+@media only screen @smartphoneXL{
+    
+    .__center .intro-holder{
+        padding-top: 100px;
+        .address-holder{
+            width: 100%;
+            max-width: 50%;
+            float: none;
+            padding: 15px 0 0 30px;
+            box-sizing: border-box;
+        }
+        .contact-holder{
+            width: 100%;
+            max-width: 50%;
+            padding: 15px 30px 0 0;
+            margin-bottom: 0;
+            float: right;
+            box-sizing: border-box;
+            .social-link{ display: none; }
+            & > a{
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+        .info-holder{
+            margin-top: 30px;
+            padding: 0 30px;
+            .upper-divider{
+                margin-bottom: 15px;
+                background: @darkGrey;
+            }
+            h1{ font-size: 1.25em; }
+        }
+    }
+
+    .__center .sub-pages-holder{
+        .inner{
+            margin-top: 30px;
+            padding: 0 30px;
+        }
+    }
+
+    .__center .projects-holder{
+        .inner{
+            padding: 0;
+            .upper-divider{ margin: 60px 0 15px 30px; }
+            & > h2{
+                font-size: 1.125em;
+                color: @darkGrey;
+                margin: 0 0 30px 30px;
+            }
+            .btn{ margin: 30px auto 0; }
+        }
+    }
+
+    .__center .events-holder{
+        & > .inner{
+            padding: 0;
+            .upper-divider{
+                margin: 60px 0 15px 30px;
+            }
+            & > h2{
+                font-size: 1.125em;
+                padding-left: 30px;
+            }
+            .events{
+                .top-event-holder{
+                    padding-top: 40%;
+                }
+            }
+        }
+    }
+
+    .__center .participants-holder{
+        & > .inner{
+            padding: 0;
+            margin-top: 60px;
+            .upper-divider{
+                margin: 0 0 15px 30px;
+            }
+            h2{
+                font-size: 1.125em;
+                padding-left: 30px;
+            }
+            .participants{
+                margin-top: 15px;
+                .participant{
+                    width: 100%;
+                    padding-top: 100%;
+                    margin: 1px 0 0 0;
+                    &:nth-child(2n+2){ margin-right: 0; }
+                    &:nth-child(3n+3){ margin-right: 0; }
+                }
+            }
+        }
+    }
+
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  adaptive end                              */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/

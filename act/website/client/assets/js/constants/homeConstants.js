@@ -1,0 +1,3 @@
+export const LOAD_HOME_START = "LOAD_HOME_START";
+export const LOAD_HOME_END = "LOAD_HOME_END";
+export const LOAD_HOME_ERROR = "LOAD_HOME_ERROR";

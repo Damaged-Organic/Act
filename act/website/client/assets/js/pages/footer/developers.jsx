@@ -1,0 +1,23 @@
+import React, { Component } from "react";
+import { translate } from "react-i18next";
+
+@translate(["common"])
+class Developers extends Component{
+
+    constructor(props){
+        super(props);
+
+    }
+    render(){
+        return(
+            <a href="http://cheersunlimited.com.ua" target="_blank">
+               <figure>
+                    <img src="static/website/build/images/cheers-logo.png" alt={ this.props.t("studio") } />
+                </figure>
+            </a>
+        );
+    }
+
+}
+
+export default Developers;

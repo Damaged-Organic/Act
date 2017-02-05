@@ -1,6 +1,16 @@
 {# act_project/act/website/templates/website/index.html #}
-{% extends 'layout.html' %}
+<!DOCTYPE html>
 
-{% block body %}
-    Index
-{% endblock %}
+{% load staticfiles %}
+
+<html lang="en">
+<head>
+    <base href="/">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'website/build/css/app.bundle.min.css' %}">
+</head>
+<body>
+    <div id="root"></div>
+    <script src="{% static 'website/build/js/app.bundle.min.js' %}"></script>
+</body>
+</html>

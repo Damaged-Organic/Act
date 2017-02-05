@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700&subset=cyrillic');
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  system variables start                    */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+@black: #121212;
+@white: #fafafa;
+@lightGrey: #d3d3d3;
+@darkGrey: #333333;
+@red: #95212a;
+
+@lightGreen: #DFF2BF;
+@darkGreen: #4F8A10;
+
+@easing: cubic-bezier(0.54, 0.53, 0, 0.98);
+
+@images: "../images";
+
+@netbook: ~"and (max-width: 1024px)";
+@tablet: ~"and (max-width: 800px)";
+@smartphoneXL: ~"and (max-width: 440px)";
+@smartphone: ~"and (max-width: 320px)";
+
+@landscape: ~"and (max-width: 1024px) and (orientation: landscape)";
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  system variables end                      */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  mixins start                              */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  mixins end                                */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  helpers start                             */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+.clearfix{
+    &:after{
+        display: block;
+        height: 0;
+        font-size: 0;
+        content: " ";
+        clear: both;
+        visibility: hidden;
+    }
+}
+img,
+figure > img{
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+}
+.svg-holder{
+    position: relative;
+    & > svg{
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+}
+
+.icon{
+    display: inline-block;
+    font-size: 1em;
+    color: @black;
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  helpers end                               */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+
+

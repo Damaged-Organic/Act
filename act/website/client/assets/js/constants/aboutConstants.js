@@ -1,0 +1,3 @@
+export const LOAD_ABOUT_START = "LOAD_ABOUT_START";
+export const LOAD_ABOUT_END = "LOAD_ABOUT_END";
+export const LOAD_ABOUT_ERROR = "LOAD_ABOUT_ERROR";

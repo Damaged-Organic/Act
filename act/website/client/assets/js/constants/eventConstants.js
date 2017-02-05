@@ -1,0 +1,3 @@
+export const LOAD_EVENT_START = "LOAD_EVENT_START";
+export const LOAD_EVENT_END = "LOAD_EVENT_END";
+export const LOAD_EVENT_ERROR = "LOAD_EVENT_ERROR";

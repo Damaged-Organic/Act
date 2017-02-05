@@ -1,0 +1,92 @@
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  not found start                           */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+#page.__not-found{
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    .logo{
+        width: 120px;
+        height: auto;
+        position: absolute;
+        top: 60px;
+        left: 50%;
+        z-index: 20;
+        margin-left: -60px;
+        overflow: hidden;
+    }
+    .inner{
+        width: 100%;
+        height: auto;
+        position: absolute;
+        top: 50%;
+        left: 0;
+        z-index: 20;
+        padding: 0 12.5%;
+        box-sizing: border-box;
+        transform: translateY(-50%);
+        overflow: hidden;
+        .upper-divider{
+            margin-bottom: 30px;
+            background: @darkGrey;
+        }
+        h1{ color: @darkGrey; }
+        p{ padding-top: 15px; }
+        .btn-back{
+            margin-top: 60px;
+        }
+    }
+    .error-number-holder{
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        overflow: hidden;
+        & > span{
+            display: inline-block;
+            position: absolute;
+            top: 50%;
+            right: 6.25%;
+            transform: translateY(-50%);
+            color: @lightGrey;
+            font-size: 36vw;
+            font-weight: 700;
+        }
+    }
+    .svg-holder{
+        display: block;
+        width: 60px;
+        height: 60px;
+        position: absolute;
+        right: 60px;
+        bottom: 60px;
+        overflow: visible;
+        svg{
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform: rotate(-90deg);
+            & > circle{
+                fill: transparent;
+                stroke-width: 3px;
+                stroke-linejoin: round;
+                stroke-linecap: round;
+                stroke-dasharray: 15;
+                stroke-dashoffset: 180;
+                animation: waitCircle 3s @easing 0s infinite;
+            }
+        }
+    }
+}
+
+@keyframes waitCircle{
+    0% { stroke-dasharray: 15; }
+    25% { stroke-dasharray: 30; }
+    50% { stroke-dasharray: 45; }
+    75% { stroke-dasharray: 30; }
+    100% { stroke-dasharray: 15; }
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  not found end                             */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/

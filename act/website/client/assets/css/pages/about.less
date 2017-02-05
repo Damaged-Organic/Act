@@ -1,0 +1,433 @@
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  about start                               */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+#page.__about{
+    .about-holder{
+        & > .contacts-holder{
+            display: block;
+            width: 100%;
+            height: auto;
+            margin-top: 30px;
+            position: relative;
+            overflow: hidden;
+            & > a{
+                display: block;
+                width: 100%;
+                height: auto;
+                padding: 0 30px;
+                box-sizing: border-box;
+                text-align: right;
+                color: @darkGrey;
+                transition: all .25s @easing;
+                overflow: hidden;
+                &:last-child{ margin-top: 10px; }
+                &:hover{ color: @red; }
+            }
+        }
+        & > .inner{
+            width: 100%;
+            height: auto;
+            padding: 60px 12.5% 0;
+            box-sizing: border-box;
+            overflow: hidden;
+            .intro-holder{
+                margin-bottom: 60px;
+                .upper-divider{
+                    margin-bottom: 30px;
+                    background: @darkGrey;
+                }
+                h1{ color: @darkGrey; }
+                p{ margin-top: 15px; }
+            }
+            .centers-holder{
+                margin-bottom: 120px;
+                .center-holder{
+                    width: 20%;
+                    height: 0;
+                    float: left;
+                    position: relative;
+                    padding-top: 20%;
+                    border-right: 1px solid @white;
+                    box-sizing: border-box;
+                    cursor: pointer;
+                    overflow: hidden;
+                    &:last-child{ border-right: none; }
+                    & > a,
+                    & > a:before,
+                    & > a figure,
+                    & > a figure img{
+                        display: block;
+                        width: 100%;
+                        height: 100%;
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        overflow: hidden;
+                    }
+                    & > a{
+                        &:before{
+                            z-index: 5;
+                            content: "";
+                            transition: all .5s @easing;
+                            background: fade(@darkGrey, 60%);
+                        }
+                        figure{
+                            img{
+                                width: auto;
+                                height: 100%;
+                                left: 50%;
+                                transition: all .5s @easing;
+                                transform: translateX(-50%) scale(1.1);
+                                backface-visibility: hidden;
+                            }
+                        }
+                        h3{
+                            display: block;
+                            width: 100%;
+                            height: auto;
+                            position: absolute;
+                            top: 50%;
+                            left: 0;
+                            z-index: 10;
+                            color: @white;
+                            text-align: center;
+                            transform: translateY(-50%);
+                        }
+                        &:hover{
+                            &:before{ background: fade(@darkGrey, 0%); }
+                            figure{
+                                img{ transform: translateX(-50%) scale(1); }
+                            }
+                        }
+                    }
+                }
+            }
+            .goal-holder{
+                margin-bottom: 120px;
+                .upper-divider{
+                    margin-bottom: 30px;
+                    background: @darkGrey;
+                }
+                h2{ color: @darkGrey; }
+                p{ margin-top: 15px; }
+                .activities-holder{
+                    width: 100%;
+                    height: auto;
+                    margin-top: 60px;
+                    overflow: hidden;
+                    ul{
+                        display: block;
+                        width: 100%;
+                        height: auto;
+                        overflow: hidden;
+                        li{
+                            display: block;
+                            width: 25%;
+                            height: auto;
+                            float: left;
+                            overflow: hidden;
+                            .icon{
+                                display: block;
+                                width: 60px;
+                                height: 60px;
+                                font-size: 3em;
+                                line-height: 60px;
+                                text-align: center;
+                                color: @red;
+                                overflow: hidden;
+                            }
+                            p{
+                                font-weight: bold;
+                                padding-right: 30px;
+                            }
+                        }
+                    }
+                }
+            }
+            .participants-holder{
+                .upper-divider{
+                    margin-bottom: 30px;
+                    background: @darkGrey;
+                }
+                h2{ color: @darkGrey; }
+                & > .inner{
+                    width: 100%;
+                    height: auto;
+                    margin-top: 60px;
+                    overflow: hidden;
+                    .participant{
+                        width: 31.944444%;
+                        height: 0;
+                        float: left;
+                        padding-top: 31.944444%;
+                        margin: 0 2.083333% 30px 0;
+                        position: relative;
+                        overflow: hidden;
+                        &:nth-child(3n+3){ margin-right: 0; }
+                        .inner,
+                        .inner:before,
+                        .inner figure,
+                        .inner figure img,
+                        .inner .info-holder{
+                            display: block;
+                            width: 100%;
+                            height: 100%;
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            overflow: hidden;
+                        }
+                        .inner{
+                            &:before{
+                                z-index: 5;
+                                content: "";
+                                transition: all .5s @easing;
+                                background: fade(@darkGrey, 60%);
+                            }
+                            figure{
+                                img{
+                                    width: auto;
+                                    left: 50%;
+                                    transition: all .5s @easing;
+                                    transform: translateX(-50%) scale(1.1);
+                                    backface-visibility: hidden;
+                                }
+                            }
+                            .info-holder{
+                                height: auto;
+                                top: auto;
+                                bottom: 0;
+                                z-index: 10;
+                                padding: 0 30px 30px;
+                                box-sizing: border-box;
+                                h3{
+                                    font-size: 1.125em;
+                                    color: @white;
+                                }
+                                p{
+                                    font-size: .875em;
+                                    color: @lightGrey;
+                                }
+                            }
+                            &:hover{
+                                &:before{
+                                    background: fade(@darkGrey, 0%);
+                                }
+                                figure{
+                                    img{ transform: translateX(-50%) scale(1); }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            .partners-holder{
+                .upper-divider{
+                    margin: 90px 0 30px;
+                    background: @darkGrey;
+                }
+                h2{ color: @darkGrey; }
+                & > ul{
+                    display: block;
+                    width: 100%;
+                    height: auto;
+                    margin-top: 60px;
+                    text-align: center;
+                    overflow: hidden;
+                    li{
+                        display: inline-block;
+                        vertical-align: middle;
+                        width: 120px;
+                        margin: 0 30px 30px;
+                        overflow: hidden;
+                        a{
+                            display: block;
+                            width: 100%;
+                            height: auto;
+                            overflow: hidden;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  about end                                 */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  adaptive start                            */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+@media only screen @tablet{
+
+    #page.__about{
+        .about-holder{
+            & > .contacts-holder{
+                width: 100%;
+                height: auto;
+                z-index: 99;
+            }
+            & > .inner{
+                padding: 60px 60px 0;
+                .centers-holder{
+                    margin-bottom: 60px;
+                    .center-holder{
+                        width: 100%;
+                        height: 150px;
+                        float: none;
+                        position: relative;
+                        padding-top: 0;
+                        border-top: 1px solid @white;
+                        border-right: none;
+                        & > a{
+                            figure{
+                                img{
+                                    width: 100%;
+                                    height: auto;
+                                    top: 50%;
+                                    left: 0%;
+                                    transition: all .5s @easing;
+                                    transform: translateX(0%) translateY(-50%) scale(1);
+                                }
+                            }
+                            &:hover{
+                                &:before{ background: fade(@darkGrey, 60%); }
+                                figure{
+                                    img{ transform: translateX(0%) translateY(-50%) scale(1); }
+                                }
+                            }
+                        }
+                    }
+                }
+                .goal-holder{
+                    margin-bottom: 30px;
+                    .activities-holder{
+                        margin-top: 60px;
+                        ul{
+                            li{
+                                width: 50%;
+                                margin-bottom: 30px;
+                            }
+                        }
+                    }
+                }
+                .participants-holder{
+                    & > .inner{
+                        width: 100%;
+                        height: auto;
+                        margin-top: 30px;
+                        overflow: hidden;
+                        .participant{
+                            width: 49.0234375%;
+                            height: 0;
+                            float: left;
+                            padding-top: 49.0234375%;
+                            margin: 0 1.953125% 15px 0;
+                            &:nth-child(3n+3){ margin-right: 1.953125%; }
+                            &:nth-child(2n+2){ margin-right: 0; }
+                            .inner{
+                                &:before{ display: none; }
+                                figure{
+                                    img{ transform: translateX(-50%) scale(1); }
+                                }
+                                .info-holder{
+                                    padding: 0 15px 15px;
+                                    box-sizing: border-box;
+                                }
+                            }
+                        }
+                    }
+                }
+                .partners-holder{
+                    .upper-divider{ margin: 60px 0 30px; }
+                    & > ul{
+                        margin-top: 30px;
+                        li{
+                            width: 60px;
+                            margin: 0 15px 30px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen @smartphoneXL{
+
+    #page.__about{
+        .about-holder{
+            & > .contacts-holder{
+                margin-top: 15px;
+                & > a{
+                    padding: 0 30px;
+                    &:last-child{ margin-top: 5px; }
+                    &:hover{ color: @darkGrey; }
+                }
+            }
+            & > .inner{
+                padding: 30px 30px 0;
+                .intro-holder{
+                    margin-bottom: 30px;
+                    .upper-divider{ margin-bottom: 15px; }
+                }
+                .centers-holder{
+                    margin-bottom: 60px;
+                    .center-holder{
+                        width: 100%;
+                        padding-top: 100%;
+                    }
+                }
+                .goal-holder{
+                    margin-bottom: 30px;
+                    .upper-divider{ margin-bottom: 15px; }
+                    .activities-holder{
+                        margin-top: 30px;
+                        ul{
+                            li{
+                                width: 100%;
+                                float: none;
+                            }
+                        }
+                    }
+                }
+                .participants-holder{
+                    .upper-divider{ margin-bottom: 15px; }
+                    & > .inner{
+                        width: 100%;
+                        height: auto;
+                        margin-top: 15px;
+                        overflow: hidden;
+                        .participant{
+                            width: 100%;
+                            height: 0;
+                            float: none;
+                            padding-top: 100%;
+                            margin: 15px 0 0;
+                            .inner{
+                                .info-holder{
+                                    padding: 0 15px 15px;
+                                }
+                            }
+                        }
+                    }
+                }
+                .partners-holder{
+                    .upper-divider{ margin: 60px 0 15px; }
+                    & > ul{
+                        margin-top: 30px;
+                        li{
+                            width: 60px;
+                            margin: 0 15px 30px; 
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  adaptive end                              */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/

@@ -1,0 +1,11 @@
+{
+    "empty": "Контент відсутній",
+    "notFound": {
+        "title": "Цієї сторінки не існує",
+        "text": "Повертайся додому, тут для тебе нічого немає",
+        "number": "404"
+    },
+    "landscape": "Поверніть, будь ласка, ваш пристрій",
+    "studio": "CHEERS - Unlimited Web Production",
+    "copyright": "©2016. All rights reserved. Created and designed by"
+}
