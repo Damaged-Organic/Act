@@ -6,6 +6,7 @@ from urllib.parse import urljoin
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils import timezone
 from django.utils.html import strip_tags
 from django.utils.text import slugify
 from django.template.defaultfilters import filesizeformat, truncatechars
@@ -353,7 +354,9 @@ class Project(MetadataMixin, models.Model, metaclass=TransMeta):
 
     title = models.CharField('Назва', max_length=200, unique=True)
     started_at = models.DateField('Дата початку', auto_now_add=True)
-    modified_at = models.DateField('Дата оновлення', auto_now=True)
+    modified_at = models.DateField(
+        'Дата оновлення', default=timezone.now
+    )
     content = RichTextField(
         'Контент', config_name='article_toolbar',
     )

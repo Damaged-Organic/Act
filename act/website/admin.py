@@ -293,7 +293,8 @@ class ProjectAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': (
-                'image_preview', 'image', 'project_area', 'is_active', 'events'
+                'image_preview', 'image', 'project_area', 'is_active',
+                'events', 'modified_at',
             ),
         }),
         ('Локалізована інформація', {
