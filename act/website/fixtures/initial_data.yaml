@@ -95,19 +95,12 @@
 -   model: website.Social
     pk: 2
     fields:
-        title: Twitter
-        link: https://twitter.com
-        icon: twitter
-
--   model: website.Social
-    pk: 3
-    fields:
         title: VKontakte
         link: https://vk.com
         icon: vk
 
 -   model: website.Social
-    pk: 4
+    pk: 3
     fields:
         title: YouTube
         link: https://youtube.com

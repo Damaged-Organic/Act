@@ -1,19 +1,17 @@
 # act_project/act/act/urls.py
 from django.conf import settings
 from django.conf.urls import include, url
-from django.conf.urls import (
-    handler400, handler403, handler404, handler500
-)
 from django.conf.urls.i18n import i18n_patterns
-from django.contrib import admin
 
 from .admin import admin_site
 from .views_api import api_root
 
-handler400 = 'website.views.handler400'
-handler403 = 'website.views.handler403'
-handler404 = 'website.views.handler404'
-handler500 = 'website.views.handler500'
+from website import views_error
+
+handler400 = views_error.handler400
+handler403 = views_error.handler403
+handler404 = views_error.handler404
+handler500 = views_error.handler500
 
 urlpatterns = [
     url(r'^deus_ex_machina/', admin_site.urls), ]

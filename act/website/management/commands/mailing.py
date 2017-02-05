@@ -22,9 +22,10 @@ class Command(MailerMixin, MailingCommand):
 
     def get_events(self, mailing=None):
         if mailing is None:
-            events = Event.objects.order_by_created_at_limit()
+            events = Event.objects.filter_active_limit()
         else:
-            events = Event.objects.filter_created_at_gt(mailing.mailing_at)
+            events = Event.objects.filter_active_created_at_gt(
+                mailing.mailing_at)
 
         return events
 

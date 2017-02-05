@@ -3,10 +3,10 @@ from django.http import Http404
 
 from rest_framework.response import Response
 from rest_framework.generics import (
-    GenericAPIView, ListAPIView, RetrieveAPIView, CreateAPIView,
+    GenericAPIView, ListAPIView, RetrieveAPIView,
 )
 from rest_framework.mixins import (
-    CreateModelMixin, UpdateModelMixin,
+    CreateModelMixin,
 )
 from rest_framework.pagination import (
     LimitOffsetPagination, PageNumberPagination,
@@ -154,9 +154,12 @@ class ProjectPageNumberPagination(PageNumberPagination):
 
 
 class ProjectFilter(django_filters.FilterSet):
+    centres = django_filters.ModelChoiceFilter(
+        name="centres__city", queryset=City.objects.all())
+
     class Meta:
         model = Project
-        fields = ['project_area', 'centres__city']
+        fields = ['project_area', 'centres']
 
 
 class ProjectList(ListAPIView):

@@ -226,7 +226,8 @@ class ProjectListSerializer(ExcludableModelSerializer):
         model = Project
         fields = (
             'id', 'project_area', 'centres',
-            'started_at',  'image', 'title', 'content', 'is_active', 'slug',
+            'started_at', 'modified_at', 'image', 'title', 'content',
+            'is_active', 'slug',
         )
 
     @staticmethod
@@ -296,7 +297,8 @@ class ProjectDetailSerializer(
         fields = (
             'id', 'project_area', 'project_attached_documents',
             'centres', 'events',
-            'started_at',  'image', 'title', 'content', 'is_active', 'slug',
+            'started_at', 'modified_at', 'image', 'title', 'content',
+            'is_active', 'slug',
             'prev_object', 'next_object',
         )
 

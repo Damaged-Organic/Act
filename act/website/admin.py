@@ -3,7 +3,7 @@ from django import forms
 from django.db import models
 from django.contrib import admin
 from django.urls import reverse
-from django.utils.html import escape, format_html
+from django.utils.html import format_html
 from django.contrib.admin.widgets import ForeignKeyRawIdWidget
 
 # Notice overridden transmeta import!
@@ -279,12 +279,14 @@ class ProjectAdminForm(forms.ModelForm):
 
 
 @admin.register(Project, site=admin_site)
-class ProjectAdmin(DefaultOrderingModelAdmin):
+class ProjectAdmin(admin.ModelAdmin):
     form = ProjectAdminForm
 
+    ordering = ('-modified_at',)
     readonly_fields = ('image_preview', )
     list_display = (
-        'id', 'title_uk', 'started_at', 'project_area', 'is_active',
+        'id', 'title_uk', 'started_at', 'modified_at', 'project_area',
+        'is_active',
     )
     list_display_links = ('title_uk', )
 
@@ -355,7 +357,8 @@ class EventAttachedDocumentInline(admin.TabularInline):
 
 
 @admin.register(Event, site=admin_site)
-class EventAdmin(DefaultOrderingModelAdmin):
+class EventAdmin(admin.ModelAdmin):
+    ordering = ('-created_at', )
     readonly_fields = ('image_preview', )
     list_display = (
         'id', 'title_uk', 'created_at', 'event_category', 'is_active',

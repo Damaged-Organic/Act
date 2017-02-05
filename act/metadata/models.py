@@ -125,6 +125,9 @@ class OpenGraph(MetadataLinked):
         ''' Should not be persisted in database, built on top of `Metadata` '''
         managed = False
 
+        verbose_name = 'OpenGraph'
+        verbose_name_plural = 'OpenGraphs'
+
     def __init__(self, *args, **kwargs):
         open_graph_type = kwargs.pop('type', self.TYPE_WEBSITE)
         if open_graph_type in self.TYPES:
@@ -171,6 +174,9 @@ class TwitterCard(MetadataLinked):
     class Meta:
         ''' Should not be persisted in database, built on top of `Metadata` '''
         managed = False
+
+        verbose_name = 'TwitterCard'
+        verbose_name_plural = 'TwitterCards'
 
     def __init__(self, *args, **kwargs):
         twitter_card = kwargs.pop('card', self.CARD_SUMMARY)

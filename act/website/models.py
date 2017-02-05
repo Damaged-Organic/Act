@@ -353,6 +353,7 @@ class Project(MetadataMixin, models.Model, metaclass=TransMeta):
 
     title = models.CharField('Назва', max_length=200, unique=True)
     started_at = models.DateField('Дата початку', auto_now_add=True)
+    modified_at = models.DateField('Дата оновлення', auto_now=True)
     content = RichTextField(
         'Контент', config_name='article_toolbar',
     )
@@ -371,7 +372,7 @@ class Project(MetadataMixin, models.Model, metaclass=TransMeta):
         verbose_name = 'Діяльність'
         verbose_name_plural = order_prefix + 'Діяльності'
 
-        ordering = ('-started_at', '-id', )
+        ordering = ('-modified_at', '-id', )
 
         translate = ('title', 'content', )
 
@@ -429,6 +430,7 @@ class ProjectAttachedDocument(AttachedDocument):
     class Meta:
         db_table = get_table_name('projects', 'attached', 'documents')
 
+        verbose_name = "Прикріплений документ"
         verbose_name_plural = "Прикріплені документи"
 
     def get_document_path(self, instance, filename):
@@ -465,11 +467,11 @@ class EventCategory(models.Model, metaclass=TransMeta):
 
 
 class EventManager(models.Manager):
-    def filter_created_at_gt(self, datetime):
+    def filter_active_created_at_gt(self, datetime):
         return super(EventManager, self).get_queryset().filter(
             is_active=True, created_at__gt=datetime)
 
-    def order_by_created_at_limit(self):
+    def filter_active_limit(self):
         return (
             super(EventManager, self).get_queryset()
             .filter(is_active=True,)
@@ -585,6 +587,7 @@ class EventAttachedDocument(AttachedDocument):
     class Meta:
         db_table = get_table_name('events', 'attached', 'documents')
 
+        verbose_name = "Прикріплений документ"
         verbose_name_plural = "Прикріплені документи"
 
     def get_document_path(self, instance, filename):

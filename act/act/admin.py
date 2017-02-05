@@ -48,8 +48,8 @@ class ForbidDeleteMixin():
 class DefaultOrderingModelAdmin(admin.ModelAdmin):
     ordering = ('id',)
 
-# Admin site
 
+# Admin site
 
 class ActAdminSite(admin.AdminSite):
     site_title = 'ДІЙ!'
@@ -80,7 +80,7 @@ class GroupAdmin(
 
 
 @admin.register(User, site=admin_site)
-class UserAdmin(UserAdmin):
+class UserAdmin(DefaultOrderingModelAdmin, UserAdmin):
     readonly_fields = ('last_login', 'date_joined', )
     list_display = (
         'custom_group',
