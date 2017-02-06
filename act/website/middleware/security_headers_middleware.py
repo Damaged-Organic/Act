@@ -31,6 +31,9 @@ class SecurityHeadersMiddleware(object):
                     " https://ajax.googleapis.com"
                     " https://maps.googleapis.com"
                 ),
+                'frame-src': (
+                    "https://www.youtube.com"
+                ),
             }
 
             response['Content-Security-Policy'] = ''.join(
