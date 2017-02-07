@@ -18,6 +18,7 @@ from .views_api import (
     CentreList, CentreDetail,
     CentreSubpageList, CentreSubpageDetail,
     WorksheetList,
+    ScrapingList,
 )
 
 urlpatterns = [
@@ -141,6 +142,12 @@ urlpatterns = [
         r'^worksheets$',
         WorksheetList.as_view(),
         name='worksheets_list',
+    ),
+    # Scraping
+    url(
+        r'^scrapings$',
+        ScrapingList.as_view(),
+        name='scrapings_list',
     ),
 ]
 

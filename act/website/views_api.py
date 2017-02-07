@@ -24,6 +24,7 @@ from .models import (
     City, Participant, Contact,
     Centre, CentreSubpage,
     Worksheet,
+    Scraping,
 )
 from .serializers import (
     IntroContentSerializer, AboutContentSerializer,
@@ -35,6 +36,7 @@ from .serializers import (
     CentreListSerializer, CentreDetailSerializer, CentreCitySerializer,
     CentreSubpageSerializer,
     WorksheetSerializer,
+    ScrapingSerializer,
 )
 
 
@@ -376,6 +378,16 @@ class WorksheetList(CreateModelMixin, GenericAPIView):
         '''
         serializer.save()
         serializer.send_email()
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+# Scraping
+
+class ScrapingList(CreateModelMixin, GenericAPIView):
+    serializer_class = ScrapingSerializer
+    queryset = Scraping.objects.all()
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)

@@ -3,6 +3,8 @@ import autoBind from "autobind-decorator";
 
 import PageMeta from "Meta/";
 
+import * as scrapingsActions from "Actions/scrapingsActions";
+
 import * as centerActions from "Actions/centerActions";
 import CenterStore from "Stores/centerStore";
 
@@ -44,6 +46,14 @@ class Center extends Component{
         let centerId = parseInt(this.props.routeParams.id);
 
         if(centerId) centerActions.loadData(centerId);
+    }
+    componentDidUpdate(prevProps, prevStates){
+        if(this.state.isLoading) return;
+
+        let path = this.props.location.pathname,
+            head = document.querySelector("head").innerHTML;
+
+        scrapingsActions.scrap(path, head);
     }
     shouldComponentUpdate(nextProps, nextState){
         return !nextState.isLoading ? true : false;

@@ -53,6 +53,24 @@ class FixedStdImageField(StdImageField):
     MAX_HEIGHT = 1280
 
 
+# Scraping
+
+class Scraping(models.Model):
+    '''
+    Model is designed to store rendered HTML inside `<head>` tag. This is done
+    due to restrictions of social network scraping bots for content metadata
+    rendered entirely on the client side (for React.js in this particular case)
+    '''
+    path = models.CharField(max_length=500)
+    head = models.TextField()
+
+    class Meta:
+        db_table = get_table_name('scrapings')
+
+    def __str__(self):
+        return self.path or self.__class__.__name__
+
+
 # Content
 
 class ContentBlock(models.Model):

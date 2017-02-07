@@ -3,6 +3,8 @@ import autoBind from "autobind-decorator";
 
 import PageMeta from "Meta/";
 
+import * as scrapingsActions from "Actions/scrapingsActions";
+
 import * as homeActions from "Actions/homeActions";
 import HomeStore from "Stores/homeStore";
 
@@ -45,6 +47,14 @@ class Home extends Component{
     }
     componentDidMount(){
         homeActions.loadData();
+    }
+    componentDidUpdate(prevProps, prevStates){
+        if(this.state.isLoading) return;
+
+        let path = this.props.location.pathname,
+            head = document.querySelector("head").innerHTML;
+
+        scrapingsActions.scrap(path, head);
     }
     componentWillUnmount(){
         HomeStore.removeListener("change", this.handleStoreChange);

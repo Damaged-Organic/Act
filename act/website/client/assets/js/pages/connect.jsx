@@ -3,6 +3,8 @@ import autoBind from "autobind-decorator";
 
 import PageMeta from "Meta/";
 
+import * as scrapingsActions from "Actions/scrapingsActions";
+
 import * as connectActions from "Actions/connectActions";
 import ConnectStore from "Stores/connectStore";
 
@@ -19,7 +21,7 @@ class Connect extends Component{
 
     constructor(props){
         super(props);
-        
+
         this.state = {
             isLoading: true,
             isMobile: isMobile(),
@@ -37,11 +39,19 @@ class Connect extends Component{
     componentDidMount(){
         connectActions.loadData();
     }
+    componentDidUpdate(prevProps, prevStates){
+        if(this.state.isLoading) return;
+
+        let path = this.props.location.pathname,
+            head = document.querySelector("head").innerHTML;
+
+        scrapingsActions.scrap(path, head);
+    }
     shouldComponentUpdate(nextProps, nextState){
         if(!nextState.loading){
             return true;
         }
-        return false;   
+        return false;
     }
     componentWillUnmount(){
         ConnectStore.removeListener("change", this.handleStoreChange);

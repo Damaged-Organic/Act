@@ -50,6 +50,8 @@ MIDDLEWARE_CLASSES = [
     'htmlmin.middleware.MarkRequestMiddleware',
     # Website
     'website.middleware.security_headers_middleware.SecurityHeadersMiddleware',
+    # Social crawlers
+    'website.middleware.social_crawlers_middleware.SocialCrawlersMiddleware'
 ]
 
 ROOT_URLCONF = 'act.urls'

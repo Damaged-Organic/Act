@@ -53,4 +53,7 @@ def api_root(request, format=None):
         'worksheets': reverse(
             'worksheets_list', request=request, format=format
         ),
+        'scrapings': reverse(
+            'scrapings_list', request=request, format=format
+        ),
     })

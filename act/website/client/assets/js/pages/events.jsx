@@ -4,6 +4,8 @@ import { translate } from "react-i18next";
 
 import PageMeta from "Meta/";
 
+import * as scrapingsActions from "Actions/scrapingsActions";
+
 import * as eventsActions from "Actions/eventsActions";
 import EventsStore from "Stores/eventsStore";
 
@@ -51,6 +53,14 @@ class Events extends Component{
     }
     componentDidMount(){
         eventsActions.loadData(this.props.location.search);
+    }
+    componentDidUpdate(prevProps, prevStates){
+        if(this.state.isLoading) return;
+
+        let path = this.props.location.pathname,
+            head = document.querySelector("head").innerHTML;
+
+        scrapingsActions.scrap(path, head);
     }
     componentWillUnmount(){
         EventsStore.removeListener("change", this.handleStoreChange);

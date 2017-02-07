@@ -3,6 +3,8 @@ import autoBind from "autobind-decorator";
 
 import PageMeta from "Meta/";
 
+import * as scrapingsActions from "Actions/scrapingsActions";
+
 import * as aboutActions from "Actions/aboutActions";
 import AboutStore from "Stores/aboutStore";
 
@@ -43,6 +45,14 @@ class About extends Component{
     }
     shouldComponentUpdate(nextProps, nextState){
         return !nextState.isLoading ? true : false;
+    }
+    componentDidUpdate(prevProps, prevStates){
+        if(this.state.isLoading) return;
+
+        let path = this.props.location.pathname,
+            head = document.querySelector("head").innerHTML;
+
+        scrapingsActions.scrap(path, head);
     }
     componentWillUnmount(){
         AboutStore.removeListener("change", this.handleStoreChange);

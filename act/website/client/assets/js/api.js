@@ -19,6 +19,7 @@ const URLS = {
     goalContent: "http://act.org.ua/api/goal_content",
     disclaimer: "http://act.org.ua/api/disclaimer_content",
     partners: "http://act.org.ua/api/partners",
+    scrapings: "http://act.org.ua/api/scrapings"
 }
 
 export default URLS;

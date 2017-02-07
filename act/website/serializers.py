@@ -1,9 +1,7 @@
 # act_project/act/website/serializers.py
 import datetime
 
-from django.conf import settings
 from django.db.models import Prefetch
-from django.db.models.fields.files import ImageFieldFile
 
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -19,6 +17,7 @@ from .models import (
     City, Participant, Contact,
     Centre, CentreSubpage,
     Worksheet,
+    Scraping,
 )
 from .validators import (
     problem_description_validator,
@@ -508,3 +507,20 @@ class WorksheetSerializer(MailerMixin, serializers.ModelSerializer):
         }
 
         super(WorksheetSerializer, self).send_email(subject, template, context)
+
+
+# Scraping
+
+class ScrapingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Scraping
+        fields = ('path', 'head', )
+
+    def create(self, validated_data):
+        scraping, created = Scraping.objects.update_or_create(
+            path=validated_data.get('path', None),
+            defaults={
+                'path': validated_data.get('path', None),
+                'head': validated_data.get('head', None)}, )
+
+        return scraping

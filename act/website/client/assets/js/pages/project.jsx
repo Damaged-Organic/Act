@@ -3,6 +3,8 @@ import autoBind from "autobind-decorator";
 
 import PageMeta from "Meta/";
 
+import * as scrapingsActions from "Actions/scrapingsActions";
+
 import * as projectActions from "Actions/projectActions";
 import ProjectStore from "Stores/projectStore";
 
@@ -20,7 +22,7 @@ class Project extends Component{
 
     constructor(props){
         super(props);
-        
+
         this.state = {
             isLoading: true,
             isMobile: isMobile(),
@@ -38,6 +40,14 @@ class Project extends Component{
     }
     componentDidMount(){
         projectActions.loadData(this.props.params.id);
+    }
+    componentDidUpdate(prevProps, prevStates){
+        if(this.state.isLoading) return;
+
+        let path = this.props.location.pathname,
+            head = document.querySelector("head").innerHTML;
+
+        scrapingsActions.scrap(path, head);
     }
     componentWillReceiveProps(nextProps){
         projectActions.loadData(nextProps.params.id);

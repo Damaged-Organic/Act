@@ -5,7 +5,7 @@ class PageMeta extends Component{
 
     constructor(props){
         super(props);
-        
+
     }
     render(){
         let metadata = this.props.metadata,
@@ -20,7 +20,7 @@ class PageMeta extends Component{
                     { name: "description", content: metadata.description },
                     { property: "og:title", content: openGraph.title },
                     { property: "og:type", content: openGraph.type },
-                    { property: "og:url", content: openGraph.url },
+                    { property: "og:url", content: document.URL },
                     { property: "og:image", content: openGraph.image },
                     { property: "og:description", content: openGraph.description },
                     { name: "twitter:card", content: twitterCard.card },

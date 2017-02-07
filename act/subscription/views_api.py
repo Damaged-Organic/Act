@@ -5,7 +5,6 @@ from django.db import transaction
 from rest_framework.exceptions import (
     ParseError, ValidationError as RESTValidationError
 )
-from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import (
     RetrieveModelMixin, CreateModelMixin, UpdateModelMixin
@@ -68,5 +67,5 @@ class SubscriberDetail(RetrieveModelMixin, UpdateModelMixin, GenericAPIView):
     def patch(self, request, *args, **kwargs):
         try:
             return self.partial_update(request, *args, **kwargs)
-        except ValidationError as e:
+        except ValidationError:
             raise ParseError('Недійсні дані для оновлення статусу підписки.')

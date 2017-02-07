@@ -3,6 +3,8 @@ import autoBind from "autobind-decorator";
 
 import PageMeta from "Meta/";
 
+import * as scrapingsActions from "Actions/scrapingsActions";
+
 import * as eventActions from "Actions/eventActions";
 import EventStore from "Stores/eventStore";
 
@@ -19,7 +21,7 @@ class Event extends Component{
 
     constructor(props){
         super(props);
-        
+
         this.state = {
             isLoading: true,
             isMobile: isMobile(),
@@ -37,6 +39,14 @@ class Event extends Component{
     }
     componentDidMount(){
         eventActions.loadData(this.props.params.id);
+    }
+    componentDidUpdate(prevProps, prevStates){
+        if(this.state.isLoading) return;
+
+        let path = this.props.location.pathname,
+            head = document.querySelector("head").innerHTML;
+
+        scrapingsActions.scrap(path, head);
     }
     componentWillReceiveProps(nextProps){
         this.setState({ isLoading: true });

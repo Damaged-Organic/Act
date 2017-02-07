@@ -3,6 +3,8 @@ import autoBind from "autobind-decorator";
 
 import PageMeta from "Meta/";
 
+import * as scrapingsActions from "Actions/scrapingsActions";
+
 import * as subPageActions from "Actions/subPageActions";
 import SubPageStore from "Stores/subPageStore";
 
@@ -20,7 +22,7 @@ class SubPage extends Component{
 
     constructor(props){
         super(props);
-        
+
         this.state = {
             isLoading: true,
             isMobile: isMobile(),
@@ -38,6 +40,14 @@ class SubPage extends Component{
     }
     componentDidMount(){
         subPageActions.loadData(this.props.params.subPageId);
+    }
+    componentDidUpdate(prevProps, prevStates){
+        if(this.state.isLoading) return;
+
+        let path = this.props.location.pathname,
+            head = document.querySelector("head").innerHTML;
+
+        scrapingsActions.scrap(path, head);
     }
     componentWillUnmount(){
         SubPageStore.removeListener("change", this.handleStoreChange);

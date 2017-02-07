@@ -3,6 +3,8 @@ import autoBind from "autobind-decorator";
 
 import PageMeta from "Meta/";
 
+import * as scrapingsActions from "Actions/scrapingsActions";
+
 import * as centersActions from "Actions/centersActions";
 import CentersStore from "Stores/centersStore";
 
@@ -24,7 +26,7 @@ class Centers extends Component{
             isMobile: isMobile(),
             metadata: CentersStore.getMetaData(),
             sponsors: CentersStore.getSponsors(),
-            socials: CentersStore.getSocials(), 
+            socials: CentersStore.getSocials(),
             centers: CentersStore.getCenters()
         }
     }
@@ -33,6 +35,14 @@ class Centers extends Component{
     }
     componentDidMount(){
         centersActions.loadData();
+    }
+    componentDidUpdate(prevProps, prevStates){
+        if(this.state.isLoading) return;
+
+        let path = this.props.location.pathname,
+            head = document.querySelector("head").innerHTML;
+
+        scrapingsActions.scrap(path, head);
     }
     componentWillUnmount(){
         CentersStore.removeListener("change", this.handleCenterStoreChange);

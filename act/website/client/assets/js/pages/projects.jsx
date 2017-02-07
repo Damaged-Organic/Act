@@ -4,6 +4,8 @@ import { translate } from "react-i18next";
 
 import PageMeta from "Meta/";
 
+import * as scrapingsActions from "Actions/scrapingsActions";
+
 import * as projectsActions from "Actions/projectsActions";
 import ProjectsStore from "Stores/projectsStore";
 
@@ -50,6 +52,14 @@ class Projects extends Component{
     componentDidMount(){
         projectsActions.loadData(this.props.location.search);
     }
+    componentDidUpdate(prevProps, prevStates){
+        if(this.state.isLoading) return;
+
+        let path = this.props.location.pathname,
+            head = document.querySelector("head").innerHTML;
+
+        scrapingsActions.scrap(path, head);
+    }
     componentWillUnmount(){
         ProjectsStore.removeListener("change", this.handleProjectStoreChange);
     }
@@ -89,7 +99,7 @@ class Projects extends Component{
                         <div class="inner">
                             <span class="upper-divider"></span>
                             <h1>{ this.props.t("headlines:projects.ourProjects") }</h1>
-                            <ProjectsComponent 
+                            <ProjectsComponent
                                 centers={ centers }
                                 categories={ categories }
                                 projects={ projects }
