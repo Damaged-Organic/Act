@@ -5,6 +5,8 @@ const URL = URLS.scrapings;
 
 export function scrap(path, head){
 
+    head = encodeURIComponent(head);
+
     http.post({
         url: URL,
         method: "POST",

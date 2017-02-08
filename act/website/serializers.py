@@ -1,5 +1,6 @@
 # act_project/act/website/serializers.py
-import datetime
+from datetime import datetime
+from urllib.parse import unquote
 
 from django.db.models import Prefetch
 
@@ -486,7 +487,7 @@ class WorksheetSerializer(MailerMixin, serializers.ModelSerializer):
         return value
 
     def send_email(self):
-        sent_at = datetime.datetime.now()
+        sent_at = datetime.now()
 
         subject = (
             'Нова анкета з сайту ДІЙ!, ' +
@@ -517,10 +518,13 @@ class ScrapingSerializer(serializers.ModelSerializer):
         fields = ('path', 'head', )
 
     def create(self, validated_data):
+        # Decode URL encoded (to avoid special characters breaking POST) head
+        head = unquote(validated_data.get('head', None)).strip()
+
         scraping, created = Scraping.objects.update_or_create(
             path=validated_data.get('path', None),
             defaults={
                 'path': validated_data.get('path', None),
-                'head': validated_data.get('head', None)}, )
+                'head': head}, )
 
         return scraping
