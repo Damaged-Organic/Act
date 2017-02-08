@@ -1,25 +1,33 @@
-const URLS = {
-    cities: "http://act.org.ua/api/cities",
-    projects: "http://act.org.ua/api/projects",
-    metadata: "http://act.org.ua/api/metadata",
-    centers: "http://act.org.ua/api/centres",
-    centersSubpages: "http://act.org.ua/api/centres_subpages",
-    participants: "http://act.org.ua/api/participants",
-    sponsors: "http://act.org.ua/api/sponsors",
-    projectCategories: "http://act.org.ua/api/projects_areas",
-    socials: "http://act.org.ua/api/socials",
-    eventsCategories: "http://act.org.ua/api/events_categories",
-    worksheets: "http://act.org.ua/api/worksheets",
-    activities: "http://act.org.ua/api/activities",
-    events: "http://act.org.ua/api/events",
-    intro: "http://act.org.ua/api/intro_content",
-    subscribers: "http://act.org.ua/api/subscribers",
-    contacts: "http://act.org.ua/api/contacts",
-    aboutContent: "http://act.org.ua/api/about_content",
-    goalContent: "http://act.org.ua/api/goal_content",
-    disclaimer: "http://act.org.ua/api/disclaimer_content",
-    partners: "http://act.org.ua/api/partners",
-    scrapings: "http://act.org.ua/api/scrapings"
-}
+const API_SCHEMA = "https://";
+const API_DOMAIN = "act.org.ua/api/";
+
+const PATHS = {
+    cities: "cities",
+    projects: "projects",
+    metadata: "metadata",
+    centers: "centres",
+    centersSubpages: "centres_subpages",
+    participants: "participants",
+    sponsors: "sponsors",
+    projectCategories: "projects_areas",
+    socials: "socials",
+    eventsCategories: "events_categories",
+    worksheets: "worksheets",
+    activities: "activities",
+    events: "events",
+    intro: "intro_content",
+    subscribers: "subscribers",
+    contacts: "contacts",
+    aboutContent: "about_content",
+    goalContent: "goal_content",
+    disclaimer: "disclaimer_content",
+    partners: "partners",
+    scrapings: "scrapings"
+};
+
+const URLS = Object.keys(PATHS).reduce((reduced, key) => {
+    reduced[key] = API_SCHEMA + API_DOMAIN + PATHS[key];
+    return reduced;
+}, {});
 
 export default URLS;

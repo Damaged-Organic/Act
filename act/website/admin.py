@@ -485,30 +485,23 @@ class ParticipantAdmin(DefaultOrderingModelAdmin):
 
 # Contact
 
-class ContactInline(admin.StackedInline):
+class ContactInline(admin.TabularInline):
     model = Contact
-    fields = (('email', 'phone', 'address_uk', 'social_link', ), )
+    fields = ('email', 'phone', 'address_uk', 'social_link', )
     can_delete = False
-
-
-class ContactForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(ContactForm, self).__init__(*args, **kwargs)
-        self.fields['centre'].empty_label = 'Центральний офіс'
 
 
 @admin.register(Contact, site=admin_site)
 class ContactAdmin(
     ForbidAddMixin, ForbidDeleteMixin, DefaultOrderingModelAdmin
 ):
-    form = ContactForm
-
+    readonly_fields = ('centre_view', )
     list_display = ('centre_view', 'email', 'phone', 'address_uk', )
     list_display_links = ('centre_view', )
 
     fieldsets = (
         (None, {
-            'fields': ('centre', 'email', 'phone', 'social_link', ),
+            'fields': ('centre_view', 'email', 'phone', 'social_link', ),
         }),
         ('Локалізована інформація', {
             'fields': ('address_uk', ),
@@ -516,28 +509,11 @@ class ContactAdmin(
     )
 
     '''
-    This is the only option to make field `readonly` while
-    overriding it's attributes inside form class
-    '''
-    def formfield_for_dbfield(self, db_field, **kwargs):
-        field = super(ContactAdmin, self).formfield_for_dbfield(
-            db_field, **kwargs
-        )
-        db_fieldname = canonical_fieldname(db_field)
-
-        if db_fieldname == 'centre':
-            field.widget = forms.Select(attrs={
-                'readonly': True, 'disabled': 'disabled',
-            })
-
-        return field
-
-    '''
     This is used to specify empty value for an admin list view
     '''
     def centre_view(self, instance):
-        return instance.centre
-    centre_view.empty_value_display = 'Центральний офіс'
+        return instance.centre if instance.centre else 'Центральний офіс'
+    centre_view.short_description = Centre._meta.verbose_name
 
 
 # Centre
