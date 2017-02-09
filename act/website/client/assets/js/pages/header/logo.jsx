@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router";
 
+import { staticPath } from "Settings";
 import generateUrl from "Router/generateUrl";
 
 class Logo extends Component{
@@ -12,7 +13,7 @@ class Logo extends Component{
     render(){
         return(
             <Link to={ generateUrl("home") } class="logo">
-                <img src="static/website/build/images/logo.png" alt="Дий" />
+                <img src={ staticPath("/images/logo.png") } alt="Act" />
             </Link>
         );
     }

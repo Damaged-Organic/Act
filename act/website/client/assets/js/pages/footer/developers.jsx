@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { translate } from "react-i18next";
 
+import { staticPath } from "Settings";
+
 @translate(["common"])
 class Developers extends Component{
 
@@ -12,7 +14,7 @@ class Developers extends Component{
         return(
             <a href="http://cheersunlimited.com.ua" target="_blank">
                <figure>
-                    <img src="static/website/build/images/cheers-logo.png" alt={ this.props.t("studio") } />
+                    <img src={ staticPath("/images/cheers-logo.png") } alt={ this.props.t("studio") } />
                 </figure>
             </a>
         );

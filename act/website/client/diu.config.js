@@ -6,5 +6,5 @@ module.exports = {
     fonts: path.join(__dirname, "assets/fonts"),
     images: path.join(__dirname, "assets/images"),
     letters: path.join(__dirname, "assets/letters"),
-    build: path.join(__dirname, "../static/website/build")
+    build: path.join(__dirname, "../static/website")
 }

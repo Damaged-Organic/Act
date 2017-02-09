@@ -25,11 +25,23 @@ class Page extends Component{
             query = this.props.location.query,
             activeClassName = this.getActiveClassName(number),
             queryParams = {};
-            
-        queryParams = {
-            project_area: query.project_area,
-            centres: query.centres,
-            page: number
+
+        if(url === "projects"){
+
+            queryParams = {
+                project_area: query.project_area,
+                centres: query.centres,
+                page: number
+            }
+
+        } else{
+
+            queryParams = {
+                event_category: query.event_category,
+                centres: query.centres,
+                page: number
+            }
+
         }
 
         return(

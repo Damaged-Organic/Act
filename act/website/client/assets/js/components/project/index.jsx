@@ -4,7 +4,7 @@ import { Link } from "react-router";
 import generateUrl from "Router/generateUrl";
 import { separateBySlashes } from "Utils/dateConverter";
 
-import SocialShare from "Components/socialShare";
+import Socials from "Components/socials";
 import Documents from "Components/documents";
 import RelatedEvents from "./relatedEvents";
 
@@ -46,8 +46,10 @@ class ProjectComponent extends Component{
         });
     }
     render(){
-        let isMobile = this.props.isMobile,
+        let isLoading = this.props.isLoading,
+            isMobile = this.props.isMobile,
             project = this.props.project,
+            metadata = this.props.metadata,
             photo = project.image || {},
             projectDocuments = project.project_attached_documents || [],
             relatedEvents = project.events || [],
@@ -75,7 +77,7 @@ class ProjectComponent extends Component{
                     { this.renderNavigation(project) }
                     <div class="date-share-holder">
                         <time dateTime={ project.modified_at }>{ separateBySlashes(project.modified_at) }</time>
-                        <SocialShare location={ location } />
+                        { !isLoading ? <Socials metadata={ metadata } /> : null }
                     </div>
                     <div class="content-holder" dangerouslySetInnerHTML={{ __html: project.content }}></div>
                     <aside class="additional-content-holder">

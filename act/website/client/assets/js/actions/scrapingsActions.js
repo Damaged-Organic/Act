@@ -5,6 +5,7 @@ const URL = URLS.scrapings;
 
 export function scrap(path, head){
 
+    path = encodeURIComponent(path);
     head = encodeURIComponent(head);
 
     http.post({
@@ -14,10 +15,10 @@ export function scrap(path, head){
         data: { path, head }
     })
     .then((response) => {
-        console.log(response);
+        //console.log(response);
     })
     .catch((error) => {
-        console.log(error);
+        //console.log(error);
     });
 
 }

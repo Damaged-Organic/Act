@@ -85,7 +85,13 @@ class Event extends Component{
                 <PageMeta metadata={ metadata } />
                 <Header sponsors={ sponsors } socials={ socials } location={ this.props.location } isMobile={ isMobile } />
                 <main id="content">
-                    <EventComponent _event={ _event } location={ this.props.location } isMobile={ isMobile } />
+                    <EventComponent
+                        _event={ _event }
+                        metadata={ metadata }
+                        location={ this.props.location }
+                        isLoading={ isLoading }
+                        isMobile={ isMobile }
+                    />
                 </main>
                 <Loader isLoading={ isLoading } />
                 <Footer

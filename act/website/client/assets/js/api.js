@@ -1,5 +1,5 @@
 const API_SCHEMA = "https://";
-const API_DOMAIN = "act.org.ua/api/";
+const API_DOMAIN = "act.org.ua/api/"; 
 
 const PATHS = {
     cities: "cities",
@@ -23,11 +23,13 @@ const PATHS = {
     disclaimer: "disclaimer_content",
     partners: "partners",
     scrapings: "scrapings"
-};
+}
 
-const URLS = Object.keys(PATHS).reduce((reduced, key) => {
-    reduced[key] = API_SCHEMA + API_DOMAIN + PATHS[key];
-    return reduced;
+const URLS = Object.keys(PATHS).reduce((path, key) => {
+
+    path[key] = API_SCHEMA + API_DOMAIN + PATHS[key];
+    return path;
+
 }, {});
 
 export default URLS;

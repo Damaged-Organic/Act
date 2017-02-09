@@ -71,4 +71,4 @@ gulp.task("watcher", () => {
 
 });
 
-gulp.task("default", ["css", "fonts", "translations", "mjml", "images"]);
+gulp.task("default", ["css", "fonts", "translations", "mjml", "images", "watcher"]);

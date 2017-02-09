@@ -390,4 +390,11 @@ class ScrapingList(CreateModelMixin, GenericAPIView):
     queryset = Scraping.objects.all()
 
     def post(self, request, *args, **kwargs):
+        '''
+        In theory, this `<head>` data overwriting should occur only if client
+        properly rendered the whole content up to point of sending scraping
+        API request. Any malicious data is escaped, used *only* for scraping
+        bots and will not last long becuse next regular page view by client
+        will completely overwrite it in the database. No profit for an attacker
+        '''
         return self.create(request, *args, **kwargs)

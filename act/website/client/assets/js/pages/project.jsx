@@ -83,7 +83,13 @@ class Project extends Component{
                 <PageMeta metadata={ metadata } />
                 <Header sponsors={ sponsors } socials={ socials } location={ this.props.location } isMobile={ isMobile } />
                 <main id="content">
-                    <ProjectComponent project={ project } location={ this.props.location } isMobile={ isMobile } />
+                    <ProjectComponent
+                        project={ project }
+                        metadata={ metadata }
+                        location={ this.props.location }
+                        isMobile={ isMobile }
+                        isLoading={ isLoading }
+                    />
                 </main>
                 <Loader isLoading={ isLoading } />
                 <Footer

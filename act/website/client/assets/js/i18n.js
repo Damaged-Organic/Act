@@ -1,6 +1,8 @@
 import i18n from "i18next";
 import XHR from 'i18next-xhr-backend';
 
+import { staticPath } from "Settings";
+
 i18n
     .use(XHR)
     .init({
@@ -12,7 +14,7 @@ i18n
         defaultNS: "common",
         load: "currentOnly",
         backend: {
-            loadPath: "./static/website/build/locales/{{lng}}/{{ns}}.json"
+            loadPath: staticPath("/locales/{{lng}}/{{ns}}.json")
         },
         preload: ["uk"]
     });

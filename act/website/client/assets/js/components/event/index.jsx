@@ -6,7 +6,7 @@ import { timeHasPassedFromNow } from "Utils/dateConverter";
 
 import generateUrl from "Router/generateUrl";
 
-import SocialShare from "Components/socialShare";
+import Socials from "Components/socials";
 import Documents from "Components/documents";
 
 import ProjectItem from "Components/projectItem";
@@ -67,8 +67,10 @@ class EventComponent extends Component{
         }
     }
     render(){
-        let isMobile = this.props.isMobile,
+        let isLoading = this.props.isLoading,
+            isMobile = this.props.isMobile,
             _event = this.props._event,
+            metadata = this.props.metadata,
             photoObj = _event.image || {},
             eventCategory = _event.event_category,
             eventDocuments = _event.event_attached_documents || [],
@@ -97,7 +99,7 @@ class EventComponent extends Component{
                     </div>
                     <div class="date-share-holder">
                         <time dateTime={ _event.created_at }>{ timeHasPassedFromNow(_event.created_at) }</time>
-                        <SocialShare location={ location } />
+                        { !isLoading ? <Socials metadata={ metadata } /> : null }
                     </div>
                     <div class="content-holder" dangerouslySetInnerHTML={{ __html: _event.content }}></div>
                     <aside class="additional-content-holder">

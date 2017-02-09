@@ -6,8 +6,8 @@ module.exports = {
         app: "./assets/js/app.jsx"
     },
     output: {
-        path: path.join(__dirname, "../static/website/build/js"),
-        publicPath: "../static/website/build/js",
+        path: path.join(__dirname, "../static/website/js"),
+        publicPath: "../static/website/js",
         filename: "[name].bundle.min.js"
     },
     resolve: {
@@ -23,6 +23,7 @@ module.exports = {
             Router: path.resolve(__dirname, "assets/js/routes/"),
             Stores: path.resolve(__dirname, "assets/js/stores/"),
             Utils: path.resolve(__dirname, "assets/js/utils/"),
+            Settings: path.resolve(__dirname, "assets/js/settings.js"),
         },
         extensions: ["", ".js", ".jsx", ".es6"]
     },

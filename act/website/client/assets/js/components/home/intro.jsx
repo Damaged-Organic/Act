@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router";
 import { translate } from "react-i18next";
 
+import { staticPath } from "Settings";
 import generateUrl from "Router/generateUrl";
 
 @translate(["buttons"], {wait: true})
@@ -24,7 +25,7 @@ class Intro extends React.Component{
             <section class="container home-intro-holder extra-padding-top">
                 <div class="photo-holder">
                     <figure>
-                        <img src="static/website/build/images/intro-background.jpg" alt={ intro.headline } />
+                        <img src={ staticPath("/images/intro-background.jpg") } alt={ intro.headline } />
                     </figure>
                 </div>
                 <div class="inner entitled-holder">

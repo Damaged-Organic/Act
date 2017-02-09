@@ -5,29 +5,30 @@ const FacebookShare = ShareButtons.FacebookShareButton;
 const TwitterShare = ShareButtons.TwitterShareButton;
 const VKShare = ShareButtons.VKShareButton;
 
-class SocialShare extends Component{
+class Socials extends Component{
 
     constructor(props){
         super(props);
         
     }
     render(){
-        let location = this.props.location;
+        let metadata = this.props.metadata,
+            og = metadata.open_graph || {};
 
         return(
             <ul class="socials-holder">
                 <li>
-                    <FacebookShare url={ location.pathname }>
+                    <FacebookShare url={ og.url } title={ og.title } description={ og.description } picture={ og.image }>
                         <span class="icon icon-facebook"></span>
                     </FacebookShare>
                 </li>
                 <li>
-                    <VKShare url={ location.pathname }>
+                    <VKShare url={ og.url } title={ og.title } description={ og.description } picture={ og.image }>
                         <span class="icon icon-vk"></span>
                     </VKShare>
                 </li>
                 <li>
-                    <TwitterShare url={ location.pathname }>
+                    <TwitterShare url={ og.url } title={ og.title }>
                         <span class="icon icon-twitter"></span>
                     </TwitterShare>
                 </li>
@@ -37,4 +38,4 @@ class SocialShare extends Component{
 
 }
 
-export default SocialShare;
+export default Socials;
