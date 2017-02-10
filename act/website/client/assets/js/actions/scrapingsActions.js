@@ -5,7 +5,6 @@ const URL = URLS.scrapings;
 
 export function scrap(path, head){
 
-    path = encodeURIComponent(path);
     head = encodeURIComponent(head);
 
     http.post({

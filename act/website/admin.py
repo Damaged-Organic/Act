@@ -410,17 +410,39 @@ class EventAdmin(admin.ModelAdmin):
 
 # City
 
+class CityAdminForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(CityAdminForm, self).__init__(*args, **kwargs)
+
+        self.fields['photo'].help_text = (
+            "Рекомендований розмір фотографії - 1920х1280 пікселів")
+        self.fields['photo_square'].help_text = (
+            "Рекомендований розмір фотографії - 480х480 пікселів")
+        self.fields['photo_high'].help_text = (
+            "Рекомендований розмір фотографії - 400х1280 пікселів")
+
+
 @admin.register(City, site=admin_site)
 class CityAdmin(
     ForbidAddMixin, ForbidDeleteMixin, DefaultOrderingModelAdmin
 ):
-    readonly_fields = ('name_uk', 'photo_preview', )
+    form = CityAdminForm
+
+    readonly_fields = (
+        'name_uk',
+        'photo_preview',
+        'photo_square_preview',
+        'photo_high_preview', )
+
     list_display = ('id', 'name_uk', )
     list_display_links = ('name_uk', )
 
     fieldsets = (
         (None, {
-            'fields': ('photo_preview', 'photo', ),
+            'fields': (
+                'photo_preview', 'photo',
+                'photo_square_preview', 'photo_square',
+                'photo_high_preview', 'photo_high', ),
         }),
         ('Локалізована інформація', {
             'fields': ('name_uk', ),
@@ -444,7 +466,19 @@ class CityAdmin(
         return format_html(
             '<img src="{}" width="400" max-width="400">'
             .format(instance.photo.url))
-    photo_preview.short_description = 'Превʼю фотографії'
+    photo_preview.short_description = 'Превʼю головної фотографії'
+
+    def photo_square_preview(self, instance):
+        return format_html(
+            '<img src="{}" width="300" max-width="300">'
+            .format(instance.photo_square.url))
+    photo_square_preview.short_description = 'Превʼю квадратної фотографії'
+
+    def photo_high_preview(self, instance):
+        return format_html(
+            '<img src="{}" height="200" max-height="200">'
+            .format(instance.photo_high.url))
+    photo_high_preview.short_description = 'Превʼю високої фотографії'
 
 
 # Participant

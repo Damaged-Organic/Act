@@ -603,18 +603,27 @@ class EventAttachedDocument(AttachedDocument):
 class City(MetadataMixin, models.Model, metaclass=TransMeta):
     PHOTO_PATH = 'cities/photos/'
 
-    variations = update_with_metadata_variations({
-        'square': {'width': 480, 'height': 480, 'crop': True},
-        'high': {
-            'width': 400,
-            'height': FixedStdImageField.MAX_HEIGHT,
-            'crop': True},
-    })
-
     photo = FixedStdImageField(
-        'Фотографія',
+        'Фотографія (головна)',
         upload_to=RandomFileName(PHOTO_PATH),
-        variations=variations)
+        variations=update_with_metadata_variations({}))
+
+    photo_square = FixedStdImageField(
+        'Фотографія (квадратна)',
+        upload_to=RandomFileName(PHOTO_PATH),
+        variations={
+            'square': {'width': 480, 'height': 480, 'crop': True},
+        })
+
+    photo_high = FixedStdImageField(
+        'Фотографія (висока)',
+        upload_to=RandomFileName(PHOTO_PATH),
+        variations={
+            'high': {
+                'width': 400,
+                'height': FixedStdImageField.MAX_HEIGHT,
+                'crop': True},
+        })
 
     name = models.CharField('Назва', max_length=100, unique=True)
 

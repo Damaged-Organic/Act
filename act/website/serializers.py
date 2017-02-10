@@ -147,10 +147,12 @@ class PartnerSerializer(serializers.ModelSerializer):
 
 class CitySerializer(serializers.ModelSerializer):
     photo = StdImageSerializer(read_only=True)
+    photo_square = StdImageSerializer(read_only=True)
+    photo_high = StdImageSerializer(read_only=True)
 
     class Meta:
         model = City
-        fields = ('id', 'photo', 'name', )
+        fields = ('id', 'photo', 'photo_square', 'photo_high', 'name', )
 
 
 # Centre (partial nested relation)
