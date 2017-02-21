@@ -12,7 +12,7 @@ class BackButton extends Component{
     render(){
         let center = this.props.center || {},
             city = center.city || {},
-            photoObj = city.photo || {},
+            photoSquare = city.photo_square || {},
             url = generateUrl("center", {id: center.id});
 
         return(
@@ -20,7 +20,7 @@ class BackButton extends Component{
                 <Link to={ url }>
                     <span class="icon icon-arrow-left"></span>
                     <figure data-title={ city.name }>
-                        <img src={ photoObj.square } alt={ city.name } />
+                        <img src={ photoSquare.square } alt={ city.name } />
                     </figure>
                 </Link>
             </div>

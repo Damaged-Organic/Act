@@ -1,0 +1,140 @@
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  subscribe start                           */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+#page.__subscribe,
+#page.__unsubscribe,
+#page.__subscribe > #content,
+#page.__unsubscribe > #content,
+#page.__subscribe > #content > .subscribe-holder,
+#page.__unsubscribe > #content > .unsubscribe-holder{
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+#page.__subscribe,
+#page.__unsubscribe{
+    #header{
+        width: 100%;
+        height: auto;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 20;
+        overflow: hidden;
+        & > .logo{
+            display: block;
+            width: 120px;
+            height: auto;
+            margin: 60px auto 0;
+            overflow: hidden;
+        }
+    }
+}
+
+#page.__subscribe{
+    #content{
+        .subscribe-holder{
+            position: relative;
+            .inner{
+                width: 100%;
+                height: auto;
+                padding: 0 12.5%;
+                position: absolute;
+                top: 50%;
+                left: 0;
+                transform: translateY(-50%);
+                box-sizing: border-box;
+                overflow: hidden;
+                .upper-divider{
+                    background: @darkGrey;
+                    margin-bottom: 15px;
+                }
+                h1{
+                    color: @darkGrey;
+                    margin-bottom: 15px;
+                }
+                p.success{ color: @darkGreen; }
+                p.error{ color: @red; }
+                .btns-holder{
+                    width: 100%;
+                    height: auto;
+                    margin-top: 30px;
+                    overflow: hidden;
+                    .btn-cancel,
+                    .btn-confirm{
+                        float: left;
+                    }
+                    .btn-cancel{
+                        & > a{
+                            border: 1px solid @darkGrey;
+                            color: @darkGrey;
+                        }
+                    }
+                    .btn-confirm{
+                        cursor: pointer;
+                        margin-left: 15px;
+                    }
+                }
+            }
+        }
+    }
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  subscribe end                             */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  unsubscribe start                         */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+#page.__unsubscribe{
+    #content{
+        .unsubscribe-holder{
+            position: relative;
+            .inner{
+                width: 100%;
+                height: auto;
+                padding: 0 12.5%;
+                position: absolute;
+                top: 50%;
+                left: 0;
+                transform: translateY(-50%);
+                box-sizing: border-box;
+                overflow: hidden;
+                .upper-divider{
+                    background: @darkGrey;
+                    margin-bottom: 15px;
+                }
+                h1{
+                    color: @darkGrey;
+                    margin-bottom: 15px;
+                }
+                p.success{ color: @darkGreen; }
+                p.error{ color: @red; }
+                .btns-holder{
+                    width: 100%;
+                    height: auto;
+                    margin-top: 30px;
+                    overflow: hidden;
+                    .btn-cancel,
+                    .btn-confirm{
+                        float: left;
+                    }
+                    .btn-cancel{
+                        & > a{
+                            border: 1px solid @darkGrey;
+                            color: @darkGrey;
+                        }
+                    }
+                    .btn-confirm{
+                        cursor: pointer;
+                        margin-left: 15px;
+                    }
+                }
+            }
+        }
+    }
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  unsubscribe end                           */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/

@@ -7,6 +7,9 @@
 
 *~
 
+.rar
+.zip
+
 __pycache__/
 
 */*/settings/prod.py

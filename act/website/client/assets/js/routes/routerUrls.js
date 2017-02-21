@@ -9,4 +9,6 @@ export default {
     "events": "/events",
     "event": "/events/:id/:slug",
     "connect": "/connect",
+    "subscribe": "/subscribers/subscribe/:id/:hash",
+    "unsubscribe": "/subscribers/unsubscribe/:id/:hash"
 }

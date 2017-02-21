@@ -1,5 +1,5 @@
 const API_SCHEMA = "https://";
-const API_DOMAIN = "act.org.ua/api/"; 
+const API_DOMAIN = "act.org.ua/api/";
 
 const PATHS = {
     cities: "cities",

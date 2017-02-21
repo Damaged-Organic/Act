@@ -1,5 +1,6 @@
 # act_project/act/website/models.py
 import os
+from datetime import datetime
 
 from urllib.parse import urljoin
 
@@ -10,6 +11,7 @@ from django.utils import timezone
 from django.utils.html import strip_tags
 from django.utils.text import slugify
 from django.template.defaultfilters import filesizeformat, truncatechars
+from django.template.loader import render_to_string
 
 from transliterate import translit
 from ckeditor.fields import RichTextField
@@ -471,12 +473,16 @@ class EventCategory(models.Model, metaclass=TransMeta):
 
 class EventManager(models.Manager):
     def filter_active_created_at_gt(self, datetime):
-        return super(EventManager, self).get_queryset().filter(
-            is_active=True, created_at__gt=datetime)
+        return (
+            super(EventManager, self).get_queryset()
+            .select_related('event_category')
+            .filter(is_active=True, created_at__gt=datetime)
+        )
 
     def filter_active_limit(self):
         return (
             super(EventManager, self).get_queryset()
+            .select_related('event_category')
             .filter(is_active=True,)
             [:self.model.LIMIT['default']]
         )
@@ -957,6 +963,19 @@ class Worksheet(models.Model):
 
         if errors:
             raise ValidationError(errors)
+
+    def worksheet_email(self):
+        template = 'website/emails/worksheet.html'
+        context = {
+            'worksheet': self,
+            'sent_at': datetime.now(),
+        }
+
+        return render_to_string(template, context)
+    worksheet_email.subject = (
+        'Нова анкета з сайту ДІЙ!, ' +
+        datetime.now().strftime('%d-%m-%Y %H:%M')
+    )
 
 
 # Scraping

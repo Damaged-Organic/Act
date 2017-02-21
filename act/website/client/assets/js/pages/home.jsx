@@ -19,6 +19,8 @@ import Activities from "Components/home/activities/";
 import Projects from "Components/home/projects";
 import Events from "Components/home/events";
 
+import SubscribeWidget from "Components/subscribe/subscribeWidget";
+
 import isMobile from "Utils/isMobile";
 
 @autoBind
@@ -95,6 +97,7 @@ class Home extends Component{
                 <PageMeta metadata={ metadata } />
                 <Header sponsors={ sponsors } socials={ socials } location={ this.props.location } isMobile={ isMobile } />
                 <main id="content">
+                    { !isMobile ? <SubscribeWidget /> : null }
                     <Intro intro={ intro } />
                     <Centers centers={ centers } isMobile={ isMobile } />
                     <Activities activities={ activities } />

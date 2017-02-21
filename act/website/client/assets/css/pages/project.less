@@ -215,8 +215,24 @@
                             overflow: hidden;
                         }
                         p{
+                            display: block;
+                            height: 60px;
                             text-align: left;
                             padding: 0 30px;
+                            position: relative;
+                            overflow: hidden;
+                            &:after{
+                                display: block;
+                                width: 100%;
+                                height: 20px;
+                                position: absolute;
+                                left: 0;
+                                bottom: 0;
+                                z-index: 5;
+                                content: "";
+                                background: linear-gradient(180deg, transparent, @lightGrey);
+                                overflow: hidden;
+                            }
                         }
                         & > a{
                             display: inline-block;

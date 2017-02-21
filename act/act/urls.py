@@ -44,6 +44,13 @@ urlpatterns += i18n_patterns(
     url(r'', include('website.urls')),
     prefix_default_language=False)
 
+'''
+Subscription application client - only
+due to reverse URL generation for client
+'''
+urlpatterns += [
+    url(r'', include('subscription.urls')), ]
+
 if settings.DEBUG:
     from django.conf.urls.static import static
     import debug_toolbar

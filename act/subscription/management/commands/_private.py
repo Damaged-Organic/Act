@@ -1,7 +1,7 @@
 # act_project/act/subscription/management/commands/_private.py
 import datetime
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 from ...models import Subscriber, Mailing
 

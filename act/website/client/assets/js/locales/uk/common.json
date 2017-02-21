@@ -2,10 +2,15 @@
     "empty": "Контент відсутній",
     "notFound": {
         "title": "Цієї сторінки не існує",
-        "text": "Повертайся додому, тут для тебе нічого немає",
+        "text": "Поверніться додому, тому що цієї сторінки не існує",
         "number": "404"
     },
     "landscape": "Поверніть, будь ласка, ваш пристрій",
     "studio": "CHEERS - Unlimited Web Production",
-    "copyright": "©2016. All rights reserved. Created and designed by"
+    "copyright": "© Мережа центрів громадського контролю \"ДІЙ!\", 2016. Web production by",
+    "subscribeText": "Для того щоб підписатись на розсилку, введіть ваш e-mail та натисніть Enter",
+    "confirmSubscribeSuccess": "Ви успішно підписані на щоденну розсилку, дякуємо!",
+    "confirmSubscribeError": "Некоректні дані, спробуйте пройти процес підписки з самого початку",
+    "confirmUnsubscribeSuccess": "Ви успішно відписані від щоденної розсилки",
+    "confirmUnsubscribeError": "Некоректні дані, спробуйте пройти процес відписки з самого початку"
 }

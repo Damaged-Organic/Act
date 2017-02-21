@@ -9,7 +9,6 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import (
     RetrieveModelMixin, CreateModelMixin, UpdateModelMixin
 )
-from rest_framework.reverse import reverse
 
 from .models import Subscriber
 from .serializers import SubscriberSerializer
@@ -26,14 +25,10 @@ class SubscriberList(CreateModelMixin, GenericAPIView):
         with transaction.atomic():
             subscriber = serializer.save()
 
-            checkout_hash = subscriber.prepare_checkout_hash()
-            checkout_url = reverse(
-                'subscribers_detail_subscribe',
-                args=[subscriber.pk, checkout_hash],
-                request=self.request)
-            serializer.send_subscribe_email(checkout_url)
-
+            subscriber.prepare_checkout_hash()
             subscriber.save()
+
+            serializer.send_subscribe_email(subscriber)
 
     def post(self, request, *args, **kwargs):
         try:

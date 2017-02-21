@@ -1,5 +1,4 @@
 # act_project/act/website/serializers.py
-from datetime import datetime
 from urllib.parse import unquote
 
 from django.db.models import Prefetch
@@ -183,7 +182,7 @@ class ParticipantSerializer(ExcludableModelSerializer):
 
     @staticmethod
     def set_eager_loading(queryset):
-        queryset = queryset.select_related('centre')
+        queryset = queryset.select_related('centre', 'centre__city')
 
         return queryset
 
@@ -199,7 +198,7 @@ class ContactSerializer(ExcludableModelSerializer):
 
     @staticmethod
     def set_eager_loading(queryset):
-        queryset = queryset.select_related('centre')
+        queryset = queryset.select_related('centre', 'centre__city')
 
         return queryset
 
@@ -379,7 +378,7 @@ class CentreListSerializer(serializers.ModelSerializer):
         exclude_fields=['centres'], read_only=True, many=True
     )
     events = EventListSerializer(
-        exclude_fields=['centres'], read_only=True, many=True
+        exclude_fields=['centres', 'project'], read_only=True, many=True
     )
 
     class Meta:
@@ -415,7 +414,7 @@ class CentreDetailSerializer(serializers.ModelSerializer):
         exclude_fields=['centres'], read_only=True, many=True
     )
     events = EventListSerializer(
-        exclude_fields=['centres'], read_only=True, many=True
+        exclude_fields=['centres', 'project'], read_only=True, many=True
     )
     top_event = EventListSerializer(
         exclude_fields=['centres'], read_only=True
@@ -488,28 +487,15 @@ class WorksheetSerializer(MailerMixin, serializers.ModelSerializer):
 
         return value
 
-    def send_email(self):
-        sent_at = datetime.now()
+    def send_worksheet_email(self, worksheet):
+        if not worksheet.id:
+            raise Worksheet.DoesNotExist('Worksheet is not yet created')
 
-        subject = (
-            'Нова анкета з сайту ДІЙ!, ' +
-            sent_at.strftime('%d-%m-%Y %H:%M')
-        )
-        template = 'website/emails/worksheet.html'
-        context = {
-            'full_name': self.validated_data['full_name'],
-            'residence': self.validated_data['residence'],
-            'email': self.validated_data['email'],
-            'phone': self.validated_data['phone'],
-            'personal_link': self.validated_data['personal_link'],
-            'problem_description':
-                self.validated_data['problem_description'],
-            'activity_description':
-                self.validated_data['activity_description'],
-            'sent_at': sent_at,
-        }
+        worksheet_subject = worksheet.worksheet_email.subject
+        worksheet_body = worksheet.worksheet_email()
 
-        super(WorksheetSerializer, self).send_email(subject, template, context)
+        super(WorksheetSerializer, self).send_email(
+            worksheet_subject, worksheet_body, None, None)
 
 
 # Scraping

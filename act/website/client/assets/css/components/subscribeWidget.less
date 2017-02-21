@@ -1,0 +1,94 @@
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  subscribe widget start                    */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+#subscribe-widget-holder{
+    width: 300px;
+    height: 180px;
+    position: fixed;
+    top: 270px;
+    right: 0;
+    z-index: 100;
+    transition: all .5s @easing;
+    transform: translateX(240px);
+    overflow: hidden;
+    &.__active{
+        transform: translateX(0);
+    }
+    .btn-subscribe{
+        width: 180px;
+        height: 60px;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 10;
+        transform-origin: 0% 0%;
+        transform: rotate(-90deg);
+        cursor: pointer;
+        border-bottom: 1px solid @white;
+        box-sizing: border-box;
+        overflow: hidden;
+        & > span{ background: @darkGrey; }
+    }
+    .inner{
+        width: 100%;
+        height: 100%;
+        padding-left: 60px;
+        background: @lightGrey;
+        box-sizing: border-box;
+        overflow: hidden;
+        & > p{
+            font-size: .875em;
+            padding: 15px;
+            &.success-holder{ color: @darkGreen; }
+        }
+    }
+    & > .subscribe-loader{
+        display: block;
+        width: 15px;
+        height: 15px;
+        position: absolute;
+        right: 15px;
+        bottom: 15px;
+        z-index: 10;
+        background: @red;
+        animation: scaling .5s @easing 0s infinite;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+}
+
+@keyframes scaling{
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
+}
+
+#subscribe-form{
+    display: block;
+    width: 100%;
+    height: auto;
+    padding: 0 15px;
+    box-sizing: border-box;
+    overflow: hidden;
+    input[type="email"]{
+        display: block;
+        width: 100%;
+        height: 40px;
+        border: 1px solid @darkGrey;
+        background: @white;
+        text-indent: 15px;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+    .error-holder{
+        display: block;
+        width: 100%;
+        height: auto;
+        font-size: .875em;
+        color: @red;
+        margin-top: 5px;
+        overflow: hidden;
+    }
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*  subscribr widget end                      */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/

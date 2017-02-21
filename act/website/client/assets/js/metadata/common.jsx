@@ -28,7 +28,7 @@ class Meta extends Component{
                     { "http-equiv": "cleartype", content: "no" },
                     { "http-equiv": "X-UA-Compatible", content: "IE=edge, chrome=1" },
                     { name: "msapplication-TileColor", content: "#333333" },
-                    { name: "msapplication-TileImage", content: staticPath("/images/favicons/ms/144x144.png") }
+                    { name: "msapplication-TileImage", content: staticPath("/images/favicons/144x144.png") }
                 ]}
                 link={[
                     { rel: "apple-touch-icon", href: staticPath("/images/favicons/57x57.png") },

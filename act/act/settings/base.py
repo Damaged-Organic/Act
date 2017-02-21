@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'ckeditor',
     'stdimage',
+    'mjml',
     'metadata.apps.MetadataConfig',
     'subscription.apps.SubscriptionConfig',
     'website.apps.WebsiteConfig',

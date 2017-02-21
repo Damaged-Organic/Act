@@ -14,8 +14,8 @@ class Center extends Component{
         let isMobile = this.props.isMobile,
             center = this.props.center,
             city = center.city || {},
-            photoObj = city.photo || {},
-            photo = !isMobile ? photoObj.high : photoObj.original,
+            photoHigh = city.photo_high || {},
+            photo = !isMobile ? photoHigh.high : photoHigh.original,
             styles = {};
 
         styles = {

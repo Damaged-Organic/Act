@@ -376,8 +376,8 @@ class WorksheetList(CreateModelMixin, GenericAPIView):
         '''
         Send an e-mail notification on succesfull serializer save
         '''
-        serializer.save()
-        serializer.send_email()
+        worksheet = serializer.save()
+        serializer.send_worksheet_email(worksheet)
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)

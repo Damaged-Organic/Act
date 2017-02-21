@@ -1,7 +1,10 @@
 # act_project/act/subscription/models.py
+from datetime import datetime
+
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.db import models
+from django.template.loader import render_to_string
 
 from .services import CheckoutHash
 
@@ -65,6 +68,27 @@ class Subscriber(models.Model):
         self.checkout_hash = None
         self.checkout_at = timezone.now()
         self.is_active = False
+
+    def subscribe_email(self):
+        template = 'subscription/emails/checkout.html'
+        context = {
+            'subscriber': self,
+            'sent_at': datetime.now(),
+        }
+
+        return render_to_string(template, context)
+    subscribe_email.subject = 'Підписка на новини мережі ДІЙ!'
+
+    def subscription_email(self, events):
+        template = 'subscription/emails/subscription.html'
+        context = {
+            'subscriber': self,
+            'events': events,
+            'sent_at': datetime.now(),
+        }
+
+        return render_to_string(template, context)
+    subscription_email.subject = 'Дайджест новин мережі ДІЙ!'
 
 
 class MailingManager(models.Manager):

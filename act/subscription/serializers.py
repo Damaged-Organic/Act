@@ -1,6 +1,4 @@
 # act_project/act/subscription/serializers.py
-import datetime
-
 from rest_framework.exceptions import ValidationError as RESTValidationError
 from rest_framework import serializers
 
@@ -23,17 +21,20 @@ class SubscriberSerializer(MailerMixin, serializers.ModelSerializer):
 
         return subscriber
 
-    def send_subscribe_email(self, checkout_url):
-        email_to = self.validated_data['email']
+    def send_subscribe_email(self, subscriber):
+        if not subscriber.id:
+            raise Subscriber.DoesNotExist('Subscriber is not yet created')
 
-        subject = 'Підписка на новини мережі ДІЙ!'
-        template = 'subscription/emails/subscribe.html'
-        context = {
-            'email': email_to,
-            'checkout_url': checkout_url,
-            'sent_at': datetime.datetime.now(),
-        }
+        subscribe_subject = subscriber.subscribe_email.subject
+        subscribe_body = subscriber.subscribe_email()
 
         super(SubscriberSerializer, self).send_email(
-            subject, template, context, None, email_to
-        )
+            subscribe_subject, subscribe_body, None, subscriber.email)
+
+    def send_subscription_emails(self, subscribers, events):
+        super(SubscriberSerializer, self).send_mass_email(
+            subscribers,
+            lambda subscriber: subscriber.subscription_email.subject,
+            lambda subscriber: subscriber.subscription_email(events),
+            lambda subscriber: subscriber.email,
+            None)

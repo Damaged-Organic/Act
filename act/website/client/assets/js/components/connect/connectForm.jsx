@@ -10,7 +10,7 @@ class ConnectForm extends Component{
 
     constructor(props){
         super(props);
-        
+
         this.state = {
             loading: false,
             hasErrors: false,
@@ -74,7 +74,7 @@ class ConnectForm extends Component{
         e.preventDefault();
 
         if(this.state.loading) return;
-        
+
         connectActions.sendForm({
             "full_name": this.state.fullName,
             "residence": this.state.residence,
@@ -91,7 +91,7 @@ class ConnectForm extends Component{
     }
     handleStoreChange(){
         let form = ConnectStore.getForm();
-        
+
         if(!form.hasErrors){
 
             this.setState({
@@ -122,7 +122,7 @@ class ConnectForm extends Component{
     }
     handleClose(e){
         e.preventDefault();
-        
+
         this.setState({ message: "" });
     }
     renderLoading(){
@@ -245,6 +245,7 @@ class ConnectForm extends Component{
                         onChange={(e) => this.handleProblem(e)}
                         id="connect-problem"
                         ref="problem"
+                        checked={ this.state.problem }
                     />
                     <label for="connect-problem">
                         <span class="checkbox-holder"></span>
@@ -275,6 +276,7 @@ class ConnectForm extends Component{
                         onChange={(e) => this.handleActivity(e)}
                         id="connect-activity"
                         ref="activity"
+                        checked={ this.state.activity }
                     />
                     <label for="connect-activity">
                         <span class="checkbox-holder"></span>

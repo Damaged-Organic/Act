@@ -13,7 +13,7 @@ class Center extends Component{
         let isMobile = this.props.isMobile,
             center = this.props.center,
             city = center.city || {},
-            photoObj = city.photo || {},
+            photoSquare = city.photo_square || {},
             url = generateUrl("center", {id: center.id});
 
         return(
@@ -22,8 +22,8 @@ class Center extends Component{
                     <figure>
                         {  
                             !isMobile
-                                ? <img src={ photoObj.square } alt={ city.name } />
-                                : <img src={ photoObj.original } alt={ city.name } />
+                                ? <img src={ photoSquare.square } alt={ city.name } />
+                                : <img src={ photoSquare.original } alt={ city.name } />
                         }
                     </figure>
                     <div class="inner">

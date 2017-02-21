@@ -1,17 +1,21 @@
 # act_project/act/website/templatetags/website_helpers.py
 from datetime import datetime
+from urllib.parse import urljoin
+
+from act.utils import get_default_URL
 
 from django import template
 from django.core.urlresolvers import reverse
-from django.utils.translation import activate, get_language
 from django.utils.safestring import mark_safe
 
 register = template.Library()
 
 
 @register.filter
-def absolute_url(request):
-    return request.build_absolute_uri(reverse('website:index'))[:-1]
+def absolute_url(path):
+    domain = get_default_URL()
+
+    return urljoin(domain, path)
 
 
 @register.filter
