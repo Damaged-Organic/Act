@@ -1,16 +1,20 @@
 {# act_project/act/website/templates/website/index.html #}
-<!DOCTYPE html>
+{% extends 'layout.html' %}
 
 {% load staticfiles %}
 
-<html lang="en">
-<head>
-    <base href="/">
-    <meta charset="UTF-8">
+{% block stylesheets %}
     <link rel="stylesheet" href="{% static 'website/css/app.bundle.min.css' %}">
-</head>
-<body>
+{% endblock %}
+
+{% block google_analytics %}
+    <script src="{% static 'website/inlines/google-analytics.js' %}"></script>
+{% endblock %}
+
+{% block body %}
     <div id="root"></div>
+{% endblock %}
+
+{% block javascripts %}
     <script src="{% static 'website/js/app.bundle.min.js' %}"></script>
-</body>
-</html>
+{% endblock %}

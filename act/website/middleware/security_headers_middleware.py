@@ -26,12 +26,13 @@ class SecurityHeadersMiddleware(object):
                 ),
                 'script-src': (
                     "'self'"
-                    " 'unsafe-eval'"
                     " 'unsafe-inline'"
+                    " 'unsafe-eval'"
                     " https://ajax.googleapis.com"
                     " https://maps.googleapis.com"
+                    " https://www.google-analytics.com"
                 ),
-                'frame-src': (
+                'child-src': (
                     "https://www.youtube.com"
                 ),
             }

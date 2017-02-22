@@ -1,18 +1,12 @@
 {# act_project/act/templates/base.html #}
 <!DOCTYPE html>
 
-{% load i18n metadata_tags %}
-
-{% get_current_language as LANGUAGE_CODE %}
-
-{% provide_metadata as METADATA %}
-
-<html lang="{{ LANGUAGE_CODE }}">
+<html lang="uk">
     <head>
+        <base href="/">
+
         <title>
-
             {% block title %}{% endblock %}
-
         </title>
 
         {% block meta %}
@@ -21,6 +15,8 @@
 
         {% block open_graph %}{% endblock %}
 
+        {% block twitter_card %}{% endblock %}
+
         {% block favicons %}{% endblock %}
 
         {% block stylesheets %}{% endblock %}
@@ -28,7 +24,7 @@
     </head>
     <body>
 
-        {% block analytics %}{% endblock %}
+        {% block google_analytics %}{% endblock %}
 
         {% block body %}{% endblock %}
 

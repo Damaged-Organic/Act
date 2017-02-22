@@ -1,0 +1,18 @@
+{# act_project/act/website/templates/website/errors/500.html #}
+{% extends 'website/errors/layout.html' %}
+
+{% block title %}
+    500 - Internal Server Error | Act | Мережа центрів громадського контролю
+{% endblock %}
+
+{% block error_description %}
+    Внутрішня помилка серверу
+{% endblock %}
+
+{% block error_code %}
+    500
+{% endblock %}
+
+{% block error_button %}
+    {# disable button by overriding parent block content #}
+{% endblock %}

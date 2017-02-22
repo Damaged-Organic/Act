@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router";
 import { translate } from "react-i18next";
 
+import generateUrl from "Router/generateUrl";
 import Logo from "Pages/header/logo";
 
 @translate(["common", "buttons"])
@@ -9,7 +10,7 @@ class NotFound extends Component{
 
     constructor(props){
         super(props);
-        
+
     }
     render(){
         return(
@@ -20,7 +21,7 @@ class NotFound extends Component{
                     <h1>{ this.props.t("notFound.title") }</h1>
                     <p>{ this.props.t("notFound.text") }</p>
                     <div class="btn-back">
-                        <Link to="">{ this.props.t("buttons:toHome") }</Link>
+                        <Link to={ generateUrl("home") }>{ this.props.t("buttons:toHome") }</Link>
                     </div>
                 </div>
                 <div class="error-number-holder">

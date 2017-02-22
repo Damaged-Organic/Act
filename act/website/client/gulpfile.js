@@ -36,6 +36,12 @@ gulp.task("translations", () => {
 
 });
 
+gulp.task("inlines", () => {
+
+    gulp.src(cfg.js + "/inlines/*.js")
+        .pipe(gulp.dest(cfg.build + "/inlines/"));
+})
+
 gulp.task("mjml", () => {
 
     var fileList = readDir(cfg.letters),
@@ -71,4 +77,4 @@ gulp.task("watcher", () => {
 
 });
 
-gulp.task("default", ["css", "fonts", "translations", "mjml", "images", "watcher"]);
+gulp.task("default", ["css", "fonts", "translations", "inlines", "mjml", "images"]);

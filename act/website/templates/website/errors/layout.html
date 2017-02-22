@@ -1,0 +1,55 @@
+{# act_project/act/website/templates/website/errors/layout.html #}
+{% extends 'layout.html' %}
+
+{% load staticfiles %}
+
+{% block meta %}
+    {{ block.super }}
+    <meta name="robots" content="noindex,nofollow,noarchive">
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'website/css/error.bundle.min.css' %}">
+{% endblock %}
+
+{% block body %}
+    <div id="page" class="__error-holder">
+        <header id="header">
+            <a class="logo" href="{% url 'website:index' %}">
+                <img src="{% static 'website/images/logo.png' %}" alt="Act">
+            </a>
+        </header>
+        <main id="content">
+            <section class="container">
+                <div class="inner">
+                    <span class="upper-divider"></span>
+                    <h1>{% block error_description %}{% endblock %}</h1>
+                    <p>
+                        Тут нічого немає, будь ласка, повертайтесь додому
+                    </p>
+                    {% block error_button %}
+                        <div class="btn-back">
+                            <a href="{% url 'website:index' %}">На головну</a>
+                        </div>
+                    {% endblock %}
+                </div>
+                <div class="error-number-holder">
+                    <span>
+                        {% block error_code %}{% endblock %}
+                    </span>
+                </div>
+                <div class="svg-holder">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60">
+                        <defs>
+                            <linearGradient id="gradient">
+                                <stop offset="5%" stop-color="#95212a"></stop>
+                                <stop offset="95%" stop-color="#4a87b1"></stop>
+                            </linearGradient>
+                        </defs>
+                        <circle cx="30" cy="30" r="28.5" stroke="url(#gradient)"></circle>
+                    </svg>
+                </div>
+            </section>
+        </main>
+    </div>
+{% endblock %}
