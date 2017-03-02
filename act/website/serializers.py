@@ -506,13 +506,11 @@ class ScrapingSerializer(serializers.ModelSerializer):
         fields = ('path', 'head', )
 
     def create(self, validated_data):
-        # Decode URL encoded (to avoid special characters breaking POST) head
+        # Decode URL encoded (to avoid POST special characters) path and head
         head = unquote(validated_data.get('head', None)).strip()
+        path = unquote(validated_data.get('path', None)).strip()
 
         scraping, created = Scraping.objects.update_or_create(
-            path=validated_data.get('path', None),
-            defaults={
-                'path': validated_data.get('path', None),
-                'head': head}, )
+            path=path, defaults={'path': path, 'head': head})
 
         return scraping
