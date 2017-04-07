@@ -1,0 +1,25 @@
+[uwsgi]
+
+module = act.wsgi
+
+chdir = /project/root/directory
+home =  /project/virtualenvs/directory
+
+master = true
+processes = 4
+
+max-requests = 1000
+
+socket = /tmp/act.org.ua.sock
+stats = /tmp/act.org.ua.stats.sock
+
+harakiri = 30
+
+vacuum = true
+
+disable-logging = True
+
+uid = www-data
+gid = www-data
+
+chmod-socket = 664

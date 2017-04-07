@@ -23,4 +23,5 @@ uploads/
 node_modules/
 jspm_packages/
 
-TLS/
+uwsgi/act.ini
+uwsgi/uwsgi_params

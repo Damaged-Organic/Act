@@ -165,6 +165,7 @@ try:
     from .packages.bleach import *
     from .packages.ckeditor import *
     from .packages.crontab import *
+    from .packages.mjml import *
     from .packages.metadata import *
     '''
     LOGGING is built using base directory path, so in order to
